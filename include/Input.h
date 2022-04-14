@@ -20,18 +20,16 @@ This file is part of AC4DC.
 #include "RadialWF.h"
 #include "Potential.h"
 #include "Grid.h"
-#include <vector>
+#include <vector>>
 #include <string>
 #include <cmath>
-
-using namespace std;
 
 class Input
 {
 public:
 	//Read or set the configuration. Assign all the quantum numbers and trial energies, lattice and potential
-	Input(char* filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream & log);
-	//Input(char* filename, vector<RadialWF> &Orbitals,  vector<RadialWF> &Virtual, Grid &Lattice, ofstream & log);
+	Input(char* filename, std::vector<RadialWF> &Orbitals, Grid &Lattice, std::ofstream & log);
+	//Input(char* filename, std::vector<RadialWF> &Orbitals,  std::vector<RadialWF> &Virtual, Grid &Lattice, std::ofstream & log);
 	Input(const Input & Other);
 
 	Input& operator=(Input other) {
@@ -39,32 +37,32 @@ public:
 			return *this;
 		}
 
-		swap(name, other.name);
-		swap(model, other.model);
-		swap(potential, other.potential);
-		swap(hamiltonian, other.hamiltonian);
-		swap(me_gauge, other.me_gauge);
-		swap(omega, other.omega);
-		swap(width, other.width);
-		swap(fluence, other.fluence);
-		swap(num_time_steps, other.num_time_steps);
-		swap(omp_threads, other.omp_threads);
-		swap(Z, other.Z);
-		swap(write_charges, other.write_charges);
-		swap(write_intensity, other.write_intensity);
-		swap(out_time_steps, other.out_time_steps);
-		swap(Master_tollerance, other.Master_tollerance);
-		swap(No_exchange_tollerance, other.No_exchange_tollerance);
-		swap(HF_tollerance, other.HF_tollerance);
-		swap(max_HF_iterations, other.max_HF_iterations);
+		std::swap(name, other.name);
+		std::swap(model, other.model);
+		std::swap(potential, other.potential);
+		std::swap(hamiltonian, other.hamiltonian);
+		std::swap(me_gauge, other.me_gauge);
+		std::swap(omega, other.omega);
+		std::swap(width, other.width);
+		std::swap(fluence, other.fluence);
+		std::swap(num_time_steps, other.num_time_steps);
+		std::swap(omp_threads, other.omp_threads);
+		std::swap(Z, other.Z);
+		std::swap(write_charges, other.write_charges);
+		std::swap(write_intensity, other.write_intensity);
+		std::swap(out_time_steps, other.out_time_steps);
+		std::swap(Master_tollerance, other.Master_tollerance);
+		std::swap(No_exchange_tollerance, other.No_exchange_tollerance);
+		std::swap(HF_tollerance, other.HF_tollerance);
+		std::swap(max_HF_iterations, other.max_HF_iterations);
 
 		return *this;
 	}
 
-	string Pot_Model() { return model; }
-	string Exited_Pot_Model() { return potential; }
-	string Gauge() { return me_gauge; }
-	string Name() { return name; }
+	std::string Pot_Model() { return model; }
+	std::string Exited_Pot_Model() { return potential; }
+	std::string Gauge() { return me_gauge; }
+	std::string Name() { return name; }
 	double Omega() { return omega; }
 	double Width() { return width; }
 	double Fluence() { return fluence; }
@@ -94,11 +92,11 @@ public:
 
 	~Input();
 private:
-	string name = "";// A name of argv[1] suppilied as filename without extension. Is added to output files.
-	string model;
-	string potential = "V_N";
-	string me_gauge = "length";
-	string hamiltonian = "LDA";
+	std::string name = "";// A name of argv[1] suppilied as filename without extension. Is added to output files.
+	std::string model;
+	std::string potential = "V_N";
+	std::string me_gauge = "length";
+	std::string hamiltonian = "LDA";
 	double omega = 5000;// XFEL field frequency.
 	double width = 5; // XFEL pulse width. Gaussian profile hardcoded.
 	double fluence = 0; // XFEL pulse fluence.

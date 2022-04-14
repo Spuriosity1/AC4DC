@@ -16,7 +16,7 @@ This file is part of AC4DC.
 ===========================================================================*/
 #include "Grid.h"
 #include "Numerics.h"
-#include <vector>
+#include <vector>>
 #include "EigenSolver.h"
 #include <algorithm>
 
@@ -112,7 +112,7 @@ void Adams::Integrate(RadialWF* Psi, int start_pt, int end_pt)
 	double Det, F_tmp, G_tmp;
 	FirstMaxima = 0;
 	NumNodes = 0;
-	vector<double> dF_dR(Lattice.size(), 0), dG_dR(Lattice.size(), 0);
+	std::vector<double> dF_dR(Lattice.size(), 0), dG_dR(Lattice.size(), 0);
 
 	if (start_pt > end_pt)
 	{
@@ -259,12 +259,12 @@ void Adams::Integrate(std::vector<double> &Func, std::vector<double> &Result, in
 double Adams::Integrate(std::vector<double>* Func, int start_pt, int end_pt)
 {
 	/*
-	vector<double> Result = vector<double>(Func->size(), 0.);
+	std::vector<double> Result = std::vector<double>(Func->size(), 0.);
 	Integrate(*Func, Result, start_pt, end_pt);
 	return Result.back();
 	*/
 	int incr, start, end;
-	vector<double> Result(Adams_N);
+	std::vector<double> Result(Adams_N);
 
 	if (start_pt > end_pt)
 	{
@@ -280,8 +280,8 @@ double Adams::Integrate(std::vector<double>* Func, int start_pt, int end_pt)
 	}
 
 	//check if the first Adams_N points are required to be calculated or they are given by the user.
-	vector<vector<double>> LeftMatr;
-	vector<double> RightVect;
+	std::vector<std::vector<double>> LeftMatr;
+	std::vector<double> RightVect;
 
 	int Lagrange_N = 10;//Always calculating first 10 points. If Adams_N < 10 it will overwrite an extra points
 
@@ -628,15 +628,15 @@ Interpolation::Interpolation(int Order)
 	order = Order;//fixed order, not too high, to avoid oscillations
 }
 
-vector<double> Interpolation::get_value(const vector<double> &f, const vector<double> &x_ini, double X)
+std::vector<double> Interpolation::get_value(const std::vector<double> &f, const std::vector<double> &x_ini, double X)
 {
 	int close_left = 0;
-	vector<double> Result(2, 0);
-	vector<double> P(order + 1, 0);
-	vector<double> x(order + 1, 0);
-	vector<double> tmp(order, 0);
-	vector<double> d_tmp(order, 0);
-	vector<double> dP(order + 1, 0);
+	std::vector<double> Result(2, 0);
+	std::vector<double> P(order + 1, 0);
+	std::vector<double> x(order + 1, 0);
+	std::vector<double> tmp(order, 0);
+	std::vector<double> d_tmp(order, 0);
+	std::vector<double> dP(order + 1, 0);
 
 	if (!x_ini.empty() && !f.empty() && f.size() == x_ini.size())
 	{
@@ -681,15 +681,15 @@ vector<double> Interpolation::get_value(const vector<double> &f, const vector<do
 	return Result;
 }
 
-vector<double> Interpolation::get_value(PairFunction &S_old, Grid &Lattice_old, double X)
+std::vector<double> Interpolation::get_value(PairFunction &S_old, Grid &Lattice_old, double X)
 {
 	int close_left = 0;
-	vector<double> Result(2, 0);
-	vector<double> P(order + 1, 0);
-	vector<double> x(order + 1, 0);
-	vector<double> tmp(order, 0);
-	vector<double> d_tmp(order, 0);
-	vector<double> dP(order + 1, 0);
+	std::vector<double> Result(2, 0);
+	std::vector<double> P(order + 1, 0);
+	std::vector<double> x(order + 1, 0);
+	std::vector<double> tmp(order, 0);
+	std::vector<double> d_tmp(order, 0);
+	std::vector<double> dP(order + 1, 0);
 
 	if (Lattice_old.size() > 0 && Lattice_old.size() == S_old.size())
 	{
@@ -742,7 +742,7 @@ int Interpolation::RecalcWF(RadialWF &S_old, Grid &Lattice_old, RadialWF &S_new,
 	{
 		int j = 0;
 		double Infinity = Lattice_old.R(S_old.pract_infinity());
-		vector<double> Tmp(2, 0);
+		std::vector<double> Tmp(2, 0);
 		S_new.clear();
 		S_new.resize(Lattice_new.size());
 		while (Lattice_new.R(j) < Infinity && j < Lattice_new.size() - 1)
@@ -761,7 +761,7 @@ int Interpolation::RecalcWF(RadialWF &S_old, Grid &Lattice_old, RadialWF &S_new,
 
 
 
-void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_iter, double conv_toll)
+void Interpolation::gaussian_sum(std::vector<double> & Vals, Grid & Lattice, int max_iter, double conv_toll)
 {
   // Function 'Vals' (radial atomic density), defined on a mesh 'R' (with intervals 'dR) is interpolated with a sum of 'Order'
   // Gaussians as 
@@ -779,21 +779,21 @@ void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_
   int end_pt = Lattice.size()-1;
   while (Vals[end_pt] < 0.000001) end_pt--;
 
-  vector<double> a(order, 0);
-  vector<double> b(order, 0);
+  std::vector<double> a(order, 0);
+  std::vector<double> b(order, 0);
   // Gradients. First 'order' values are a[i], last are b[i].
-  vector<double> grad_a(order, 0); 
-  vector<double> grad_b(order, 0); 
+  std::vector<double> grad_a(order, 0); 
+  std::vector<double> grad_b(order, 0); 
   // Adam paramteres.
-  vector<double> M(2*order, 0);
-  vector<double> V(2*order, 0);
+  std::vector<double> M(2*order, 0);
+  std::vector<double> V(2*order, 0);
 //   double Beta1 = 0.9, Beta2 = 0.999, eta=1;
 //   double Beta1_pow_m = 1, Beta2_pow_m = 1, M_hat, V_hat, e = 1;
   
   double Loss = 0;
   Adams I(Lattice, 5);
-  vector<double> aux_func(end_pt-start_pt + 1, 0);
-  vector<double> Vals_pred(end_pt-start_pt + 1, 0);
+  std::vector<double> aux_func(end_pt-start_pt + 1, 0);
+  std::vector<double> Vals_pred(end_pt-start_pt + 1, 0);
   // Initialize parameters:
   double vals_norm = I.Integrate(&Vals, start_pt, end_pt);
   double tmp, exp_ar2, pred_norm, Lambda = 1, lr = 1e-3;
@@ -954,11 +954,11 @@ void GaussQuad::set_order(int Order)
 	}
 }
 
-vector<double> GaussQuad::get_Gauss_X(double a, double b)
+std::vector<double> GaussQuad::get_Gauss_X(double a, double b)
 {
 	// Linear mapping: X[i] = 0.5(b-a)*GaussX[i] + 0.5*(a+b).
 	double l = 0.5*(a + b);
-	vector<double> Result(GaussX.size(), l);
+	std::vector<double> Result(GaussX.size(), l);
 	for (size_t i = 0; i < GaussX.size(); i++) {
 		Result[i] += 0.5*(b - a)*GaussX[i];
 	}
@@ -966,7 +966,7 @@ vector<double> GaussQuad::get_Gauss_X(double a, double b)
 	return Result;
 }
 
-double GaussQuad::Integrate(vector<double> &F, vector<double> &x, double a, double b)
+double GaussQuad::Integrate(std::vector<double> &F, std::vector<double> &x, double a, double b)
 {
 	// Gauss quadrature integration formula.
 	double Result = 0;

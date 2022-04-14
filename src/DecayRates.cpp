@@ -21,19 +21,19 @@ This file is part of AC4DC.
 
 using namespace Constant;
 
-int IntegrateContinuum(Grid&, Potential&, vector<RadialWF>&, RadialWF*, bool);
+int IntegrateContinuum(Grid&, Potential&, std::vector<RadialWF>&, RadialWF*, bool);
 double A_k(int k, int L, int l_h, int l_f, int l_e, int l_c);
 bool Triad(int l_a, int l_b, int l_c);
 //int IntegrateContinuumOnce(Grid&, Potential&, RadialWF*);
 
-DecayRates::DecayRates(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, Input & Inp) : lattice(Lattice), orbitals(Orbitals),
+DecayRates::DecayRates(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &U, Input & Inp) : lattice(Lattice), orbitals(Orbitals),
 u(U), input(Inp)
 {
 }
 
-vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
+std::vector<photo> DecayRates::Photo_Ion(double omega, std::ofstream & log)
 {
-	vector<photo> Result(0);
+	std::vector<photo> Result(0);
 	if (omega <= 0) return Result;
 
 	photo PhotoTmp;
@@ -41,7 +41,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	int infinity, L;
 	double Infinity = 0, k_min = sqrt(2*omega), k_max = 0, V_tmp = 0;
 
-	vector<RadialWF> Orbitals(orbitals.size());
+	std::vector<RadialWF> Orbitals(orbitals.size());
 
 	for (int i = 0; i < orbitals.size(); i++)
 	{
@@ -93,7 +93,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	Continuum.set_infinity(Lattice.size() - 1);
 
 	Adams I(Lattice, 10);
-	vector<double> density;
+	std::vector<double> density;
 	double ME = 0;
 
 // main loop over all the possible transitions
@@ -129,12 +129,12 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 					{
 						Continuum.set_L(l);
 						if (IntegrateContinuum(Lattice, U, Orbitals, &Continuum, i) < 0) {
-						log << "====================================================================" << endl;
-							log << "Continuum didn't converge: " << endl;
+						log << "====================================================================\n";
+							log << "Continuum didn't converge: " << std::endl;
 							for (int i = 0; i < orbitals.size(); i++)
 							{
 								log << i + 1 << ") n = " << orbitals[i].N() << " l = " << orbitals[i].L()
-									<< " Energy = " << orbitals[i].Energy << " Occup = " << orbitals[i].occupancy() << endl;
+									<< " Energy = " << orbitals[i].Energy << " Occup = " << orbitals[i].occupancy() << std::endl;
 							}
 							log.flush();
 						}
@@ -171,10 +171,10 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 }
 
 
-vector<fluor> DecayRates::Fluor()
+std::vector<fluor> DecayRates::Fluor()
 {
-	vector<fluor> Result;
-	vector<double> density;
+	std::vector<fluor> Result;
+	std::vector<double> density;
 	int N_h = 0;
 	int N_j = 0;
 	int L_max = 0;
@@ -231,9 +231,9 @@ vector<fluor> DecayRates::Fluor()
 }
 
 
-vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
+std::vector<auger> DecayRates::Auger(std::vector<int> Max_occ, std::ofstream & log)
 {
-	vector<auger> Result;
+	std::vector<auger> Result;
 	auger Tmp;
 	int N_h;
 	double N_fe, E_cont, V_tmp, Infinity;
@@ -255,7 +255,7 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 	}
 	int N_elec = 0, allowed = 0;
 
-	vector<RadialWF> Orbitals(orbitals.size());
+	std::vector<RadialWF> Orbitals(orbitals.size());
 
 	for (int i = orbitals.size()-1; i >=0; i--)
 	{
@@ -353,11 +353,11 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 						//sum over all posible Continuum states
 						Continuum.set_L(l_E);
 						if (IntegrateContinuum(Lattice, U, Orbitals, &Continuum, f) < 0) {
-							log << "Continuum didn't converge: " << endl;
+							log << "Continuum didn't converge: " << std::endl;
 							for (int i = 0; i < orbitals.size(); i++)
 							{
 								log << i + 1 << ") n = " << orbitals[i].N() << " l = " << orbitals[i].L()
-									<< " Energy = " << orbitals[i].Energy << " Occup = " << orbitals[i].occupancy() << endl;
+									<< " Energy = " << orbitals[i].Energy << " Occup = " << orbitals[i].occupancy() << std::endl;
 							}
 							log.flush();
 						}
@@ -368,8 +368,8 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 						int L_max = Orbitals[e].L() + Orbitals[f].L();
 						//ME is an array of Matrix Elements with LS coupling scheme
 						//ME[L][S]
-						vector<vector<double> > M_LS(L_max - L_min + 1, vector<double>(2, 0));
-						for (int K = 0; K <= 2*max(max(Orbitals[f].L(), Orbitals[e].L()), max(Orbitals[h].L(), l_E)); K++)//min(abs(Orbitals[e].L() - Orbitals[f].L()), abs(Orbitals[h].L() - l_E))
+						std::vector<std::vector<double> > M_LS(L_max - L_min + 1, std::vector<double>(2, 0));
+						for (int K = 0; K <= 2*std::max(std::max(Orbitals[f].L(), Orbitals[e].L()), std::max(Orbitals[h].L(), l_E)); K++)//min(abs(Orbitals[e].L() - Orbitals[f].L()), abs(Orbitals[h].L() - l_E))
 						{
 							//3j symbol conditions for direct and exchange coulomb integrals
 							//direct
@@ -421,7 +421,7 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 }
 
 
-vector<double> DecayRates::FT_density(double Q_min, double Q_max, int Q_size)
+std::vector<double> DecayRates::FT_density(double Q_min, double Q_max, int Q_size)
 {
 	// Fourier Transform of radially symmetric density. Essentially, an integral:
 	// int_0^{infty} dr density(r) sinc(2*pi*Q*r)
@@ -430,8 +430,8 @@ vector<double> DecayRates::FT_density(double Q_min, double Q_max, int Q_size)
 
 	Grid Inp_lattice = lattice;
 
-	vector<double> Output(Q_size, 0);
-	vector<double> Inp_density = u.make_density(orbitals);
+	std::vector<double> Output(Q_size, 0);
+	std::vector<double> Inp_density = u.make_density(orbitals);
 
 	// find practical infty of density
 	int infty = lattice.size()-1;
@@ -442,7 +442,7 @@ vector<double> DecayRates::FT_density(double Q_min, double Q_max, int Q_size)
 	// 2*M_PI*Q*dR(infty) = 1/20 - at least 20 points per period.
 	Adams IT(Inp_lattice, 6);
 
-	vector<double> integr(infty+1, 0);
+	std::vector<double> integr(infty+1, 0);
 
 	for (int m = 0; m < Q_size; m++) {
 		if (2*M_PI*Inp_lattice.dR(infty)*Q > 0.05) {
@@ -451,7 +451,7 @@ vector<double> DecayRates::FT_density(double Q_min, double Q_max, int Q_size)
 			Inp_lattice = Grid(lattice.R(0), lattice.R(infty), dR_max);
 
 			Interpolation IN(6);
-			vector<double> density = Inp_density;
+			std::vector<double> density = Inp_density;
 			Inp_density.clear();
 			Inp_density.resize(Inp_lattice.size(), 0);
 			for (int i = 0; i < Inp_lattice.size(); i++) {
@@ -486,7 +486,7 @@ DecayRates::~DecayRates()
 
 // Correct continuum integrator. Check if potential accounts for tail correction.
 
-int DecayRates::IntegrateContinuum(Grid &Lattice, Potential &U, vector<RadialWF> &Core, RadialWF* Current, int c)
+int DecayRates::IntegrateContinuum(Grid &Lattice, Potential &U, std::vector<RadialWF> &Core, RadialWF* Current, int c)
 {
 	// This function does outwards integration to find Continuum Wavefunction. It integrates the Hartree-Fock potential U, which is unchanged
 	// till point "infinity" where semiclassical momentum P = sqrt(2 * Current->Energy) is withing one percent of the

@@ -62,7 +62,7 @@ void Potential::GenerateNuclear(void)
 	}
 }
 
-void Potential::GenerateTrial(vector<RadialWF> & Orbitals)
+void Potential::GenerateTrial(std::vector<RadialWF> & Orbitals)
 {
 	Trial.clear();
 	Trial.resize(lattice->size());
@@ -129,10 +129,10 @@ int Potential::HF_upd_dir(RadialWF* Current, std::vector<RadialWF> &Orbitals)
 	// Hartree-Fock Direct + Orbital self-interaction exchange. If Current is that orbital, than both
 	// exchange and direct are included. If Current is some other orbital, only the direct part of
 	// the potential is evaluated.
-	vector<double> y_0(lattice->size(), 0.);
-	vector<double> y(lattice->size(), 0.);
-	vector<double> density(lattice->size(), 0.);
-	vector<double> density_current(lattice->size(), 0.);
+	std::vector<double> y_0(lattice->size(), 0.);
+	std::vector<double> y(lattice->size(), 0.);
+	std::vector<double> density(lattice->size(), 0.);
+	std::vector<double> density_current(lattice->size(), 0.);
 	int infinity = 0;
 	double Q = 1; // electron-electron interaction weight.
 	int L_min = Orbitals[0].L();
@@ -161,7 +161,7 @@ int Potential::HF_upd_dir(RadialWF* Current, std::vector<RadialWF> &Orbitals)
 
 				y = Y_k(0, density_current, Orbitals[i].pract_infinity(), 2 * Current->L());
 
-				//for (vector<double>::iterator Y = y.begin(); Y != y.end(); ++Y) *Y /= Q;
+				//for (std::vector<double>::iterator Y = y.begin(); Y != y.end(); ++Y) *Y /= Q;
 
 				if (Current->L() > 0) {
 					for (int k = 2; k <= 2 * Orbitals[i].L(); k += 2) {
@@ -309,7 +309,7 @@ int Potential::HF_upd_exc(RadialWF * Current, std::vector<RadialWF> &Orbitals)
 	return 0;
 }
 
-int Potential::HF_V_N1(RadialWF * Current, vector<RadialWF> & Orbitals, int c, bool UpdDir, bool UpdExc)
+int Potential::HF_V_N1(RadialWF * Current, std::vector<RadialWF> & Orbitals, int c, bool UpdDir, bool UpdExc)
 {
 	// Check if both switches are false. If so no action is taken.
 	// Required to insure no multiple subtraction from V & Exchange.
@@ -318,7 +318,7 @@ int Potential::HF_V_N1(RadialWF * Current, vector<RadialWF> & Orbitals, int c, b
 	int N_elec = 0;
 	for (auto& Orb: Orbitals) N_elec += Orb.occupancy();
 
-	vector<double> density(lattice->size(), 0);
+	std::vector<double> density(lattice->size(), 0);
 	// V_(N-1) approximation for accurate virtual states. Has no effect on core and shouldn't be calculated for core orbitals.
 	// Follows W. Johnson p. 127
 	if (v0_N1[0] == 0 && N_elec > 1) {
@@ -424,9 +424,9 @@ std::vector<double> Potential::Y_k(int k, std::vector<double> density, int infin
 	return Result;
 }
 
-vector<double> Potential::make_density(vector<RadialWF> & Orbitals)
+std::vector<double> Potential::make_density(std::vector<RadialWF> & Orbitals)
 {
-	vector<double> Result(lattice->size(), 0.);
+	std::vector<double> Result(lattice->size(), 0.);
 	int infty = 0;
 	double occ = 0;
 	for (int i = 0 ; i < Orbitals.size(); i++) {
@@ -452,16 +452,16 @@ double Potential::Overlap(std::vector<double> density, int infinity)
 	return Result;
 }
 
-vector<float> Potential::Get_Kinetic(vector<RadialWF> & Orbitals, int start_with)
+std::vector<float> Potential::Get_Kinetic(std::vector<RadialWF> & Orbitals, int start_with)
 {
 	int size = 0;
 	for (int i = start_with; i < Orbitals.size(); i++) if (Orbitals[i].occupancy() != 0) size++;
 
-	if (size == 0) return vector<float>(0);
+	if (size == 0) return std::vector<float>(0);
 
-	vector<float> Result(size, 0);
+	std::vector<float> Result(size, 0);
 	// Get Kinetic energies.
-	vector<double> density(lattice->size(), 0.);
+	std::vector<double> density(lattice->size(), 0.);
 	int infinity = 0;
 	Adams I(*lattice, 5);
 
@@ -483,14 +483,14 @@ MatrixElems::MatrixElems(Grid * Lattice) : lattice(Lattice)
 {
 }
 
-double MatrixElems::Dipole(RadialWF &A, RadialWF &B, string gauge)
+double MatrixElems::Dipole(RadialWF &A, RadialWF &B, std::string gauge)
 {
 	double Result = 0;
 
 	int infty = A.pract_infinity();
 	if (B.pract_infinity() > infty) infty = B.pract_infinity();
 
-    vector<double> density(infty+1, 0);
+    std::vector<double> density(infty+1, 0);
 
     if (gauge == "length") {
 		for (int i = 0; i < density.size(); i++) {
@@ -510,7 +510,7 @@ double MatrixElems::Dipole(RadialWF &A, RadialWF &B, string gauge)
 	return Result;
 }
 
-double MatrixElems::DipoleAvg(RadialWF & A, RadialWF & B, string gauge)
+double MatrixElems::DipoleAvg(RadialWF & A, RadialWF & B, std::string gauge)
 {
 	double Result = 0;
 	if (A.L() > B.L()) Result = sqrt((double)A.L());
@@ -546,14 +546,14 @@ double MatrixElems::Msum(int La, int Lb, int k)
 }
 
 
-double MatrixElems::R_pow_k(vector<RadialWF> & Orbitals, int k)
+double MatrixElems::R_pow_k(std::vector<RadialWF> & Orbitals, int k)
 {
   double Result = 0;
 
   int infty = 0;
   for (auto & orb : Orbitals) if (orb.pract_infinity() > infty) infty = orb.pract_infinity();
 
-  vector<double> density(infty+1, 0);
+  std::vector<double> density(infty+1, 0);
 
   for (int i = 0; i < density.size(); i++) {
     for (auto & orb : Orbitals) density[i] += orb.occupancy()*orb.F[i]*orb.F[i];

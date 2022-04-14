@@ -37,7 +37,7 @@ double find_root(std::function<double(double)> func, double a, double b, double 
         } else if (fx*func(b) < 0){
             a = x;
         } else {
-            throw runtime_error("Root Find Error: f does not change sign");
+            throw std::runtime_error("Root Find Error: f does not change sign");
         }
     }
     return x;
@@ -95,7 +95,7 @@ void BasisSet::set_knot(const GridSpacing& gt){
     double A_sqrt = (_max - _min)/(num_int-1)/(num_int-1);
     // exponential grid
     if ( (gt.mode == GridSpacing::exponential) && _min <= 0) {
-        throw runtime_error("Cannot construct an exponential grid with zero minimum energy.");
+        throw std::runtime_error("Cannot construct an exponential grid with zero minimum energy.");
     }
     double A_exp = _min;
     double lambda_exp = (log(_max) - log(_min))/(num_int-1);
@@ -233,7 +233,7 @@ void BasisSet::set_parameters(size_t num_int, double min, double max, const Grid
     linsolver.isSymmetric(true);
     linsolver.factorize(S);
     if(linsolver.info()!=Eigen::Success) {
-        throw runtime_error("Factorisation of overlap matrix failed!");
+        throw std::runtime_error("Factorisation of overlap matrix failed!");
     }
 
     avg_e.resize(num_int);
@@ -303,8 +303,8 @@ double BasisSet::D(size_t i, double x) const {
 
 double BasisSet::overlap(size_t j,size_t i) const{
     // computes the overlap of the jth raw bspline with the ith modified bspline
-    double b = min(supp_max(i), supp_max(j));
-    double a = max(supp_min(i), supp_min(j));
+    double b = std::min(supp_max(i), supp_max(j));
+    double a = std::max(supp_min(i), supp_min(j));
     if (a >= b) return 0;
     double tmp=0;
     for (int m=0; m<10; m++) {

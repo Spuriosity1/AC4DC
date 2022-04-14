@@ -14,13 +14,13 @@ using namespace std;
 int main() {
     double arr[] = {1,2,5,7,8,9,11,18,30};
     int i =r_binsearch(9.1, arr, 9, 0);
-    cout<<i<<" "<<arr[i]<<endl;
+    std::cout<<i<<" "<<arr[i]<<"\n";
     i =r_binsearch(10.9, arr, 9, 0);
-    cout<<i<<" "<<arr[i]<<endl;
+    std::cout<<i<<" "<<arr[i]<<"\n";
     i =r_binsearch(-1, arr, 9, 0);
-    cout<<i<<" "<<arr[i]<<endl;
+    std::cout<<i<<" "<<arr[i]<<"\n";
     i =r_binsearch(11.1, arr, 9, 0);
-    cout<<i<<" "<<arr[i]<<endl;
+    std::cout<<i<<" "<<arr[i]<<"\n";
     i =r_binsearch(1.1, arr, 9, 0);
-    cout<<i<<" "<<arr[i]<<endl;
+    std::cout<<i<<" "<<arr[i]<<"\n";
 }

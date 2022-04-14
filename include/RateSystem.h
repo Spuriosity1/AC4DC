@@ -50,8 +50,8 @@ public:
 
     // Defines number and style of atomP
     // Resizes the container to fit all of the states present in the atom ensemble
-    static void set_P_shape(const vector<RateData::Atom>& atomsys);
-    static void set_P_shape(const vector<size_t>& shape) {
+    static void set_P_shape(const std::vector<RateData::Atom>& atomsys);
+    static void set_P_shape(const std::vector<size_t>& shape) {
         P_sizes = shape;
     }
     static size_t P_size(size_t a) {
@@ -62,12 +62,12 @@ public:
     }
 
 private:
-    static vector<size_t> P_sizes;
+    static std::vector<size_t> P_sizes;
 };
 
-ostream& operator<<(ostream& os, const state_type& st);
-ostream& operator<<(ostream& os, const bound_t& dist);
-ostream& operator<<(ostream& os, const Distribution& dist);
+std::ostream& operator<<(std::ostream& os, const state_type& st);
+std::ostream& operator<<(std::ostream& os, const bound_t& dist);
+std::ostream& operator<<(std::ostream& os, const Distribution& dist);
 
 // All f integrals have the form
 // df(e)/dt = Q [f] (e)

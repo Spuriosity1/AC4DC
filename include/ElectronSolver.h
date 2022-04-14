@@ -45,7 +45,13 @@ This file should arguably be called RateEquationSOlver, however, for historical 
 class ElectronSolver : private ode::Hybrid<state_type>
 {
 public:
-    ElectronSolver(const char* filename, ofstream& log) :
+    /**
+     * @brief Construct a new Electron Solver "God Object"
+     * 
+     * @param filename the path to the input .mol file
+     * @param log the path that logfile information will be stored in
+     */
+    ElectronSolver(const char* filename, std::ofstream& log) :
     Hybrid(3), input_params(filename, log), pf() // (order Adams method)
     {
         pf.set_shape(input_params.pulse_shape);
@@ -63,8 +69,8 @@ private:
     
 
     // arrays computed at class initialisation
-    vector<vector<eiiGraph> > RATE_EII;
-    vector<vector<eiiGraph> > RATE_TBR;
+    std::vector<std::vector<eiiGraph> > RATE_EII;
+    std::vector<std::vector<eiiGraph> > RATE_TBR;
 
     void get_energy_bounds(double& max, double& min);
     void precompute_gamma_coeffs(); // populates above two tensors

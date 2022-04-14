@@ -1,4 +1,4 @@
-#include "src/HybridIntegrator.hpp"
+#include "HybridIntegrator.hpp"
 #include <iostream>
 #include <cmath>
 
@@ -84,10 +84,10 @@ public:
         }
     }
     void print() {
-        cout<<"t\ty_c\ty_a\tdiff\n"<<endl;
+        std::cout<<"t\ty_c\ty_a\tdiff\n"<<"\n";
         for (size_t i = 0; i < y.size(); i++) {
             double delta = y[i].X[0] - analytic[i].X[0];
-            cout<<t[i]<<'\t'<<y[i].X[0]<<'\t'<<analytic[i].X[0]<<'\t'<<delta<<endl;
+            std::cout<<t[i]<<'\t'<<y[i].X[0]<<'\t'<<analytic[i].X[0]<<'\t'<<delta<<"\n";
         }
     }
     double avgdev() {
@@ -101,7 +101,7 @@ public:
     }
 
 protected:
-    vector<vec_t> analytic;
+    std::vector<vec_t> analytic;
     double omega=1;
     double omega2=1;
     void sys(const vec_t& q, vec_t& qdot, const double t) {
@@ -123,15 +123,15 @@ protected:
 
 int main(int argc, char const *argv[]) {
     if (argc <3) {
-        cerr<<"Usage: abm_verif [omega] [step] [order]"<<endl;
+        std::cerr<<"Usage: abm_verif [omega] [step] [order]"<<"\n";
         return 1;
     }
     double w = atof(argv[1]);
     double step = atof(argv[2]);
     int ord = atoi(argv[3]);
-    cerr<<"[abm test] "<<ord<<"th order method, h="<<step<<", omega="<<w<<endl;
+    std::cerr<<"[abm test] "<<ord<<"th order method, h="<<step<<", omega="<<w<<"\n";
     Harmonic h(w, 100000, step, ord);
     h.print();
-    cerr<<"Average deviation: "<<h.avgdev()<<endl;
+    std::cerr<<"Average deviation: "<<h.avgdev()<<"\n";
     return 0;
 }

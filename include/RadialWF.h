@@ -16,7 +16,7 @@ This file is part of AC4DC.
 ===========================================================================*/
 #pragma once
 
-#include <vector>
+#include <vector>>
 #include "PairFunction.h"
 
 class RadialWF : public PairFunction

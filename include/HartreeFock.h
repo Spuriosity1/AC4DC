@@ -20,30 +20,28 @@ This file is part of AC4DC.
 #include "Grid.h"
 #include "RadialWF.h"
 #include "Potential.h"
-#include <vector>
+#include <vector>>
 #include <fstream>
 #include "Numerics.h"
 #include "Constant.h"
 
-
-using namespace std;
 
 //Class that performs Hartree-Fock calculations
 class HartreeFock
 {
 public:
 //	HamMod = 0 - Hartree-Fock; 1 - LDA.
-	HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, Input & Inp, ofstream &log);
+	HartreeFock(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &U, Input & Inp, std::ofstream &log);
 
-	int Get_Virtual(vector<RadialWF> &Virtual, vector<RadialWF> &Orbitals, Potential &U, ofstream &log);
-	int LDA_Get_Virtual(vector<RadialWF> &Virtual, vector<RadialWF> &Orbitals, Potential &U, ofstream &log);
-	int Master(Grid * Lattice, RadialWF * Current, Potential * U, double Energy_tolerance, ofstream &log);
+	int Get_Virtual(std::vector<RadialWF> &Virtual, std::vector<RadialWF> &Orbitals, Potential &U, std::ofstream &log);
+	int LDA_Get_Virtual(std::vector<RadialWF> &Virtual, std::vector<RadialWF> &Orbitals, Potential &U, std::ofstream &log);
+	int Master(Grid * Lattice, RadialWF * Current, Potential * U, double Energy_tolerance, std::ofstream &log);
 	// Total configuration energy.
-	double Conf_En(vector<RadialWF> &Orbitals, Potential &U);
+	double Conf_En(std::vector<RadialWF> &Orbitals, Potential &U);
 	// Some electrons occupy virtual orbitals.
-	double Conf_En(vector<RadialWF> &Orbitals, vector<RadialWF> &Virtual, Potential &U);
+	double Conf_En(std::vector<RadialWF> &Orbitals, std::vector<RadialWF> &Virtual, Potential &U);
 	// Primitive hybridisation induced by uniform field E_at_nuc. Same idea as CI.
-	CustomDataType::polarize Hybrid(vector<RadialWF> &Orbitals, vector<RadialWF> &Virtual, Potential &U);
+	CustomDataType::polarize Hybrid(std::vector<RadialWF> &Orbitals, std::vector<RadialWF> &Virtual, Potential &U);
 
 
 	~HartreeFock();
@@ -55,7 +53,7 @@ private:
 	int max_HF_iterations = 500;
 	int max_Virt_iterations = 70;
 	Grid * lattice;
-	double OrthogonalityTest(vector<RadialWF> &Orbitals);
+	double OrthogonalityTest(std::vector<RadialWF> &Orbitals);
 	void MixOldNew(RadialWF * New_Orbital, RadialWF * Old_Orbital);
 };
 
@@ -64,8 +62,8 @@ class GreensMethod : Adams
 public:
 	GreensMethod(Grid * Lattice, RadialWF * Current, Potential * U);
 
-	vector<double> GreenOrigin(RadialWF * Psi_O);
-	vector<double> GreenInfinity(RadialWF * Psi_Inf);
+	std::vector<double> GreenOrigin(RadialWF * Psi_O);
+	std::vector<double> GreenInfinity(RadialWF * Psi_Inf);
 private:
 	Grid * lattice;
 	RadialWF * psi;

@@ -115,7 +115,7 @@ public:
     static void Gamma_tbr( eiiGraph& Gamma, const std::vector<RateData::InverseEIIdata>& tbr, size_t J, size_t K) {
         return basis.Gamma_tbr(Gamma, tbr, J, K);
     }
-    static void precompute_Q_coeffs(vector<RateData::Atom>& Store) {
+    static void precompute_Q_coeffs(std::vector<RateData::Atom>& Store) {
         #ifndef NO_EII
         basis.precompute_QEII_coeffs(Store);   
         #endif
@@ -157,6 +157,6 @@ private:
 
 };
 
-ostream& operator<<(ostream& os, const Distribution& dist);
+std::ostream& operator<<(std::ostream& os, const Distribution& dist);
 
 #endif /* end of include guard: RATESYSTEM_CXX_H */

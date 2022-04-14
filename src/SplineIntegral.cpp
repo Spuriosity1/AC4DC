@@ -18,8 +18,9 @@ This file is part of AC4DC.
 #include "SplineIntegral.h"
 #include "config.h"
 
+
 // Resizes containers and fills them with the appropriate values
-void SplineIntegral::precompute_QEII_coeffs(vector<RateData::Atom>& Atoms) {
+void SplineIntegral::precompute_QEII_coeffs(std::vector<RateData::Atom>& Atoms) {
     std::cout<<"[ Q precalc ] Beginning Q_eii computation...";
     // Size Q_EII appropriately
     Q_EII.resize(Atoms.size());
@@ -60,7 +61,7 @@ void SplineIntegral::precompute_QEII_coeffs(vector<RateData::Atom>& Atoms) {
 }
 
 // Resizes containers and fills them with the appropriate values
-void SplineIntegral::precompute_QTBR_coeffs(vector<RateData::Atom>& Atoms) {
+void SplineIntegral::precompute_QTBR_coeffs(std::vector<RateData::Atom>& Atoms) {
     std::cout<<"[ Q precalc ] Beginning Q_tbr computation..."<<std::endl;
     // Size Q_TBR appropriately
     Q_TBR.resize(Atoms.size());
@@ -297,6 +298,7 @@ double SplineIntegral::calc_Q_eii( const RateData::EIIdata& eii, size_t J, size_
 
 
 double SplineIntegral::calc_Q_eii( const RateData::EIIdata& eii, size_t J, size_t K) const {
+    using namespace std;
     // computes sum of all Q_eii integrals away from eii.init, integrated against basis functions f_J, f_K
     // J is the 'free' index
     // sqrt(2) sum_eta \int dep sqrt(ep) f(ep) dsigma/de (e | ep) - sqrt(e) sigma * f_J(e)
@@ -353,6 +355,7 @@ double SplineIntegral::calc_Q_eii( const RateData::EIIdata& eii, size_t J, size_
 // (overlap by at most BasisSet::BSPLINE_ORDER either way)
 // Returns a vector of pairs (Q-idx, nonzzero-idx)
 SplineIntegral::sparse_matrix SplineIntegral::calc_Q_tbr( const RateData::InverseEIIdata& tbr, size_t J) const {
+    using namespace std;
     // J is the 'free' index, K and L label the given indices of the free distribution
     //
     double J_min = this->supp_min(J);
@@ -441,6 +444,7 @@ SplineIntegral::sparse_matrix SplineIntegral::calc_Q_tbr( const RateData::Invers
 
 
 inline double SplineIntegral::Q_ee_F(double e, size_t K) const {
+    using namespace std;
     double K_min = this->supp_min(K);
     double K_max = this->supp_max(K);
 
@@ -491,7 +495,7 @@ inline double SplineIntegral::Q_ee_F(double e, size_t K) const {
 
 inline double SplineIntegral::Q_ee_G(double e, size_t K) const {   
     // Begin G integral
-    double max_K_0E = min(this->supp_max(K), e);
+    double max_K_0E = std::min(this->supp_max(K), e);
     double min_K_0E = this->supp_min(K);
 
     double Gint = 0;
@@ -534,8 +538,8 @@ SplineIntegral::pair_list SplineIntegral::calc_Q_ee(size_t J, size_t K) const {
     for (size_t L = 0; L < num_funcs; L++) {
         double total=0;
         // F component
-        double min_JL = max(J_min, this->supp_min(L));
-        double max_JL = min(J_max, this->supp_max(L));
+        double min_JL = std::max(J_min, this->supp_min(L));
+        double max_JL = std::min(J_max, this->supp_max(L));
 
         if (max_JL <= min_JL) continue;
 

@@ -37,9 +37,9 @@ void Distribution::set_elec_points(size_t n, double min_e, double max_e, GridSpa
     Distribution::size=n;
     Distribution::CoulombLog_cutoff = basis.i_from_e(grid_style.transition_e);
     Distribution::CoulombDens_min = grid_style.min_coulomb_density;
-    cout<<"[ Free ] Estimating lnLambda based on first ";
-    cout<<CoulombLog_cutoff<<" points, up to "<<grid_style.transition_e<<" Ha"<<endl;
-    cout<<"[ Free ] Neglecting electron-electron below density of n = "<<CoulombDens_min<<"au^-3"<<endl;
+    std::cout<<"[ Free ] Estimating lnLambda based on first ";
+    std::cout<<CoulombLog_cutoff<<" points, up to "<<grid_style.transition_e<<" Ha"<<"\n";
+    std::cout<<"[ Free ] Neglecting electron-electron below density of n = "<<CoulombDens_min<<"au^-3"<<"\n";
 }
 
 // Adds Q_eii to the parent Distribution
@@ -83,7 +83,7 @@ void Distribution::get_Q_ee(Eigen::VectorXd& v) const {
     if (isnan(CoulombLog) || CoulombLog > 11.5) CoulombLog = 11.5;
     // double LnLambdaD = 0.5*log(this->k_temperature()/4/Constant::Pi/this->density());
     // if (isnan(LnLambdaD)) LnLambdaD = 11;
-    // cerr<<"LnDebLen = "<<LnLambdaD<<endl;
+    // std::cerr<<"LnDebLen = "<<LnLambdaD<<"\n";
     // A guess. This should only happen when density is zero, so Debye length is infinity.
     // Guess the sample size is about 10^5 Bohr. This shouldn't ultimately matter much.
     for (size_t J=0; J<size; J++) {
@@ -206,7 +206,7 @@ std::string Distribution::output_energies_eV(size_t num_pts) {
     size_t pts_per_knot = num_pts / basis.gridlen();
     if (pts_per_knot == 0){
         pts_per_knot = 1;
-        cerr<<"[ warn ] Outputting a small number of points per knot."<<endl;
+        std::cerr<<"[ warn ] Outputting a small number of points per knot."<<"\n";
     }
     for (size_t i=0; i<basis.gridlen()-1; i++){
         double e = basis.grid(i);
@@ -226,7 +226,7 @@ std::string Distribution::output_densities(size_t num_pts) const {
     size_t pts_per_knot = num_pts / basis.gridlen();
     if (pts_per_knot == 0){
         pts_per_knot = 1;
-        cerr<<"[ warn ] Outputting a small number of points per knot."<<endl;
+        std::cerr<<"[ warn ] Outputting a small number of points per knot."<<"\n";
     }
     for (size_t i=0; i<basis.gridlen()-1; i++){
         double e = basis.grid(i);
@@ -377,7 +377,7 @@ double Distribution::integral(double (g)(double)) {
 }
 
 
-ostream& operator<<(ostream& os, const Distribution& dist) {
+std::ostream& operator<<(std::ostream& os, const Distribution& dist) {
     for (size_t i= 0; i < Distribution::size; i++) {
         os<<" "<<dist[i]/Constant::eV_per_Ha;
     }

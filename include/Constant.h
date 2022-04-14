@@ -19,10 +19,10 @@ This file is part of AC4DC.
 /* This header contains some Physical constants,
 functions for calculations of Wigner 3j, 6j symbols, and Clebsh-Gordan coefficients,
 and some data containers used througout the code. */
-#include <vector>
+#include <vector>>
 #include <string>
 #include <cassert>
-using namespace std;
+
 
 namespace Constant
 {
@@ -79,20 +79,20 @@ namespace CustomDataType
 	struct ffactor//form factor for Q_mesh values in FormFactor class
 	{
 		int index;
-		vector<double> val;
+		std::vector<double> val;
 	};
 
 	struct polarize
 	{
-		vector<int> reference;// Contains only occupancies of Orbitals, no Virtual included.
+		std::vector<int> reference;// Contains only occupancies of Orbitals, no Virtual included.
 		double refEnergy;// Energy of the reference configuration.
 		/* E1-selected excited configurations.
 		excited[][0] - orbital in reference from which to excite.
 		excited[][1] - orbital in reference to which to excite.
 		*/
-		vector<vector<int>> excited;// Includes both Orbitals and Virtual.
-		vector<double> extEnergy;
-		vector<double> Dipoles; // Reduced transition dipole matrix elements form 'reference' to 'excited'.
+		std::vector<std::vector<int>> excited;// Includes both Orbitals and Virtual.
+		std::vector<double> extEnergy;
+		std::vector<double> Dipoles; // Reduced transition dipole matrix elements form 'reference' to 'excited'.
 		int index = 0;
 	};
 }
@@ -105,10 +105,10 @@ namespace RateData {
 	struct EIIdata
 	{
 		int init; // initial state
-		vector<int> fin; // final states
-		vector<int> occ; // occupancy of state
-		vector<float> ionB; // ion binding energy
-		vector<float> kin; // u for atom in this state (see Kim and Rudd BEB for details)
+		std::vector<int> fin; // final states
+		std::vector<int> occ; // occupancy of state
+		std::vector<float> ionB; // ion binding energy
+		std::vector<float> kin; // u for atom in this state (see Kim and Rudd BEB for details)
 
 		void resize(size_t n)
 		{
@@ -141,7 +141,7 @@ namespace RateData {
 
 	// Reorganises a EIIData tree by final index rather than initial
     // Used for Q_TBR
-	vector<InverseEIIdata> inverse(const vector<EIIdata>& eiiVec);
+	std::vector<InverseEIIdata> inverse(const std::vector<EIIdata>& eiiVec);
 
 	struct Rate
 	{
@@ -153,21 +153,21 @@ namespace RateData {
 
 	struct Atom
 	{
-		vector<string> index_names = vector<string>(0);
+		std::vector<std::string> index_names = std::vector<std::string>(0);
 		std::string name = "";
 		double nAtoms = 1.;// atomic number density
 		// double R = 189.; // 100nm focal spot radius.
 		unsigned int num_conf = 1;
-		vector<RateData::Rate> Photo = vector<RateData::Rate>(0);
-		vector<RateData::Rate> Fluor = vector<RateData::Rate>(0);
-		vector<RateData::Rate> Auger = vector<RateData::Rate>(0);
-		vector<RateData::EIIdata> EIIparams = vector<RateData::EIIdata>(0);
+		std::vector<RateData::Rate> Photo = std::vector<RateData::Rate>(0);
+		std::vector<RateData::Rate> Fluor = std::vector<RateData::Rate>(0);
+		std::vector<RateData::Rate> Auger = std::vector<RateData::Rate>(0);
+		std::vector<RateData::EIIdata> EIIparams = std::vector<RateData::EIIdata>(0);
 	};
 
-	bool ReadRates(const string & input, vector<RateData::Rate> & PutHere);
-	bool ReadEIIParams(const string & input, vector<RateData::EIIdata> & PutHere);
-	void WriteRates(const string& fname, const vector<RateData::Rate>& rateVector);
-	void WriteEIIParams(const string& fname, const vector<RateData::EIIdata>& eiiVector);
+	bool ReadRates(const std::string & input, std::vector<RateData::Rate> & PutHere);
+	bool ReadEIIParams(const std::string & input, std::vector<RateData::EIIdata> & PutHere);
+	void WriteRates(const std::string& fname, const std::vector<RateData::Rate>& rateVector);
+	void WriteEIIParams(const std::string& fname, const std::vector<RateData::EIIdata>& eiiVector);
 }
 
 

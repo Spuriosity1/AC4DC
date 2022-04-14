@@ -1,7 +1,7 @@
 // Contains random commented-out snippets of code for future reference, should they be needed.
 
 /*
-int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, ofstream & runlog)
+int ComputeRateParam::SolveFrozen(std::vector<int> Max_occ, std::vector<int> Final_occ, std::ofstream & runlog)
 {
 	// Solves system of rate equations exactly.
 	// Final_occ defines the lowest possible occupancies for the initiall orbital.
@@ -9,16 +9,16 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 
 	if (!SetupIndex(Max_occ, Final_occ, runlog)) return 1;
 
-	cout << "Check if there are pre-calculated rates..." << endl;
-	string RateLocation = "./output/" + input.Name() + "/Rates/";
+	std::cout << "Check if there are pre-calculated rates..." << endl;
+	std::string RateLocation = "./output/" + input.Name() + "/Rates/";
 	if (!exists_test("./output/" + input.Name())) {
-		string dirstring = "output/" + input.Name();
+		std::string dirstring = "output/" + input.Name();
 		mkdir(dirstring.c_str(), ACCESSPERMS);
 		dirstring += "/Rates";
 		mkdir(dirstring.c_str(), ACCESSPERMS);
 	}
 	if (!exists_test("./output/" + input.Name() + "/Rates")) {
-		string dirstring = "output/" + input.Name() + "/Rates";
+		std::string dirstring = "output/" + input.Name() + "/Rates";
 		mkdir(dirstring.c_str(), ACCESSPERMS);
 	}
 
@@ -34,26 +34,26 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 	density.clear();
 	density.resize(dimension - 1);
 	for (auto& dens: density) dens.resize(lattice.size(), 0.);
-  vector<pair<double, int>> conf_RMS(0);
+  std::vector<pair<double, int>> conf_RMS(0);
 
 	if (existPht || existFlr || existAug || true)
 	{
-		cout << "No rates found. Calculating..." << endl;
-		cout << "Total number of configurations: " << dimension << endl;
+		std::cout << "No rates found. Calculating..." << endl;
+		std::cout << "Total number of configurations: " << dimension << endl;
 		Rate Tmp;
-		vector<RateData::Rate> LocalPhoto(0);
-		vector<RateData::Rate> LocalFluor(0);
-		vector<RateData::Rate> LocalAuger(0);
+		std::vector<RateData::Rate> LocalPhoto(0);
+		std::vector<RateData::Rate> LocalFluor(0);
+		std::vector<RateData::Rate> LocalAuger(0);
 
 		omp_set_num_threads(input.Num_Threads());
 		#pragma omp parallel default(none) \
-		shared(cout, runlog, existAug, existFlr, existPht) private(Tmp, Max_occ, LocalPhoto, LocalAuger, LocalFluor)
+		shared(std::cout, runlog, existAug, existFlr, existPht) private(Tmp, Max_occ, LocalPhoto, LocalAuger, LocalFluor)
 		{
 			#pragma omp for schedule(dynamic) nowait
 			for (int i = 0; i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
 			{
-				vector<RadialWF> Orbitals = orbitals;
-				cout << "configuration " << i << " thread " << omp_get_thread_num() << endl;
+				std::vector<RadialWF> Orbitals = orbitals;
+				std::cout << "configuration " << i << " thread " << omp_get_thread_num() << endl;
 				int N_elec = 0;
 				for (int j = 0; j < Orbitals.size(); j++)
 				{
@@ -70,7 +70,7 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 				Tmp.from = i;
 
 				if (existPht) {
-					vector<photo> PhotoIon = Transit.Photo_Ion(input.Omega()/Constant::eV_in_au, runlog);
+					std::vector<photo> PhotoIon = Transit.Photo_Ion(input.Omega()/Constant::eV_in_au, runlog);
 					for (int k = 0; k < PhotoIon.size(); k++)
 					{
 						if (PhotoIon[k].val <= 0) continue;
@@ -84,7 +84,7 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 				if (i != 0)
 				{
 					if (existFlr) {
-						vector<fluor> Fluor = Transit.Fluor();
+						std::vector<fluor> Fluor = Transit.Fluor();
 						for (int k = 0; k < Fluor.size(); k++)
 						{
 							if (Fluor[k].val <= 0) continue;
@@ -96,7 +96,7 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 					}
 
 					if (existAug) {
-						vector<auger> Auger = Transit.Auger(Max_occ, runlog);
+						std::vector<auger> Auger = Transit.Auger(Max_occ, runlog);
 						for (int k = 0; k < Auger.size(); k++)
 						{
 							if (Auger[k].val <= 0) continue;
@@ -124,19 +124,19 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 		GenerateRateKeys(Store.Auger);
 
 		if (existPht) {
-			string dummy = RateLocation + "Photo.txt";
+			std::string dummy = RateLocation + "Photo.txt";
 			FILE * fl = fopen(dummy.c_str(), "w");
 			for (auto& R : Store.Photo) fprintf(fl, "%1.8e %6ld %6ld %1.8e\n", R.val, R.from, R.to, R.energy);
 			fclose(fl);
 		}
 		if (existFlr) {
-			string dummy = RateLocation + "Fluor.txt";
+			std::string dummy = RateLocation + "Fluor.txt";
 			FILE * fl = fopen(dummy.c_str(), "w");
 			for (auto& R : Store.Fluor) fprintf(fl, "%1.8e %6ld %6ld %1.8e\n", R.val, R.from, R.to, R.energy);
 			fclose(fl);
 		}
 		if (existPht) {
-			string dummy = RateLocation + "Auger.txt";
+			std::string dummy = RateLocation + "Auger.txt";
 			FILE * fl = fopen(dummy.c_str(), "w");
 			for (auto& R : Store.Auger) fprintf(fl, "%1.8e %6ld %6ld %1.8e\n", R.val, R.from, R.to, R.energy);
 			fclose(fl);
@@ -144,8 +144,8 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 
 	}
 
-	string IndexTrslt = "./output/" + input.Name() + "/index.txt";
-	ofstream config_out(IndexTrslt);
+	std::string IndexTrslt = "./output/" + input.Name() + "/index.txt";
+	std::ofstream config_out(IndexTrslt);
 	for (int i = 0; i < Index.size(); i++) {
 		config_out << i << " | ";
 		for (int j = 0; j < Max_occ.size(); j++) {

@@ -15,7 +15,7 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-#include <vector>
+#include <vector>>
 #include <iostream>
 #ifndef GRIDSPACING_CXX_H
 #define GRIDSPACING_CXX_H

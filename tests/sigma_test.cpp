@@ -7,7 +7,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
     if(argc < 4) {
-        cerr<<"Usage: "<<argv[0]<<" T B N "<<endl;
+        std::cerr<<"Usage: "<<argv[0]<<" T B N "<<"\n";
         return 1;
     }
     double T = atof(argv[1]);
@@ -18,7 +18,7 @@ int main(int argc, char const *argv[])
 
     double tot_sigma = Dipole::sigmaBEB(T, B, U, occ);
 
-    cout<<"Total cross-section = "<<tot_sigma<<endl;
+    std::cout<<"Total cross-section = "<<tot_sigma<<"\n";
      
     double max_e = T-B;
     // double min_e = 0;
@@ -31,12 +31,12 @@ int main(int argc, char const *argv[])
         tmp += Dipole::DsigmaBEB(T, W, B, U, occ);
     }
     tmp *= de;
-    cout<<"Integrated differential cross-section over [0, T-B] = "<<tmp<<endl;
+    std::cout<<"Integrated differential cross-section over [0, T-B] = "<<tmp<<"\n";
     double err = 2*tot_sigma - tmp;
-    cout<<"2sigma - ∫dsigma = "<<err<<endl;
-    cout<<"Discrepancy: "<<100*err/tot_sigma<<"%"<<endl;
-    cerr<<"Testing symmetry:"<<endl;
-    cerr<<"W, sigma(W), sigma(T-B-W)"<<endl;
+    std::cout<<"2sigma - ∫dsigma = "<<err<<"\n";
+    std::cout<<"Discrepancy: "<<100*err/tot_sigma<<"%"<<"\n";
+    std::cerr<<"Testing symmetry:"<<"\n";
+    std::cerr<<"W, sigma(W), sigma(T-B-W)"<<"\n";
     int num_points = 30;
     de = T/num_points/2;
     double W1 = 0;
@@ -44,7 +44,7 @@ int main(int argc, char const *argv[])
     for(size_t i=0; i<num_points; i++) {
         W1 += de;
         W2 -= de;
-        cerr<<W1 <<" "<< Dipole::DsigmaBEB(T, W1, B, U, occ)<<" "<<Dipole::DsigmaBEB(T, W2, B, U, occ)<<endl;
+        std::cerr<<W1 <<" "<< Dipole::DsigmaBEB(T, W1, B, U, occ)<<" "<<Dipole::DsigmaBEB(T, W2, B, U, occ)<<"\n";
     }
     
     

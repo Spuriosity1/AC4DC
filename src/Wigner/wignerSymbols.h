@@ -30,7 +30,7 @@
 #include <cmath>
 #include <limits>
 #include <algorithm>
-#include <vector>
+#include <vector>>
 #include <iostream>
 
 namespace WignerSymbols {

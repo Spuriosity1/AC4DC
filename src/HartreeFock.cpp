@@ -22,7 +22,7 @@ using namespace std;
 int SetBoundaryValues(Grid*, RadialWF*, Potential*);
 int SetBoundaryValuesApprox(Grid*, RadialWF*, Potential*);
 
-HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &Potential, Input & Inp, ofstream & log) : lattice(&Lattice)
+HartreeFock::HartreeFock(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &Potential, Input & Inp, std::ofstream & log) : lattice(&Lattice)
 {
 //==========================================================================================================
 // Estimate starting energies using Slater rules.
@@ -63,7 +63,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 	max_HF_iterations = Inp.max_HF_iters();
 
 	double Norm = 0.;
-	vector<double> E_rel_change(Orbitals.size(), 1);
+	std::vector<double> E_rel_change(Orbitals.size(), 1);
 	double duration;
 	int infinity = 0;
 
@@ -95,8 +95,8 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 
 //==========================================================================================================
 	// Solve a single shell problem. Single shell Hartree-Fock/Hartree-fock-Slater.
-	vector<RadialWF> Orbitals_old = Orbitals;
-	vector<double> V_old = Potential.V;
+	std::vector<RadialWF> Orbitals_old = Orbitals;
+	std::vector<double> V_old = Potential.V;
 	double V_tmp = 0;
 
 	if (check_orb == 1 && Orbitals[single].occupancy() > 1 && Inp.Hamiltonian() == 0) {
@@ -213,7 +213,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 			if ( !(E_max_error > LDA_tolerance || m < 2) && !Final_Check) {
 				Final_Check = true;
 				E_max_error = 2*LDA_tolerance;
-				for (vector<double>::iterator it = E_rel_change.begin(); it != E_rel_change.end(); ++it) *it = 1;
+				for (std::vector<double>::iterator it = E_rel_change.begin(); it != E_rel_change.end(); ++it) *it = 1;
 			}
 			else Final_Check = false;
 
@@ -223,8 +223,8 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 		if (Inp.Hamiltonian() == 0) {
 		// Hartree-Fock method. Add Exhange potential.
 
-			vector<vector<double>> Exchange_old(Orbitals.size(), vector<double>(Lattice.size(), 0));
-			vector<vector<double>> Direct_old(Orbitals.size(), vector<double>(Lattice.size(), 0));
+			std::vector<std::vector<double>> Exchange_old(Orbitals.size(), std::vector<double>(Lattice.size(), 0));
+			std::vector<std::vector<double>> Direct_old(Orbitals.size(), std::vector<double>(Lattice.size(), 0));
 			Orbitals_old = Orbitals;
 
 			double correction_scaling = 1, change_cs = 1;
@@ -336,13 +336,13 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 	}
 }
 
-double HartreeFock::OrthogonalityTest(vector<RadialWF> &Orbitals)
+double HartreeFock::OrthogonalityTest(std::vector<RadialWF> &Orbitals)
 {
 	Adams I(*lattice, 10);
 
 	double Result = 0;
 	double ort = 0;
-	vector<double> density(lattice->size(), 0);
+	std::vector<double> density(lattice->size(), 0);
 
 	for (int i = 0; i < Orbitals.size(); i++)
 	{
@@ -423,8 +423,8 @@ int SetBoundaryValuesApprox(Grid * Lattice, RadialWF * Psi, Potential* U)
 
 	double sigma, lambda;
 	int order = 3;
-	vector<double> a(order, 0);
-	vector<double> b(order, 0);
+	std::vector<double> a(order, 0);
+	std::vector<double> b(order, 0);
 	double S = 0;
 
 	if (Psi->Energy < 0.)
@@ -479,7 +479,7 @@ int SetBoundaryValuesApprox(Grid * Lattice, RadialWF * Psi, Potential* U)
 	return infinity;
 }
 
-int HartreeFock::Master(Grid* Lattice, RadialWF* Psi, Potential* U, double Epsilon, ofstream & log)
+int HartreeFock::Master(Grid* Lattice, RadialWF* Psi, Potential* U, double Epsilon, std::ofstream & log)
 {
 	// This routine does the same as "Master" by W. Johnson.
 	// 1) Takes Psi.Energy_0 and integrates the HF equations inwards and outwards
@@ -624,8 +624,8 @@ GreensMethod::GreensMethod(Grid* Lattice, RadialWF* Psi, Potential* U) : Adams(*
 
 	RadialWF Psi_O = *Psi;//regular at the origin
 	RadialWF Psi_Inf = *Psi;//regular at infinity
-	vector<double> Green_O;
-	vector<double> Green_Inf;
+	std::vector<double> Green_O;
+	std::vector<double> Green_Inf;
 
 	if (Psi->F[0] < 0) { track_sign = -1; }
 	else { track_sign = 1; }
@@ -772,7 +772,7 @@ GreensMethod::GreensMethod(Grid* Lattice, RadialWF* Psi, Potential* U) : Adams(*
 	if (Psi->F[0] * track_sign < 0) { Psi->scale(-1); }
 }
 
-vector<double> GreensMethod::GreenOrigin(RadialWF * Psi_O)
+std::vector<double> GreensMethod::GreenOrigin(RadialWF * Psi_O)
 {
 	//this function returns the following integral
 	//int_(0)^(Lattice.R(end_pt)) Psi.F*Y*Lattice.dR,
@@ -806,7 +806,7 @@ vector<double> GreensMethod::GreenOrigin(RadialWF * Psi_O)
 	return Result;
 }
 
-vector<double> GreensMethod::GreenInfinity(RadialWF * Psi_Inf)
+std::vector<double> GreensMethod::GreenInfinity(RadialWF * Psi_Inf)
 {
 	//this function returns the following integral
 	//int_(Lattice.R(start_pt))^(Lattice.R(end_pt)) Psi.F*Y*Lattice.dR,
@@ -839,7 +839,7 @@ vector<double> GreensMethod::GreenInfinity(RadialWF * Psi_Inf)
 	return Result;
 }
 
-double HartreeFock::Conf_En(vector<RadialWF> &Orbitals, Potential &U)
+double HartreeFock::Conf_En(std::vector<RadialWF> &Orbitals, Potential &U)
 {
 	// Calculate total energy of electronic configuration.
 	// Average over configurations is assumed.
@@ -869,7 +869,7 @@ double HartreeFock::Conf_En(vector<RadialWF> &Orbitals, Potential &U)
 	return Result;
 }
 
-double HartreeFock::Conf_En(vector<RadialWF> &Orbitals, vector<RadialWF> &Virtual, Potential &U)
+double HartreeFock::Conf_En(std::vector<RadialWF> &Orbitals, std::vector<RadialWF> &Virtual, Potential &U)
 {
 	// Calculate total energy of electronic configuration.
 	// Average over configurations is assumed.
@@ -878,7 +878,7 @@ double HartreeFock::Conf_En(vector<RadialWF> &Orbitals, vector<RadialWF> &Virtua
 	// Test for hydrogenic syste - only one electron.
 	int OneElec = 0;
 
-	vector<RadialWF*> Occupied(0);
+	std::vector<RadialWF*> Occupied(0);
 	for (int i = 0; i < Orbitals.size(); i++) {
 		if (Orbitals[i].occupancy() != 0) {
 			Occupied.push_back(&Orbitals[i]);
@@ -923,7 +923,7 @@ double HartreeFock::Conf_En(vector<RadialWF> &Orbitals, vector<RadialWF> &Virtua
 void HartreeFock::MixOldNew(RadialWF * New_Orbital, RadialWF * Old_Orbital)
 {
 	// Stabilize convergence of the HF routine. Mix both orbitals.
-	vector<double> density(lattice->size(), 0);
+	std::vector<double> density(lattice->size(), 0);
 	Adams I(*lattice, 5);
 	double Norm = 0;
 	int Infty = max(New_Orbital->pract_infinity(), Old_Orbital->pract_infinity());

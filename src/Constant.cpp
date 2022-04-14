@@ -14,7 +14,7 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#include <vector>
+#include <vector>>
 #include <algorithm>
 #include "Constant.h"
 #include <cmath>
@@ -212,9 +212,9 @@ double LogFactorialFraction(double Num, double Denom)
 }
 
 namespace RateData{
-	vector<InverseEIIdata> inverse(const vector<EIIdata>& eiiVec)
+	std::vector<InverseEIIdata> inverse(const std::vector<EIIdata>& eiiVec)
 	{
-		vector<InverseEIIdata> tbrVec(eiiVec.size()+1);
+		std::vector<InverseEIIdata> tbrVec(eiiVec.size()+1);
 		for (size_t i = 0; i < tbrVec.size(); i++) {
 			tbrVec[i].init = i;
 		}
@@ -240,19 +240,19 @@ namespace RateData{
 	}
 
 	template<typename T>
-	void read_vector(const string& s, vector<T>&v) {
-		auto iss = istringstream(s);
+	void read_vector(const std::string& s, std::vector<T>&v) {
+		auto iss = std::istringstream(s);
 
-		string str;
+		std::string str;
 		T tmp;
 		while (iss >> str) {
-			auto ss = stringstream(str);
+			auto ss = std::stringstream(str);
 			ss >> tmp;
 			v.push_back(tmp);
 		}
 	}
 
-	string find_bracket_contents(string &src, char left, char right) {
+	std::string find_bracket_contents(std::string &src, char left, char right) {
 		size_t first_idx = src.find(left);
 		size_t last_idx = src.rfind(right);
 		return src.substr(first_idx+1, last_idx-first_idx-1);
@@ -260,7 +260,7 @@ namespace RateData{
 
 	// Reads a ratefile input and stores the data in PutHere
 	// Returns true on successful opening
-	bool ReadRates(const string & input, vector<Rate>& PutHere) {
+	bool ReadRates(const std::string & input, std::vector<Rate>& PutHere) {
 		PutHere.clear();
 
 		Rate Tmp;
@@ -272,12 +272,12 @@ namespace RateData{
 
 		while (!infile.eof())
 		{
-			string line;
+			std::string line;
 			getline(infile, line);
 			if (line[0] == '#') continue; // skip comments
 			if (line[0] == '\0') continue; // skip null bytes
 
-			stringstream stream(line);
+			std::stringstream stream(line);
 			stream >> Tmp.val >> Tmp.from >> Tmp.to >> Tmp.energy;
 
 			PutHere.push_back(Tmp);
@@ -291,7 +291,7 @@ namespace RateData{
 	// reads a "JSON-style" file and stores the data in an EIIdata structure.
 	// Returns true on success
 	// Possibly the worst parser ever written.
-	bool ReadEIIParams(const string & input, vector<EIIdata> & PutHere) {
+	bool ReadEIIParams(const std::string & input, std::vector<EIIdata> & PutHere) {
 		PutHere.clear();
 		std::ifstream infile;
 		infile.open(input);
@@ -299,10 +299,10 @@ namespace RateData{
 			return false;
 		}
 
-		string line;
+		std::string line;
 
 		EIIdata tmp;
-		string tmpstr;
+		std::string tmpstr;
 		bool in_top_brace = false;
 		bool in_eii_record = false;
 
@@ -312,7 +312,7 @@ namespace RateData{
 
 			getline(infile, line);
 			#ifdef DEBUG_VERBOSE
-			cout<<"[ DEBUG ] [ ReadEII ] "<<line<<endl;
+			std::cout<<"[ DEBUG ] [ ReadEII ] "<<line<<"\n";
 			#endif
 			if (line[0] == '#') continue; // skip comments
 			if (in_top_brace) {
@@ -322,7 +322,7 @@ namespace RateData{
 						PutHere.push_back(tmp);
 						continue;
 					}
-					string pref = "  \"fin\":";
+					std::string pref = "  \"fin\":";
 					if(line.compare(0, pref.size(), pref)==0)
 					{
 						read_vector<int>(find_bracket_contents(line, '[', ']'), tmp.fin);
@@ -347,7 +347,7 @@ namespace RateData{
 						continue;
 					}
 				} else {
-					string prefix="\"configuration ";
+					std::string prefix="\"configuration ";
 					if(line.compare(0, prefix.size(), prefix) == 0) {
 						// New entry in the array
 						in_eii_record = true;
@@ -355,7 +355,7 @@ namespace RateData{
 						int j = stoi(tmpstr.substr(0,tmpstr.find('"')));
 						tmp.init = j;
 						tmp.resize(0);
-						if(i != j) cerr<<"[ ReadEII ] Unexpected index: got "<<j<<" expected "<<i<<endl;
+						if(i != j) std::cerr<<"[ ReadEII ] Unexpected index: got "<<j<<" expected "<<i<<"\n";
 						i++;
 						continue;
 					}
@@ -377,14 +377,14 @@ namespace RateData{
 
 	};
 
-	void WriteRates(const string& fname, const vector<Rate>& rates) {
+	void WriteRates(const std::string& fname, const std::vector<Rate>& rates) {
 		FILE * fl = safe_fopen(fname.c_str(), "w");
 		fprintf(fl, "# val from to energy(Ha)\n");
 		for (auto& R : rates) fprintf(fl, "%1.8e %6ld %6ld %1.8e\n", R.val, R.from, R.to, R.energy);
 		fclose(fl);
 	}
 
-	void WriteEIIParams(const string& fname, const vector<EIIdata>& rates) {
+	void WriteEIIParams(const std::string& fname, const std::vector<EIIdata>& rates) {
 		FILE * fl = safe_fopen(fname.c_str(), "w");
 		fprintf(fl, "{\n");
 		bool first_entry = true;

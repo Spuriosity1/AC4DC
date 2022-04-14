@@ -144,7 +144,7 @@ Grid::Grid(int num_grid_pts, double r_min, double r_max, std::string mode)
 	}
 }
 
-Grid::Grid(vector<double> & X, vector<double> & dX) : r(X), dr(dX)
+Grid::Grid(std::vector<double> & X, std::vector<double> & dX) : r(X), dr(dX)
 {
 	if (r.size() != dr.size()) NumPts = -1;
 	else NumPts = r.size();

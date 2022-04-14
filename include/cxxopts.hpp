@@ -36,7 +36,7 @@ THE SOFTWARE.
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>
+#include <vector>>
 
 #ifdef __cpp_lib_optional
 #include <optional>
@@ -589,7 +589,7 @@ namespace cxxopts
     }
 
     template <typename T>
-    void stringstream_parser(const std::string& text, T& value)
+    void std::stringstream_parser(const std::string& text, T& value)
     {
       std::stringstream in(text);
       in >> value;
@@ -684,13 +684,13 @@ namespace cxxopts
       value = text;
     }
 
-    // The fallback parser. It uses the stringstream parser to parse all types
+    // The fallback parser. It uses the std::stringstream parser to parse all types
     // that have not been overloaded explicitly.  It has to be placed in the
     // source code before all other more specialized templates.
     template <typename T>
     void
     parse_value(const std::string& text, T& value) {
-      stringstream_parser(text, value);
+      std::stringstream_parser(text, value);
     }
 
     template <typename T>

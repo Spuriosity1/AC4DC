@@ -29,17 +29,17 @@ class MolInp
 {
 	// Molecular input for coupled atom/electron plasma calcualtions.
 public:
-	MolInp(const char* filename, ofstream & log);
+	MolInp(const char* filename, std::ofstream & log);
 	~MolInp() {}
 
 	
-	vector<Input> Atomic; // Vector of atomic input objects
-	vector<RateData::Atom> Store; // Stores all atomic parameters: EII, photoionisation, fluorescence, 
+	std::vector<Input> Atomic; // Vector of atomic input objects
+	std::vector<RateData::Atom> Store; // Stores all atomic parameters: EII, photoionisation, fluorescence, 
 
-	vector<Potential> Pots;
-	vector<vector<RadialWF>> Orbits;
-	vector<Grid> Latts;
-	vector<vector<vector<int>>> Index;
+	std::vector<Potential> Pots;
+	std::vector<std::vector<RadialWF>> Orbits;
+	std::vector<Grid> Latts;
+	std::vector<std::vector<std::vector<int>>> Index;
 
 	double Omega() {return omega;}
 	double Width() {return width;}
@@ -60,12 +60,12 @@ public:
 	size_t Num_Elec_Points() {return num_elec_points;}
 
 
-	string name = "";
+	std::string name = "";
 
 	// Scans for atomic process rates in the folder output/[atom name]/Xsections and recalculates if absent.
 	// 'Recalculate' flag skips scanning and forces recomputation.
 	// The result is available as Store.
-    void calc_rates(ofstream &_log, bool recalc=true);
+    void calc_rates(std::ofstream &_log, bool recalc=true);
 
 	GridSpacing elec_grid_type;
 	LossGeometry loss_geometry;

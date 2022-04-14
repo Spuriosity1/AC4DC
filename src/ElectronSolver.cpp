@@ -94,7 +94,7 @@ void ElectronSolver::solve() {
     }
     
     
-    cout<<"[ Rate Solver ] Using timestep "<<this->dt*Constant::fs_per_au<<" fs"<<std::endl;
+    std::cout<<"[ Rate Solver ] Using timestep "<<this->dt*Constant::fs_per_au<<" fs"<<std::endl;
     
     double time = this->t[0];
     int retries = 1;
@@ -123,13 +123,13 @@ void ElectronSolver::solve() {
     
     
 
-    auto end = chrono::system_clock::now();
-    chrono::duration<double> elapsed_seconds = end-start;
+    auto end = std::chrono::system_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
     time_t end_time = std::chrono::system_clock::to_time_t(end);
 
-    cout << "[ Solver ] finished computation at " << ctime(&end_time) << endl;
+    std::cout << "[ Solver ] finished computation at " << ctime(&end_time) << std::endl;
     long secs = elapsed_seconds.count();
-    cout<<"[ Solver ] ODE iteration took "<< secs/60 <<"m "<< secs%60 << "s" << endl;
+    std::cout<<"[ Solver ] ODE iteration took "<< secs/60 <<"m "<< secs%60 << "s" << std::endl;
 
 }
 
@@ -142,7 +142,7 @@ void ElectronSolver::precompute_gamma_coeffs() {
     for (size_t a = 0; a < input_params.Store.size(); a++) {
         std::cout<<"\n[ Gamma precalc ] Atom "<<a+1<<"/"<<input_params.Store.size()<<std::endl;
         auto eiiVec = input_params.Store[a].EIIparams;
-        vector<RateData::InverseEIIdata> tbrVec = RateData::inverse(eiiVec);
+        std::vector<RateData::InverseEIIdata> tbrVec = RateData::inverse(eiiVec);
         size_t counter=1;
         #pragma omp parallel default(none) shared(a, N, counter, tbrVec, eiiVec, RATE_EII, RATE_TBR, std::cout)
 		{
@@ -284,8 +284,8 @@ void ElectronSolver::sys(const state_type& s, state_type& sdot, const double t) 
     sdot.F.addLoss(s.F, input_params.loss_geometry, s.bound_charge);
 
     if (isnan(s.norm()) || isnan(sdot.norm())) {
-        cerr<<"NaN encountered in ODE iteration."<<endl;
-        cerr<< "t = "<<t*Constant::fs_per_au<<"fs"<<endl;
+        std::cerr<<"NaN encountered in ODE iteration."<<"\n";
+        std::cerr<< "t = "<<t*Constant::fs_per_au<<"fs"<<"\n";
         good_state = false;
         timestep_reached = t*Constant::fs_per_au;
     }
@@ -316,7 +316,7 @@ void ElectronSolver::sys2(const state_type& s, state_type& sdot, const double t)
 
 // IO functions
 void ElectronSolver::save(const std::string& _dir) {
-    string dir = _dir; // make a copy of the const value
+    std::string dir = _dir; // make a copy of the const value
     dir = (dir.back() == '/') ? dir : dir + "/";
 
     saveFree(dir+"freeDist.csv");
@@ -336,35 +336,35 @@ void ElectronSolver::save(const std::string& _dir) {
 
 void ElectronSolver::saveFree(const std::string& fname) {
     // Saves a table of free-electron dynamics to file fname
-    ofstream f;
-    cout << "[ Free ] Saving to file "<<fname<<"..."<<endl;
+    std::ofstream f;
+    std::cout << "[ Free ] Saving to file "<<fname<<"..."<<"\n";
     f.open(fname);
-    f << "# Free electron dynamics"<<endl;
-    f << "# Time (fs) | Density @ energy (eV):" <<endl;
-    f << "#           | "<<Distribution::output_energies_eV(this->input_params.Out_F_size())<<endl;
+    f << "# Free electron dynamics"<<"\n";
+    f << "# Time (fs) | Density @ energy (eV):" <<"\n";
+    f << "#           | "<<Distribution::output_energies_eV(this->input_params.Out_F_size())<<"\n";
 
     assert(y.size() == t.size());
     size_t num_t_points = input_params.Out_T_size();
     if ( num_t_points >  t.size() ) num_t_points = t.size();
     size_t t_idx_step = t.size() / num_t_points;
     for (size_t i=0; i<num_t_points; i++) {
-        f<<t[i*t_idx_step]*Constant::fs_per_au<<" "<<y[i*t_idx_step].F.output_densities(this->input_params.Out_F_size())<<endl;
+        f<<t[i*t_idx_step]*Constant::fs_per_au<<" "<<y[i*t_idx_step].F.output_densities(this->input_params.Out_F_size())<<"\n";
     }
     f.close();
 }
 
 void ElectronSolver::saveFreeRaw(const std::string& fname) {
-    ofstream f;
-    cout << "[ Free ] Saving to file "<<fname<<"..."<<endl;
+    std::ofstream f;
+    std::cout << "[ Free ] Saving to file "<<fname<<"..."<<"\n";
     f.open(fname);
-    f << "# Free electron dynamics"<<endl;
-    f << "# Energy Knot: "<< Distribution::output_knots_eV() << endl;
-    f << "# Time (fs) | Expansion Coeffs"  << endl;
+    f << "# Free electron dynamics"<<"\n";
+    f << "# Energy Knot: "<< Distribution::output_knots_eV() << std::endl;
+    f << "# Time (fs) | Expansion Coeffs"  << std::endl;
 
     assert(y.size() == t.size());
     
     for (size_t i=0; i<t.size(); i++) {
-        f<<t[i]*Constant::fs_per_au<<" "<<y[i].F<<endl;
+        f<<t[i]*Constant::fs_per_au<<" "<<y[i].F<<"\n";
     }
     f.close();
 }
@@ -374,18 +374,18 @@ void ElectronSolver::saveBound(const std::string& dir) {
     assert(y.size() == t.size());
     // Iterate over atom types
     for (size_t a=0; a<input_params.Store.size(); a++) {
-        ofstream f;
-        string fname = dir+"dist_"+input_params.Store[a].name+".csv";
-        cout << "[ Atom ] Saving to file "<<fname<<"..."<<endl;
+        std::ofstream f;
+        std::string fname = dir+"dist_"+input_params.Store[a].name+".csv";
+        std::cout << "[ Atom ] Saving to file "<<fname<<"..."<<"\n";
         f.open(fname);
-        f << "# Ionic electron dynamics"<<endl;
-        f << "# Time (fs) | State occupancy (Probability times number of atoms)" <<endl;
+        f << "# Ionic electron dynamics"<<"\n";
+        f << "# Time (fs) | State occupancy (Probability times number of atoms)" <<"\n";
         f << "#           | ";
         // Index, Max_occ inherited from MolInp
         for (auto& cfgname : input_params.Store[a].index_names) {
             f << cfgname << " ";
         }
-        f<<endl;
+        f<<"\n";
         // Iterate over time.
         size_t num_t_points = input_params.Out_T_size();
         if ( num_t_points >  t.size() ) num_t_points = t.size();
@@ -394,7 +394,7 @@ void ElectronSolver::saveBound(const std::string& dir) {
             // Make sure all "natom-dimensioned" objects are the size expected
             assert(input_params.Store.size() == y[i].atomP.size());
             
-            f<<t[i*t_idx_step]*Constant::fs_per_au << ' ' << y[i*t_idx_step].atomP[a]<<endl;
+            f<<t[i*t_idx_step]*Constant::fs_per_au << ' ' << y[i*t_idx_step].atomP[a]<<"\n";
         }
         f.close();
     }

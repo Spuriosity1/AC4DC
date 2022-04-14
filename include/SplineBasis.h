@@ -18,7 +18,7 @@ This file is part of AC4DC.
 #ifndef SPLINEBASIS_CXX_H
 #define SPLINEBASIS_CXX_H
 
-#include <vector>
+#include <vector>>
 #include <eigen3/Eigen/SparseLU>
 // #include <eigen3/Eigen/LU>
 #include <iostream>

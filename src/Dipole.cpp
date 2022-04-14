@@ -98,7 +98,7 @@ double Dipole::DsigmaBEB(double T, double W, double B, double u, int occ)
 
 
 /*
-void Plasma::Get_Ni(Grid & Lattice, vector<RadialWF> & Orbitals, vector<RadialWF> &Virtuals)
+void Plasma::Get_Ni(Grid & Lattice, std::vector<RadialWF> & Orbitals, std::vector<RadialWF> &Virtuals)
 {
 	// NOTE: for accurate calculation of N[i] parameter for BED model
 	//       for orbital "i" there has to be virtual orbitals of at least
@@ -114,11 +114,11 @@ void Plasma::Get_Ni(Grid & Lattice, vector<RadialWF> & Orbitals, vector<RadialWF
 	// If so, add the weighted (fractional occupancy) oscillator stregths
 	// to N_i.
 	// Use a tuple with (double, int, int) structure.
-	vector<fluor> VirtOscStrg;
+	std::vector<fluor> VirtOscStrg;
 	fluor Osc_tmp;
 	double ME = 0;
 	int infinity = 0;
-	vector<double> density(Lattice.size(), 0.);
+	std::vector<double> density(Lattice.size(), 0.);
 
 	Adams AI(Lattice, 5);
 
@@ -169,7 +169,7 @@ void Plasma::Get_Ni(Grid & Lattice, vector<RadialWF> & Orbitals, vector<RadialWF
 	// Now we have a set of bound-virtual bound Oscillator Strengths.
 	// Work out N_i using sum rules and hydrogenic-style asymptotic for
 	// bound-bound Oscillator Strength sum beyond the calculated values.
-	vector<fluor*> OscStrg_i;
+	std::vector<fluor*> OscStrg_i;
 	int last_virt_ind = 0, last_Osc_ind = 0;
 	int orb_ind = 0, virt_ind = 0;
 	double BoundOscStrg = 0;
@@ -211,7 +211,7 @@ void Plasma::Get_Ni(Grid & Lattice, vector<RadialWF> & Orbitals, vector<RadialWF
 }
 
 
-void Plasma::Get_Qi(Grid & Lattice, vector<RadialWF> & Orbitals, vector<RadialWF> &Virtuals)
+void Plasma::Get_Qi(Grid & Lattice, std::vector<RadialWF> & Orbitals, std::vector<RadialWF> &Virtuals)
 {
 	// NOTE: for accurate calculation of Q[i] parameter for BEB model
 	//       for orbital "i" there has to be virtual orbitals of at least
@@ -234,16 +234,16 @@ void Plasma::Get_Qi(Grid & Lattice, vector<RadialWF> & Orbitals, vector<RadialWF
 	// Unless there is a hole, than account for that oscillator.
 	Q.clear();
 	Q.resize(Orbitals.size(), 0.);
-	vector<double> T1(Orbitals.size(), 0.);
-	vector<double> T2(Orbitals.size(), 0.);
-	vector<double> T3(Orbitals.size(), 0.);
-	vector<fluor> CoreCoreDipl;
-	vector<fluor> CoreVirtDipl;
+	std::vector<double> T1(Orbitals.size(), 0.);
+	std::vector<double> T2(Orbitals.size(), 0.);
+	std::vector<double> T3(Orbitals.size(), 0.);
+	std::vector<fluor> CoreCoreDipl;
+	std::vector<fluor> CoreVirtDipl;
 
 	fluor Tmp;
 	double ME = 0;
 	int infinity = 0;
-	vector<double> density(Lattice.size(), 0.);
+	std::vector<double> density(Lattice.size(), 0.);
 	Adams AI(Lattice, 5);
 	// T3 terms.
 	for (int i = 0; i < Orbitals.size(); i++) {
@@ -279,7 +279,7 @@ void Plasma::Get_Qi(Grid & Lattice, vector<RadialWF> & Orbitals, vector<RadialWF
 	}
 
 	// Calculate oscillator strength for core-virtual bound states and get the last virtual state for each orbital.
-	vector<int> last_virt;// [j1, j2, ...] - maximum "N" quantum number of give L = virtuals[j].L().
+	std::vector<int> last_virt;// [j1, j2, ...] - maximum "N" quantum number of give L = virtuals[j].L().
 	int N_max = 0;
 	bool check = false;
 	for (int i = 0; i < Virtuals.size(); i++) {
@@ -367,7 +367,7 @@ void Plasma::Get_Qi(Grid & Lattice, vector<RadialWF> & Orbitals, vector<RadialWF
 */
 
 /*
-void Plasma::setup_EII(vector<RadialWF> &Virtual, double k_min, double k_max)
+void Plasma::setup_EII(std::vector<RadialWF> &Virtual, double k_min, double k_max)
 {
 
 	// Calculate oscillatory strengths dF_dW in a given range of p_e.

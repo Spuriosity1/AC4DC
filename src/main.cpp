@@ -39,7 +39,7 @@ using namespace std;
 // Rewriting with boost::filesystem is a good idea if this is required.
 
 void print_banner(const char* fname){
-    ifstream ifs(fname, ifstream::in);
+    std::ifstream ifs(fname, ifstream::in);
 
     char c = ifs.get();
     while (ifs.good()) {
@@ -52,14 +52,14 @@ void print_banner(const char* fname){
 void try_mkdir(const std::string& fname) {
     if (mkdir(fname.c_str(), ACCESSPERMS) == -1) {
         if (errno != EEXIST)
-            cerr<<"mkdir error attempting to create "<< fname << ":" << errno;
+            std::cerr<<"mkdir error attempting to create "<< fname << ":" << errno;
     }
 }
 
-int get_file_names(const char* infile_, string &tag, string &logfile, string&outdir) {
+int get_file_names(const char* infile_, std::string &tag, std::string &logfile, std::string&outdir) {
     // Takes infile of the form "DIR/Lysozyme.mol"
     // Stores "Lysozyme" in tag, "output/log/run_Lysozyme" in logfile
-    string infile = string(infile_);
+    std::string infile = string(infile_);
     size_t tagstart = infile.rfind('/');
     size_t tagend = infile.rfind('.');
     tagstart = (tagstart==string::npos) ? 0 : tagstart + 1;// Exclude leading slash
@@ -73,9 +73,9 @@ int get_file_names(const char* infile_, string &tag, string &logfile, string&out
     // check correct format
     outdir = "output/__Molecular/"+tag+"/";
     try_mkdir(outdir);
-    string extension = infile.substr(tagend);
+    std::string extension = infile.substr(tagend);
     if (extension != ".mol") {
-        cerr<<"This file is for coupled calculations. Please provide a .mol file similar to Lysozyme.mol"<<endl;
+        std::cerr<<"This file is for coupled calculations. Please provide a .mol file similar to Lysozyme.mol"<<"\n";
         return 1;
     }
     return 0;
@@ -84,7 +84,7 @@ int get_file_names(const char* infile_, string &tag, string &logfile, string&out
 struct CmdParser{
     CmdParser(int argc, const char *argv[]) {
         if (argc < 2) {
-            cout << "Usage: solver path/to/molecular/in.mol [-rh]";
+            std::cout << "Usage: solver path/to/molecular/in.mol [-rh]";
             valid_input = false;
         }
         for (int a=2; a<argc; a++) {
@@ -96,26 +96,26 @@ struct CmdParser{
                 switch (argv[a][i]) {
                     case 's':
                         // recalculate
-                        cout<<"\033[1;35mWarning:\033[0m Searching output folder for precalculated rates."<<endl;
-                        cout<<"If these were calculated for a different X-ray energy, the results will be wrong!"<<endl;
+                        std::cout<<"\033[1;35mWarning:\033[0m Searching output folder for precalculated rates."<<"\n";
+                        std::cout<<"If these were calculated for a different X-ray energy, the results will be wrong!"<<"\n";
                         recalc = false;
                         break;
                     case 'x':
                         // X - sections only
-                        cout<<"\033[1;31mSolving for cross-sections only.\033[0m"<<endl;
+                        std::cout<<"\033[1;31mSolving for cross-sections only.\033[0m"<<"\n";
                         solve_rate_eq = false;
                         break;
                     case 'h':
                         // Usage help.
-                        cout<<"This is physics code, were you really expecting documentation?"<<endl;
-                        cout<<"  -s Look for stored precalculated rate coefficients"<<endl;
-                        cout<<"  -x Skip rate-equaton solving"<<endl;
+                        std::cout<<"This is physics code, were you really expecting documentation?"<<"\n";
+                        std::cout<<"  -s Look for stored precalculated rate coefficients"<<"\n";
+                        std::cout<<"  -x Skip rate-equaton solving"<<"\n";
                         break;
                     case 'w':
                         // Warranty.
-                        cout<<"This program is provided as-is, with no warranty, explicit or implied."<<endl;
-                        cout<<"It is a simplified model of XFEL plasma dynamics, however it should not"<<endl;
-                        cout<<"be viewed as accurate under all conditions."<<endl;
+                        std::cout<<"This program is provided as-is, with no warranty, explicit or implied."<<"\n";
+                        std::cout<<"It is a simplified model of XFEL plasma dynamics, however it should not"<<"\n";
+                        std::cout<<"be viewed as accurate under all conditions."<<"\n";
                         exit(0);
                         break;
                     case 'c':
@@ -124,7 +124,7 @@ struct CmdParser{
                         exit(0);
                         break;
                     default:
-                        cout<<"Flag '"<<argv[a][i]<<"' is not a recognised flag."<<endl;
+                        std::cout<<"Flag '"<<argv[a][i]<<"' is not a recognised flag."<<"\n";
                 }
                 i++;
             }
@@ -141,36 +141,36 @@ int main(int argc, const char *argv[]) {
         return 1;
     }
 
-    cout<<"\033[1m";
+    std::cout<<"\033[1m";
     print_banner("config/banner.txt");
-    cout<<"\033[34m";
+    std::cout<<"\033[34m";
     print_banner("config/version.txt");
-    cout<<"\033[0m"<<endl<<endl;
+    std::cout<<"\033[0m"<<"\n"<<"\n";
 
-    string name, logname, outdir;
+    std::string name, logname, outdir;
 
-    cout<<"Copyright (C) 2020  Alaric Sanders and Alexander Kozlov"<<endl;
-    cout<<"This program comes with ABSOLUTELY NO WARRANTY; for details run `ac4dc -w'."<<endl;
-    cout<<"This is free software, and you are welcome to redistribute it"<<endl;
-    cout<<"under certain conditions; run `ac4dc -c' for details."<<endl;
+    std::cout<<"Copyright (C) 2020  Alaric Sanders and Alexander Kozlov"<<"\n";
+    std::cout<<"This program comes with ABSOLUTELY NO WARRANTY; for details run `ac4dc -w'."<<"\n";
+    std::cout<<"This is free software, and you are welcome to redistribute it"<<"\n";
+    std::cout<<"under certain conditions; run `ac4dc -c' for details."<<"\n";
 
     if (get_file_names(argv[1], name, logname, outdir) == 1)
         return 1;
 
-    cout<<"Running simulation for target "<<name<<endl;
-    cout << "logfile name: " << logname <<endl;
-    ofstream log(logname);
-    cout << "\033[1;32mInitialising... \033[0m" <<endl;
+    std::cout<<"Running simulation for target "<<name<<"\n";
+    std::cout << "logfile name: " << logname <<"\n";
+    std::ofstream log(logname);
+    std::cout << "\033[1;32mInitialising... \033[0m" <<"\n";
     ElectronSolver S(argv[1], log); // Contains all of the collision parameters.
-    cout << "\033[1;32mComputing cross sections... \033[0m" <<endl;
+    std::cout << "\033[1;32mComputing cross sections... \033[0m" <<"\n";
     S.compute_cross_sections(log, runsettings.recalc);
     if (runsettings.solve_rate_eq) {
-        cout << "\033[1;32mSolving rate equations... \033[0m" <<endl;
+        std::cout << "\033[1;32mSolving rate equations... \033[0m" <<"\n";
         S.solve();
-        cout << "\033[1;32mDone! \033[0m" <<endl;
+        std::cout << "\033[1;32mDone! \033[0m" <<"\n";
         S.save(outdir);
     } else {
-        cout << "\033[1;32mDone! \033[0m" <<endl;
+        std::cout << "\033[1;32mDone! \033[0m" <<"\n";
     }
 
     return 0;

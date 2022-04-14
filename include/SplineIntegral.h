@@ -101,7 +101,7 @@ public:
     //       Atom
     typedef std::vector<std::vector<std::vector<sparse_matrix> > > Q_tbr_t;
     // Interpretation: J^th matrix element of dQ/dt given by
-    // vector<SparseTriple> &nv = Q_tbr[a][xi][J]
+    // std::vector<SparseTriple> &nv = Q_tbr[a][xi][J]
     // for (auto& Q : nv) {
     //      tmp += nv.val * P^a[xi] * F[nv.K] * F[nv.L]
     // }
@@ -112,8 +112,8 @@ public:
     // }
     // 1000 times fewer components than QTBR, not a problem
     SplineIntegral() {};
-    void precompute_QEII_coeffs(vector<RateData::Atom>& Atoms);
-    void precompute_QTBR_coeffs(vector<RateData::Atom>& Atoms);
+    void precompute_QEII_coeffs(std::vector<RateData::Atom>& Atoms);
+    void precompute_QTBR_coeffs(std::vector<RateData::Atom>& Atoms);
     void precompute_QEE_coeffs();
     // Precalculators. These delete the vectors Gamma and populate them with the calculated coefficients.)
     void Gamma_eii( eiiGraph& Gamma, const std::vector<RateData::EIIdata>& eii, size_t J) const;

@@ -31,7 +31,7 @@ class BasisTester : public SplineIntegral{
         this->set_parameters(F_size, min_e, max_e, grid_type);
     }
 
-    void check_eii(string fstem)
+    void check_eii(std::string fstem)
     {
         
         RateData::InverseEIIdata tbr_process = get_fake_eii();
@@ -42,11 +42,11 @@ class BasisTester : public SplineIntegral{
         std::vector<SparsePair> eg;
         double dQ = 0;
 
-        string gamma_loc = fstem + "_gamma.csv";
-        string Q_loc = fstem + "_Q.csv";
+        std::string gamma_loc = fstem + "_gamma.csv";
+        std::string Q_loc = fstem + "_Q.csv";
 
-        ofstream gout(gamma_loc);
-        ofstream qout(Q_loc);
+        std::ofstream gout(gamma_loc);
+        std::ofstream qout(Q_loc);
 
         // Make Q_mat the correct size to store all the summed Q^J_{KL} coefficients 
         std::vector<std::vector<std::vector<double>>> Q_mat;
@@ -77,19 +77,19 @@ class BasisTester : public SplineIntegral{
             gout <<(supp_max(L)+supp_min(L))*0.5<<" ";
             qout <<(supp_max(L)+supp_min(L))*0.5<<" ";
         }
-        gout<<endl;
-        qout<<endl;
+        gout<<"\n";
+        qout<<"\n";
 
         for (size_t J = 0; J < Distribution::size; J++)
         {
-            cout<<"J = "<<J<<endl;
+            std::cout<<"J = "<<J<<"\n";
             for (size_t K = 0; K < Distribution::size; K++)
             {
                 for (size_t L = 0; L < Distribution::size; L++)
                 {
-                    cout<<Q_mat[K][L][J]<<" ";
+                    std::cout<<Q_mat[K][L][J]<<" ";
                 }
-                cout<<endl;
+                std::cout<<"\n";
             }
         }
 
@@ -117,44 +117,44 @@ class BasisTester : public SplineIntegral{
                 qout<<" "<<dQ_tmp;
                 dQ += dQ_tmp;
             }
-            gout<<endl;
-            qout<<endl;
+            gout<<"\n";
+            qout<<"\n";
         }
         gout.close();
         qout.close();
 
 
 
-        cerr<<endl<<"init -> fin   gamma_total   "<<endl;
+        std::cerr<<"\n"<<"init -> fin   gamma_total   "<<"\n";
         double tot=0;
         for (size_t j = 0; j < num_fin_states; j++)
         {
-            cerr<<"[ "<<tbr_process.init<<"->"<<tbr_process.fin[j]<<" ] "<<tot_gamma[j]<<endl;
+            std::cerr<<"[ "<<tbr_process.init<<"->"<<tbr_process.fin[j]<<" ] "<<tot_gamma[j]<<"\n";
             tot += tot_gamma[j];
         }
-        cerr<<tot<<endl;
+        std::cerr<<tot<<"\n";
         
         
         
 
-        cerr<<" total dQ/dP_init:"<<endl;
-        cerr<< dQ <<endl;
-        cerr<<" ratio: "<<endl;
+        std::cerr<<" total dQ/dP_init:"<<"\n";
+        std::cerr<< dQ <<"\n";
+        std::cerr<<" ratio: "<<"\n";
 
-        cerr<<"Fraction: " << tot/ dQ <<endl;   
+        std::cerr<<"Fraction: " << tot/ dQ <<"\n";   
     }
 };
 
 
 int main(int argc, char const *argv[]) {
-    if (argc < 6) cerr << "usage: "<<argv[0]<<" [filestem] [min_e (Ha)] [max_e (Ha)] [num_basis] [ grid type = [l]inear, [q]uadratic, [e]xponential ]";
+    if (argc < 6) std::cerr << "usage: "<<argv[0]<<" [filestem] [min_e (Ha)] [max_e (Ha)] [num_basis] [ grid type = [l]inear, [q]uadratic, [e]xponential ]";
     double density = 1;
-    string fstem(argv[1]);
+    std::string fstem(argv[1]);
     double min_e = atof(argv[2]);
     double max_e = atof(argv[3]);
     int N = atoi(argv[4]);
     GridSpacing gt;
-    istringstream is(argv[5]);
+    istd::stringstream is(argv[5]);
     is >> gt;
     BasisTester bt(N, min_e, max_e, gt);
     bt.check_eii(fstem);

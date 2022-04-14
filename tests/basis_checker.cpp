@@ -17,12 +17,12 @@ class BasisTester : public SplineIntegral{
         // and this object. 
         this->set_parameters(F_size, min_e, max_e, grid_type);
 
-        cout<<"# Grid: ";
+        std::cout<<"# Grid: ";
         for (auto& e : this->knot)
         {
-            cout<<e<<" ";
+            std::cout<<e<<" ";
         }
-        cout<<endl;
+        std::cout<<"\n";
         
     }
 
@@ -33,7 +33,7 @@ class BasisTester : public SplineIntegral{
         double e = min_e;
         double de = (max_e - min_e)/this->num_funcs/100;
         
-        cerr<<"Testing basis unity partition: "<<endl;
+        std::cerr<<"Testing basis unity partition: "<<"\n";
         double avg =0;
         for (size_t i = 0; i < this->num_funcs*100; i++)
         {
@@ -46,24 +46,24 @@ class BasisTester : public SplineIntegral{
             //     tmp += (*this)(J, e);
             // }
             avg += tmp;
-            if (fabs(tmp - 1) > 1e-8) cerr<<"[ WARN ] sum of basis funcs @ e="<<e<<" differs from 1:  "<<tmp<<endl;
+            if (fabs(tmp - 1) > 1e-8) std::cerr<<"[ WARN ] sum of basis funcs @ e="<<e<<" differs from 1:  "<<tmp<<"\n";
             e += de;
         }
         avg /= num_funcs * 100;
-        cerr<<"Average basis height: "<<avg<<endl<<endl;
+        std::cerr<<"Average basis height: "<<avg<<"\n"<<"\n";
     }
 
 };
 
 
 int main(int argc, char const *argv[]) {
-    if (argc < 6) cerr << "usage: "<<argv[0]<<" [min_e (Ha)] [max_e (Ha)] [num_basis] [electron temperature] [grid style]";
+    if (argc < 6) std::cerr << "usage: "<<argv[0]<<" [min_e (Ha)] [max_e (Ha)] [num_basis] [electron temperature] [grid style]";
     double density = 17.12;
     double min_e = atof(argv[1]);
     double max_e = atof(argv[2]);
     int N = atoi(argv[3]);
     double T = atof(argv[4]);
-    istringstream grid(argv[5]);
+    istd::stringstream grid(argv[5]);
     GridSpacing gt;
     grid >> gt;
     
@@ -76,11 +76,11 @@ int main(int argc, char const *argv[]) {
     F.addDeltaLike(v, T*3, density);
     F.addDeltaSpike(T*2, density);
     F.applyDelta(v);
-    cerr<<"Integral of F: should be "<<3*density<<", is "<<F.integral(one)<<endl;
+    std::cerr<<"Integral of F: should be "<<3*density<<", is "<<F.integral(one)<<"\n";
     
-    cout<<"#Distribution shape: "<<endl;
-    cout<<Distribution::output_energies_eV(Distribution::size*10)<<endl;
-    cout<<F.output_densities(Distribution::size*10)<<endl;
+    std::cout<<"#Distribution shape: "<<"\n";
+    std::cout<<Distribution::output_energies_eV(Distribution::size*10)<<"\n";
+    std::cout<<F.output_densities(Distribution::size*10)<<"\n";
     
     
     return 0;

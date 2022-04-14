@@ -19,51 +19,49 @@ This file is part of AC4DC.
 #include "Grid.h"
 #include "RadialWF.h"
 #include <string>
-#include <vector>
+#include <vector>>
 #include <memory>
-
-using namespace std;
 
 class Potential
 {
 public:
-	Potential(Grid * Lattice, int Z, string mod = "coulomb", double Rad_well = 0);
+	Potential(Grid * Lattice, int Z, std::string mod = "coulomb", double Rad_well = 0);
 	Potential(int i = 0) {}
 	~Potential(void) {};
 
 	// Direct and Current orbital exchange in HF approximation.
-	int HF_upd_dir(RadialWF * Current, vector<RadialWF> & Orbitals);
+	int HF_upd_dir(RadialWF * Current, std::vector<RadialWF> & Orbitals);
 	// HFS local potential.
-	int LDA_upd_dir(vector<RadialWF> & Orbitals);
+	int LDA_upd_dir(std::vector<RadialWF> & Orbitals);
 	// Exchange except self-interaction (included in Direct) of Current.
-	int HF_upd_exc(RadialWF * Current, vector<RadialWF> & Orbitals);
+	int HF_upd_exc(RadialWF * Current, std::vector<RadialWF> & Orbitals);
 	// Updates potential for virtual states in V_(N-1) approximation.
-	int HF_V_N1(RadialWF * Current, vector<RadialWF> & Orbitals, int c, bool UpdDir, bool UpdExc);
+	int HF_V_N1(RadialWF * Current, std::vector<RadialWF> & Orbitals, int c, bool UpdDir, bool UpdExc);
 	void Reset(void);
 	void ScaleNucl(double Scl_dir);
 
 	void NewLattice(Grid * Lattice);
-	void GenerateTrial(vector<RadialWF> & Orbitals);
+	void GenerateTrial(std::vector<RadialWF> & Orbitals);
 
 	//Radial Coulomb integral dr1 dr2 P_a(1) P_b(2) (r<)^k/(r>)^{k+1} P_c(1) P_d(2)
 	double R_k(int k, RadialWF & A, RadialWF & B, RadialWF & C, RadialWF & D);
 	std::vector<double> Y_k(int k, std::vector<double> density, int infinity, int L);
 	double Overlap(std::vector<double> density, int infinity);
-	vector<double> make_density(vector<RadialWF> & Orbitals);
+	std::vector<double> make_density(std::vector<RadialWF> & Orbitals);
 
-	string Type();
+	std::string Type();
 	int NuclCharge() { return n_charge; }
 	double R_well() { return r_well; }
-	vector<double> V;//Nuclear + Direct
-	vector<double> Exchange;
-	vector<double> Trial;
-	vector<double> LocExc;// Local density exchange approximation with tail correction.
-	vector<double> Asympt;// Tail correction for LDA.
-	vector<double> v0_N1;
+	std::vector<double> V;//Nuclear + Direct
+	std::vector<double> Exchange;
+	std::vector<double> Trial;
+	std::vector<double> LocExc;// Local density exchange approximation with tail correction.
+	std::vector<double> Asympt;// Tail correction for LDA.
+	std::vector<double> v0_N1;
 	// Replace V[j] + LocExch[j] by Asympt[j] when first exceeds second manually.
 
 	// Auxillary functions.
-	vector<float> Get_Kinetic(vector<RadialWF> & Orbitals, int start_with = 0);
+	std::vector<float> Get_Kinetic(std::vector<RadialWF> & Orbitals, int start_with = 0);
 
 	const Potential& operator = (const Potential& Other) {
 		V = Other.V;
@@ -83,7 +81,7 @@ public:
 
 protected:
 	void GenerateNuclear(void);
-	string model = "coulomb";
+	std::string model = "coulomb";
 	int n_charge = 1;
 	double r_well = 0.0000001;
 	std::vector<double> nuclear;
@@ -100,11 +98,11 @@ public:
 	// Radial Coulomb integral dr1 dr2 P_a(1) P_b(2) (r<)^k/(r>)^{k+1} P_c(1) P_d(2)
 //	double R_k(int k, RadialWF & A, RadialWF & B, RadialWF & C, RadialWF & D);
 	// Reduced dipole dr P_a(r)P_b(r) r . Gauge can be either "length" or "velocity".
-	double Dipole(RadialWF & A, RadialWF & B, string gauge);
+	double Dipole(RadialWF & A, RadialWF & B, std::string gauge);
 	// Average over configuration dipole matrix element.
-	double DipoleAvg(RadialWF & A, RadialWF & B, string gauge);
+	double DipoleAvg(RadialWF & A, RadialWF & B, std::string gauge);
   // RMS radius of a slater determinant.
-  double R_pow_k(vector<RadialWF> & Orbitals, int k);
+  double R_pow_k(std::vector<RadialWF> & Orbitals, int k);
 
 	~MatrixElems() {};
 private:

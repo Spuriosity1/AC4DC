@@ -21,9 +21,9 @@ This file is part of AC4DC.
 #include <iostream>
 #include <map>
 
-Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream & log)
+Input::Input(char *filename, std::vector<RadialWF> &Orbitals, Grid &Lattice, std::ofstream & log)
 {
-	log << "[ Atomic ] Input file: " << filename << endl;
+	log << "[ Atomic ] Input file: " << filename << "\n";
 
 	name = filename;
 	size_t lastdot = name.find_last_of(".");
@@ -31,29 +31,29 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 	size_t lastslash = name.find_last_of("/");
 	if (lastdot != std::string::npos) name = name.substr(lastslash+1);
 
-	cout << "[ Atomic ] Opening atomic file "<< filename << "... ";
-	ifstream infile(filename);
+	std::cout << "[ Atomic ] Opening atomic file "<< filename << "... ";
+	std::ifstream infile(filename);
 	if (infile.good())
-        std::cout<<"Success!"<<endl;
+        std::cout<<"Success!\n";
     else {
-        std::cerr<<"\033[31;1mFailed!\033[0m"<<endl;
-		throw runtime_error("Could not find atomic input file."); // chuck a hissy fit and quit.
+        std::cerr<<"\033[31;1mFailed!\033[0m\n";
+		throw std::runtime_error("Could not find atomic input file."); // chuck a hissy fit and quit.
         return;
     }
 
-	map<string, vector<string>> FileContent;
-	string comment = "//";
-	string curr_key;
+	std::map<std::string, std::vector<std::string>> FileContent;
+	std::string comment = "//";
+	std::string curr_key;
 
 	while (!infile.eof() && infile.is_open()) {
-		string line;
+		std::string line;
 		getline(infile, line);
 
 		if (!line.compare(0, 2, comment)) continue;
 		if (!line.compare(0, 2, "")) continue;
 		if (!line.compare(0, 1, "#")) {
 			if ( FileContent.find(line) == FileContent.end() ) {
-				FileContent[line] = vector<string>(0);
+				FileContent[line] = std::vector<std::string>(0);
 			}
 			curr_key = line;
 		} else {
@@ -62,14 +62,14 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 	}
 
 	for (int n = 0; n < FileContent["#PULSE"].size(); n++) {
-		stringstream stream(FileContent["#PULSE"][n]);
+		std::stringstream stream(FileContent["#PULSE"][n]);
 		if (n == 0) stream >> omega;
 		if (n == 1) stream >> width;
 		if (n == 2) stream >> fluence;
 	}
 
 	for (int n = 0; n < FileContent["#OUTPUT"].size(); n++) {
-		stringstream stream(FileContent["#OUTPUT"][n]);
+		std::stringstream stream(FileContent["#OUTPUT"][n]);
 		if (n == 0) stream >> out_time_steps;
 		if (n == 1) {
 			char tmp;
@@ -85,10 +85,10 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 
 	int line_indentifier = 0, num_grid_pts, num_orbitals, N, L, current_orbital = 0, occupancy;
 	double r_min, r_box;
-	map<char, int> angular = {{'s', 0}, {'p', 1}, {'d', 2}, {'f', 3}};
+	std::map<char, int> angular = {{'s', 0}, {'p', 1}, {'d', 2}, {'f', 3}};
 
 	for (int n = 0; n < FileContent["#NUMERICAL"].size(); n++) {
-		stringstream stream(FileContent["#NUMERICAL"][n]);
+		std::stringstream stream(FileContent["#NUMERICAL"][n]);
 		if (n == 0) stream >> num_grid_pts;
 		if (n == 1) stream >> r_min;
 		if (n == 2) stream >> r_box;
@@ -115,7 +115,7 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 	// Assign a default value to avoid undefiend comparisons
 	num_orbitals = -10;
 	for (int n = 0; n < FileContent["#ATOM"].size(); n++) {
-		stringstream stream(FileContent["#ATOM"][n]);
+		std::stringstream stream(FileContent["#ATOM"][n]);
 		if (n == 0) stream >> Z;
 		if (n == 1) stream >> model;
 		if (n == 2) stream >> hamiltonian;
@@ -125,12 +125,12 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 			char tmp;
 			stream >> N >> tmp >> occupancy;
 			if (occupancy == 0){
-				cerr << "[ Atomic ] \033[31;1mOrbital with N=" << N << ", L=" << angular[tmp] << " has occupancy=0 \033[0m" << endl;
+				std::cerr << "[ Atomic ] \033[31;1mOrbital with N=" << N << ", L=" << angular[tmp] << " has occupancy=0 \033[0m\n";
 			}
 			if (N == 0){
-				cerr << "[ Atomic ] \033[31;1m Orbital with N=0 encountered: "<<filename<<"\033[0m" << endl;
-				cerr << "[ Atomic ] Did you specify the right number of orbitals?" << endl;
-				throw runtime_error("Bad atomic input");
+				std::cerr << "[ Atomic ] \033[31;1m Orbital with N=0 encountered: "<<filename<<"\033[0m\n";
+				std::cerr << "[ Atomic ] Did you specify the right number of orbitals?" << std::endl;
+				throw std::runtime_error("Bad atomic input");
 			}
 			Orbitals.push_back(RadialWF(num_grid_pts));
 			Orbitals.back().set_N(N);

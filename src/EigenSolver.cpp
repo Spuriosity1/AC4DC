@@ -15,7 +15,7 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 #include "EigenSolver.h"
-#include <vector>
+#include <vector>>
 #include "stdafx.h"
 
 EigenSolver::EigenSolver()
@@ -65,9 +65,9 @@ void EigenSolver::SolveGenEig(std::vector<std::vector<double>> &F, std::vector<s
 	EigenVectors = Magic.eigenvectors();
 }
 
-vector<double> EigenSolver::EigenVals()
+std::vector<double> EigenSolver::EigenVals()
 {
-	vector<double> Result(EigenValues.size(), 0);
+	std::vector<double> Result(EigenValues.size(), 0);
 
 	for (int i = 0; i < Result.size(); i++) {
 		Result[i] = EigenValues(i);
@@ -76,9 +76,9 @@ vector<double> EigenSolver::EigenVals()
 	return Result;
 }
 
-vector<vector<double>> EigenSolver::EigenVecs()
+std::vector<std::vector<double>> EigenSolver::EigenVecs()
 {
-	vector<vector<double>> Result(EigenValues.size(), vector<double>(EigenValues.size(), 0));
+	std::vector<std::vector<double>> Result(EigenValues.size(), std::vector<double>(EigenValues.size(), 0));
 	for (int i = 0; i < Result.size(); i++) {
 		for (int j = 0; j < Result.size(); j++) {
 			Result[i][j] = EigenVectors(j, i);

@@ -1,5 +1,5 @@
 #include "src/Constant.h"
-#include <vector>
+#include <vector>>
 #include <iostream>
 
 using namespace std;
@@ -7,7 +7,7 @@ using namespace std;
 int main(int argc, char const *argv[])
 {
     if (argc < 3){
-        cerr<<"Usage: "<<argv[0]<<" [infile] [outfile]\n";
+        std::cerr<<"Usage: "<<argv[0]<<" [infile] [outfile]\n";
         return 1;
     }
     std::vector<RateData::EIIdata> eiiVec;

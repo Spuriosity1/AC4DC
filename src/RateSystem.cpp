@@ -18,11 +18,11 @@ This file is part of AC4DC.
 #include "RateSystem.h"
 #include "Dipole.h"
 #include <math.h>
-// #include <stringstream>
+// #include <std::stringstream>
 // #define NDEBUG
 
 
-vector<size_t> state_type::P_sizes  = vector<size_t>(0);
+std::vector<size_t> state_type::P_sizes  = std::vector<size_t>(0);
 
 
 state_type::state_type() {
@@ -69,7 +69,7 @@ state_type& state_type::operator=(const double x) {
 }
 
 // Resizes the container to fit all of the states present in the atom ensemble
-void state_type::set_P_shape(const vector<RateData::Atom>& atomsys) {
+void state_type::set_P_shape(const std::vector<RateData::Atom>& atomsys) {
     P_sizes.resize(atomsys.size());
     // make the P's the right size lmao
     for (size_t a = 0; a < atomsys.size(); a++) {
@@ -90,8 +90,8 @@ double state_type::norm() const {
 }
 
 
-// Intended usage: cout<<s.atomP[a]<<endl;
-ostream& operator<<(ostream& os, const bound_t& bound) {
+// Intended usage: std::cout<<s.atomP[a]<<"\n";
+std::ostream& operator<<(std::ostream& os, const bound_t& bound) {
     const double units = 1./Constant::Angs_per_au/Constant::Angs_per_au/Constant::Angs_per_au;
     for (size_t i=0; i<bound.size(); i++) {
         os << bound[i]*units << " ";
@@ -99,7 +99,7 @@ ostream& operator<<(ostream& os, const bound_t& bound) {
     return os;
 }
 
-ostream& operator<<(ostream& os, const state_type& st) {
+std::ostream& operator<<(std::ostream& os, const state_type& st) {
     for (size_t a=0; a<st.atomP.size(); a++) {
         os << st.atomP[a];
         if (a != st.atomP.size()-1)

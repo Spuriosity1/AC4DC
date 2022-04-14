@@ -16,10 +16,9 @@ This file is part of AC4DC.
 ===========================================================================*/
 #pragma once
 
-#include <vector>
+#include <vector>>
 #include <string>
 
-using namespace std;
 
 class Grid
 {	/* The Grid class creates the coordinate grid on the interval from [r_min, r_max]
@@ -29,7 +28,7 @@ class Grid
 	According to Vladimir Dzuba the best value for beta=4.
 	*/
 private:
-	vector<double> r, dr;
+	std::vector<double> r, dr;
 	double ds;
 	double beta;
 	int NumPts;
@@ -38,7 +37,7 @@ public:
 	Grid(double r_min, double r_max, double dR_max);//same linear logarithm, but with maximum dR_max. 
 	// Defines number of points on its own. Great for integrals with oscillating functions.
 	Grid(int X) { NumPts = X; }//empty lattice to be defined elsewhere
-	Grid(vector<double> & X, vector<double> & dX);
+	Grid(std::vector<double> & X, std::vector<double> & dX);
 
 	// Exponential grid for integrals over Gaussian basis set and uniform for continuum states
 	Grid(int num_grid_pts, double r_min, double r_max, std::string mode);

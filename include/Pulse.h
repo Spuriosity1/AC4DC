@@ -18,7 +18,7 @@ This file is part of AC4DC.
 #ifndef AC4DC_PULSE_CXX_H
 #define AC4DC_PULSE_CXX_H
 
-#include <vector>
+#include <vector>>
 #include <string>
 #include <iostream>
 

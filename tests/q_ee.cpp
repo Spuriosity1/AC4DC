@@ -16,13 +16,13 @@ class BasisTester : public SplineIntegral{
         this->set_parameters(F_size, min_e, max_e, grid_type);
     }
 
-    void check_ee(string fname)
+    void check_ee(std::string fname)
     {
         
         // Index runs along final states
         double dQ = 0;        
 
-        ofstream qout(fname);
+        std::ofstream qout(fname);
 
         // Make Q_mat the correct size to store all the summed Q^J_{KL} coefficients 
         std::vector<std::vector<std::vector<double>>> Q_mat;
@@ -48,23 +48,23 @@ class BasisTester : public SplineIntegral{
 
         // Print some helpful labels
         
-        cout<<"#L= ";
+        std::cout<<"#L= ";
         for (size_t L=0; L<Distribution::size; L++) {
-            cout <<(supp_max(L)+supp_min(L))*0.5<<" ";
+            std::cout <<(supp_max(L)+supp_min(L))*0.5<<" ";
         }
-        cout<<endl;
+        std::cout<<"\n";
         
         // Print the whole QEE tensor to the supplied file
         for (size_t J = 0; J < Distribution::size; J++)
         {
-            qout<<"J = "<<J<<endl;
+            qout<<"J = "<<J<<"\n";
             for (size_t K = 0; K < Distribution::size; K++)
             {
                 for (size_t L = 0; L < Distribution::size; L++)
                 {
                     qout<<(Q_mat[K][L][J]+ Q_mat[L][K][J])/2.<<" ";
                 }
-                qout<<endl;
+                qout<<"\n";
             }
         }
         qout.close();
@@ -85,24 +85,24 @@ class BasisTester : public SplineIntegral{
                     v[J] = (Q_mat[K][L][J] + Q_mat[L][K][J])/ 2;
                     w[J] = areas[J];
                 }
-                cout<<" "<<this->Sinv(v).dot(w);
+                std::cout<<" "<<this->Sinv(v).dot(w);
             }
-            cout<<endl;
+            std::cout<<"\n";
         }
     }
 };
 
 
 int main(int argc, char const *argv[]) {
-    if (argc < 6) cerr << "usage: "<<argv[0]<<" [filestem] [min_e (Ha)] [max_e (Ha)] [num_basis] [ grid type = [l]inear, [q]uadratic, [e]xponential ]";
-    string fstem(argv[1]);
+    if (argc < 6) std::cerr << "usage: "<<argv[0]<<" [filestem] [min_e (Ha)] [max_e (Ha)] [num_basis] [ grid type = [l]inear, [q]uadratic, [e]xponential ]";
+    std::string fstem(argv[1]);
     double min_e = atof(argv[2]);
     double max_e = atof(argv[3]);
     int N = atoi(argv[4]);
     GridSpacing gt;
     gt.zero_degree_0=0;
     gt.zero_degree_inf = 3;
-    istringstream is(argv[5]);
+    istd::stringstream is(argv[5]);
     is >> gt;
     BasisTester bt(N, min_e, max_e, gt);
     bt.check_ee(fstem);

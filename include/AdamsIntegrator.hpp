@@ -18,7 +18,7 @@ This file is part of AC4DC.
 #ifndef ADAMS_CXX_H
 #define ADAMS_CXX_H
 
-#include <vector>
+#include <vector>>
 #include "Adams_arrays.h"
 #include <iostream>
 #include <iomanip>
@@ -40,7 +40,7 @@ public:
     double dt;
     double step_tolerance;
 
-    // void export_to(string fname);
+    // void export_to(std::string fname);
 protected:
     std::vector<T> y;
     std::vector<double> t;

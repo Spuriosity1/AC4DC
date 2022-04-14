@@ -24,9 +24,9 @@ This file is part of AC4DC.
 
 void Pulse::save(const std::vector<double>& Tvec, const std::string& fname) {
     std::ofstream f;
-    std::cout << "[ Flux ] Saving to file "<<fname<<"..."<<endl;
+    std::cout << "[ Flux ] Saving to file "<<fname<<"..."<<"\n";
     f.open(fname);
-    f << "# Time (fs) | Intensity (pht/cm2/fs)" <<endl;
+    f << "# Time (fs) | Intensity (pht/cm2/fs)" <<"\n";
     for (auto& t : Tvec) {
         f << t*Constant::fs_per_au << " ";
         double intensity = (*this)(t);
@@ -39,7 +39,7 @@ void Pulse::save(const std::vector<double>& Tvec, const std::string& fname) {
 
 void Pulse::set_pulse(double fluence, double fwhm_param) {
     // The photon flux model
-    std::cout<<"[ Flux ] fluence="<<fluence<<", fwhm="<<fwhm_param<<endl;
+    std::cout<<"[ Flux ] fluence="<<fluence<<", fwhm="<<fwhm_param<<"\n";
     this->I0 = fluence/fwhm_param;
     this->fwhm = fwhm_param;
 
@@ -61,7 +61,7 @@ double Pulse::operator()(double t) {
         }
         break;
     default:
-        throw runtime_error("Pulse shape has not been set.");
+        throw std::runtime_error("Pulse shape has not been set.");
         break;
     }   
 }

@@ -1,5 +1,5 @@
-#include "src/HybridIntegrator.hpp"
-#include "src/RateSystem.h"
+#include "HybridIntegrator.hpp"
+#include "RateSystem.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -15,20 +15,20 @@ public:
         Distribution::set_elec_points(num_e_points, min_e, max_e, g);
         
         // HACK: give it an empty Store
-        vector<RateData::Atom> dummy(0);
+        std::vector<RateData::Atom> dummy(0);
         Distribution::precompute_Q_coeffs(dummy);
         
     }
 
     void set_initial_condition(double E, double density, double spike_density, double _dt) {
         Distribution init;
-        cerr<<"Initial conditions: n="<<density<<" Maxwellian T="<<E/4.*Constant::eV_per_Ha<<" eV, ";
-        cerr<<"curve with n="<<spike_density<<" delta at "<<E*Constant::eV_per_Ha<<"eV"<<endl;
+        std::cerr<<"Initial conditions: n="<<density<<" Maxwellian T="<<E/4.*Constant::eV_per_Ha<<" eV, ";
+        std::cerr<<"curve with n="<<spike_density<<" delta at "<<E*Constant::eV_per_Ha<<"eV"<<"\n";
         init = 0;
         init.add_maxwellian(E/4., density);
         init.addDeltaSpike(E, spike_density);
         this->setup(init, _dt);
-        cout<<init.density(Distribution::size)<<endl;
+        std::cout<<init.density(Distribution::size)<<"\n";
         // this->y and this->t are now sized appropriately
     }
 
@@ -43,21 +43,21 @@ public:
         }
     }
 
-    void printraw(string fname) {
+    void printraw(std::string fname) {
         std::ofstream os(fname);
-        os<<"#t | E (eV)"<<endl;
-        os<<"#  |  "<<Distribution::output_knots_eV()<<endl;
+        os<<"#t | E (eV)"<<"\n";
+        os<<"#  |  "<<Distribution::output_knots_eV()<<"\n";
         for (size_t i = 0; i < y.size(); i++) {
-            os<<t[i]*Constant::fs_per_au<<' '<<y[i]<<endl;
+            os<<t[i]*Constant::fs_per_au<<' '<<y[i]<<"\n";
         }
     }
 
-    void print(string fname) {
+    void print(std::string fname) {
         std::ofstream os(fname);
-        os<<"#t | E (eV)"<<endl;
-        os<<"#  |  "<<Distribution::output_energies_eV(Distribution::size*10)<<endl;
+        os<<"#t | E (eV)"<<"\n";
+        os<<"#  |  "<<Distribution::output_energies_eV(Distribution::size*10)<<"\n";
         for (size_t i = 0; i < y.size(); i++) {
-            os<<t[i]*Constant::fs_per_au<<' '<<y[i].output_densities(Distribution::size*10)<<endl;
+            os<<t[i]*Constant::fs_per_au<<' '<<y[i].output_densities(Distribution::size*10)<<"\n";
         }
     }
 protected:
@@ -69,17 +69,17 @@ protected:
         Eigen::VectorXd v = Eigen::VectorXd::Zero(Distribution::size);
         q.get_Q_ee(v);
         qdot.applyDelta(v);
-        if (isnan(qdot.norm())) throw runtime_error("NaN encountered in sdot");
+        if (isnan(qdot.norm())) throw std::runtime_error("NaN encountered in sdot");
     }
 };
 
 int main(int argc, char const *argv[]) {
 
     if (argc < 10) {
-        cerr<<"Usage: "<<argv[0]<<" [fname] [T (eV)] [fin_time (fs)] [num_t_points] [num_e_points] [thermal density (A^-3)] [spike density (A^-3)] [max e (eV)] [gridstyle]"<<endl;
+        std::cerr<<"Usage: "<<argv[0]<<" [fname] [T (eV)] [fin_time (fs)] [num_t_points] [num_e_points] [thermal density (A^-3)] [spike density (A^-3)] [max e (eV)] [gridstyle]"<<"\n";
         return 1;
     }
-    string fname(argv[1]);
+    std::string fname(argv[1]);
     double temperature = atof(argv[2]);
     double fin_time = atof(argv[3]);
     int num_t_pts = atoi(argv[4]);
@@ -88,16 +88,16 @@ int main(int argc, char const *argv[]) {
     double sdensity = atof(argv[7]);
     double max_e = atof(argv[8]);
     GridSpacing gs;
-    istringstream is(argv[9]);
+    istd::stringstream is(argv[9]);
     is >> gs;
     gs.num_low = num_e_pts/2;
     gs.zero_degree_0=0;
     gs.zero_degree_inf=2;
     
 
-    cerr<<"MB Density ="<<density<<" elec per Angstrom3 @ kT = "<<temperature/4<<"eV"<<endl;
-    cerr<<"Spike Density ="<<sdensity<<" elec per Angstrom3 @ E = "<<temperature<<"eV"<<endl;
-    cerr<<"Final Time: "<<fin_time<<" fs in "<<num_t_pts<<" timesteps"<<endl;
+    std::cerr<<"MB Density ="<<density<<" elec per Angstrom3 @ kT = "<<temperature/4<<"eV"<<"\n";
+    std::cerr<<"Spike Density ="<<sdensity<<" elec per Angstrom3 @ E = "<<temperature<<"eV"<<"\n";
+    std::cerr<<"Final Time: "<<fin_time<<" fs in "<<num_t_pts<<" timesteps"<<"\n";
 
     fin_time /= Constant::fs_per_au;
     temperature /= Constant::eV_per_Ha;
@@ -110,7 +110,7 @@ int main(int argc, char const *argv[]) {
     double step = fin_time/num_t_pts;
     double min_e = 0;
     EEcoll I(min_e, max_e, num_e_pts, gs);
-    cerr<<"final time: "<<fin_time<<" au"<<endl;
+    std::cerr<<"final time: "<<fin_time<<" au"<<"\n";
     I.set_initial_condition(temperature, density, sdensity, step);
     I.run_sim(fin_time);
     I.print(fname);
