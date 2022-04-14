@@ -3,7 +3,7 @@ CPP := g++-11
 
 LIB := -fopenmp
 
-INC := -I/opt/homebrew/include/eigen3 -Iinclude
+INC := -Iinclude -I/opt/homebrew/include
 
 SRCDIR := src
 BUILDDIR := build

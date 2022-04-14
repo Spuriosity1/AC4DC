@@ -23,9 +23,9 @@ This file is part of AC4DC.
 #include <assert.h>
 #include <math.h>
 #include <iostream>
-#include <Eigen/SparseCore>
-#include <Eigen/Dense>
-#include <Eigen/SparseCholesky>
+#include <eigen3/Eigen/SparseCore>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/SparseCholesky>
 #include "Constant.h"
 #include "SplineIntegral.h"
 #include "Dipole.h"

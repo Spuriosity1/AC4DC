@@ -19,8 +19,8 @@ This file is part of AC4DC.
 #define SPLINEBASIS_CXX_H
 
 #include <vector>
-#include <Eigen/SparseLU>
-// #include <Eigen/LU>
+#include <eigen3/Eigen/SparseLU>
+// #include <eigen3/Eigen/LU>
 #include <iostream>
 #include "GridSpacing.hpp"
 

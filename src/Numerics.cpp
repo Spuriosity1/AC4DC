@@ -89,14 +89,14 @@ Adams::Adams(Grid &Latt, int AdamsOrder) : Lattice(Latt)
 
 	if (Adams_N == 5)
 	{
-		for (int i = 0; i < Adams_N; i++)
+		for (size_t i = 0; i < Adams_N; i++)
 		{
 			Adams_Coeff[i] = adams_5[i];
 		}
 	}
 	else
 	{
-		for (int i = 0; i < Adams_N; i++)
+		for (size_t i = 0; i < Adams_N; i++)
 		{
 			Adams_Coeff[i] = adams_10[i];
 		}
@@ -189,7 +189,7 @@ void Adams::Integrate(std::vector<double> &Func, std::vector<double> &Result, in
 
 	//check if the first Adams_N points are required to be calculated or they are given by the user.
 
-	for (int i = 1; i < Adams_N; i++)
+	for (size_t i = 1; i < Adams_N; i++)
 	{
 		Func_tmp += fabs(Result[start_pt + incr*i]);
 	}
@@ -202,7 +202,7 @@ void Adams::Integrate(std::vector<double> &Func, std::vector<double> &Result, in
 		int Lagrange_N = 9;//Always calculating first 3 points. If Adams_N < 10 it will overwrite an extra points
 
 		LeftMatr.resize(Lagrange_N);
-		for (int i = 0; i < Lagrange_N; i++)
+		for (size_t i = 0; i < Lagrange_N; i++)
 		{
 			LeftMatr[i].resize(Lagrange_N);
 		}
@@ -210,16 +210,16 @@ void Adams::Integrate(std::vector<double> &Func, std::vector<double> &Result, in
 		RightVect.resize(Lagrange_N);
 
 		// Set up the LeftMatr. Simpler than start
-		for (int i = 0; i < Lagrange_N; i++)
+		for (size_t i = 0; i < Lagrange_N; i++)
 		{
-			for (int j = 0; j < Lagrange_N; j++)
+			for (size_t j = 0; j < Lagrange_N; j++)
 			{
 				if (i < Lagrange_N / 2) { LeftMatr[i][j] = Lagrange[i + 1][j + 1]; }
 				else { LeftMatr[i][j] = -Lagrange[Lagrange_N - i - 1][Lagrange_N - j - 1]; }
 			}
 		}
 		//set up RightVect
-		for (int i = 0; i < Lagrange_N; i++)
+		for (size_t i = 0; i < Lagrange_N; i++)
 		{
 			if (i < Lagrange_N / 2)
 			{
@@ -236,18 +236,18 @@ void Adams::Integrate(std::vector<double> &Func, std::vector<double> &Result, in
 		EigenSolver W;
 		W.SolveSystem(LeftMatr, RightVect, Lagrange_N);
 
-		for (int i = 0; i < Lagrange_N; i++)
+		for (size_t i = 0; i < Lagrange_N; i++)
 		{
 			Result[start_pt + incr*(i + 1)] = RightVect[i];
 		}
 	}
 
 //	Main loop with Adams_N order
-	for (int i = start; incr*i <= incr*end; i += incr)
+	for (size_t i = start; incr*i <= incr*end; i += incr)
 	{
 		Func_tmp = Result[i - incr] + incr * Adams_Coeff[0] * Lattice.dR(i) * Func[i];
 
-		for (int j = 1; j < Adams_N; j++)
+		for (size_t j = 1; j < Adams_N; j++)
 		{
 			Func_tmp += incr * Adams_Coeff[j] * Func[i - incr*j] * Lattice.dR(i - incr*j);
 		}
@@ -286,7 +286,7 @@ double Adams::Integrate(std::vector<double>* Func, int start_pt, int end_pt)
 	int Lagrange_N = 10;//Always calculating first 10 points. If Adams_N < 10 it will overwrite an extra points
 
 	LeftMatr.resize(Lagrange_N);
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
 		LeftMatr[i].resize(Lagrange_N);
 	}
@@ -294,16 +294,16 @@ double Adams::Integrate(std::vector<double>* Func, int start_pt, int end_pt)
 	RightVect.resize(Lagrange_N);
 
 	// Set up the LeftMatr. Simpler than start
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
-		for (int j = 0; j < Lagrange_N; j++)
+		for (size_t j = 0; j < Lagrange_N; j++)
 		{
 			if (i < Lagrange_N / 2) { LeftMatr[i][j] = Lagrange[i + 1][j + 1]; }
 			else { LeftMatr[i][j] = -Lagrange[Lagrange_N - i - 1][Lagrange_N - j - 1]; }
 		}
 	}
 	//set up RightVect
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
 		if (i < Lagrange_N / 2)
 		{
@@ -322,21 +322,21 @@ double Adams::Integrate(std::vector<double>* Func, int start_pt, int end_pt)
 
 	assert(Result.size() <= RightVect.size());
 
-	for (int i = 0; i < Result.size(); i++)
+	for (size_t i = 0; i < Result.size(); i++)
 	{
 		Result[i] = RightVect[i];
 	}
 
-	for (int i = start; incr*i <= incr*end; i += incr)
+	for (size_t i = start; incr*i <= incr*end; i += incr)
 	{
 		Result[Adams_N-1] = Result[Adams_N - 2] + incr * Adams_Coeff[0] * Lattice.dR(i) * Func->at(i);
 
-		for (int j = 1; j < Adams_N; j++)
+		for (size_t j = 1; j < Adams_N; j++)
 		{
 			Result[Adams_N-1] += incr * Adams_Coeff[j] * Func->at(i - incr*j) * Lattice.dR(i - incr*j);
 		}
 
-		for (int j = 0; j < (Adams_N-1); j++)
+		for (size_t j = 0; j < (Adams_N-1); j++)
 		{
 			Result[j] = Result[j+1];
 		}
@@ -356,7 +356,7 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 	else { incr = -1; }
 
 	LeftMatr.resize(2 * Lagrange_N);
-	for (int i = 0; i < 2 * Lagrange_N; i++)
+	for (size_t i = 0; i < 2 * Lagrange_N; i++)
 	{
 		LeftMatr[i].resize(2 * Lagrange_N);
 	}
@@ -364,9 +364,9 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 	RightVect.resize(2 * Lagrange_N);
 
 	//set up upper left
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
-		for (int j = 0; j < Lagrange_N; j++)
+		for (size_t j = 0; j < Lagrange_N; j++)
 		{
 			if (i < Lagrange_N / 2) { LeftMatr[i][j] = Lagrange[i + 1][j + 1]; }
 			else { LeftMatr[i][j] = - Lagrange[Lagrange_N - i - 1][Lagrange_N - j - 1]; }
@@ -379,9 +379,9 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 	}
 
 	//set up lower right
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
-		for (int j = 0; j < Lagrange_N; j++)
+		for (size_t j = 0; j < Lagrange_N; j++)
 		{
 			if (i < Lagrange_N / 2) { LeftMatr[Lagrange_N + i][Lagrange_N + j] = Lagrange[i + 1][j + 1]; }
 			else { LeftMatr[Lagrange_N + i][Lagrange_N + j] = - Lagrange[Lagrange_N - i - 1][Lagrange_N - j - 1]; }
@@ -394,9 +394,9 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 	}
 
 	//set up upper right
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
-		for (int j = 0; j < Lagrange_N; j++)
+		for (size_t j = 0; j < Lagrange_N; j++)
 		{
 			LeftMatr[i][Lagrange_N + j] = 0.0;
 			if (i == j)
@@ -407,9 +407,9 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 	}
 
 	//set up lower left
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
-		for (int j = 0; j < Lagrange_N; j++)
+		for (size_t j = 0; j < Lagrange_N; j++)
 		{
 			LeftMatr[Lagrange_N + i][j] = 0.0;
 			if (i == j)
@@ -420,7 +420,7 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 	}
 
 	//set up RightVect
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
 		if (i < Lagrange_N / 2)
 		{
@@ -441,7 +441,7 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 	EigenSolver W;
 	W.SolveSystem(LeftMatr, RightVect, (2 * Lagrange_N));
 
-	for (int i = 0; i < Lagrange_N; i++)
+	for (size_t i = 0; i < Lagrange_N; i++)
 	{
 		Psi->F[start_pt + incr*(i + 1)] = RightVect[i];
 		Psi->G[start_pt + incr*(i + 1)] = RightVect[Lagrange_N + i];
@@ -462,17 +462,17 @@ std::vector<double> Adams::GreenOrigin(RadialWF* Psi)
 
 	Result[0] = 0.5*Lattice.dR(0) * Psi->F[0] * Y[0];//trapezoid rule for first interval [0...Lattice.dR(0)]
 
-	for (int i = 1; i < Adams_N; i++)
+	for (size_t i = 1; i < Adams_N; i++)
 	{
 		Result[i] = Result[i - 1] + 0.5*Lattice.dR(i) * Psi->F[i] * Y[i] +
 					0.5*Lattice.dR(i - 1) * Psi->F[i - 1] * Y[i - 1];
 	}
 
-	for (int i = Adams_N; i <= Psi->pract_infinity(); i++)
+	for (size_t i = Adams_N; i <= Psi->pract_infinity(); i++)
 	{
 		Func_tmp = Result[i - 1] + Adams_Coeff[0] * Lattice.dR(i) * Psi->F[i]*Y[i];
 
-		for (int j = 1; j < Adams_N; j++)
+		for (size_t j = 1; j < Adams_N; j++)
 		{
 			Func_tmp += Adams_Coeff[j] * Psi->F[i - j]*Y[i - j] * Lattice.dR(i - j);
 		}
@@ -495,17 +495,17 @@ std::vector<double> Adams::GreenInfinity(RadialWF* Psi)
 
 	Result[Infty] = 0.5*Lattice.dR(Infty) * Psi->F[Infty] * Y[Infty];
 
-	for (int i = Infty - 1; i > (Infty - Adams_N); i--)
+	for (size_t i = Infty - 1; i > (Infty - Adams_N); i--)
 	{
 		Result[i] = Result[i + 1] + 0.5*Lattice.dR(i) * Psi->F[i] * Y[i] +
 			0.5*Lattice.dR(i + 1) * Psi->F[i + 1] * Y[i + 1];
 	}
 
-	for (int i = (Infty - Adams_N); i >= 0; i--)
+	for (size_t i = (Infty - Adams_N); i >= 0; i--)
 	{
 		Func_tmp = Result[i + 1] + Adams_Coeff[0] * Lattice.dR(i) * Psi->F[i] * Y[i];
 
-		for (int j = 1; j < Adams_N; j++)
+		for (size_t j = 1; j < Adams_N; j++)
 		{
 			Func_tmp += Adams_Coeff[j] * Psi->F[i + j] * Y[i + j] * Lattice.dR(i + j);
 		}
@@ -542,7 +542,7 @@ void Adams::Integrate_ODE(std::vector<double> &f, int start_pt, int end_pt)
 
 
 	//Check if first Lagrange_N points have being precalculated
-	for (int i = 1; i <= Lagrange_N; i++)
+	for (size_t i = 1; i <= Lagrange_N; i++)
 	{
 		Det += fabs(f[i]);
 	}
@@ -550,7 +550,7 @@ void Adams::Integrate_ODE(std::vector<double> &f, int start_pt, int end_pt)
 	if (Det == 0)//Only first point is given. Calculate remaining.
 	{
 		LeftMatr.resize(Lagrange_N);
-		for (int i = 0; i < Lagrange_N; i++)
+		for (size_t i = 0; i < Lagrange_N; i++)
 		{
 			LeftMatr[i].resize(Lagrange_N);
 		}
@@ -558,9 +558,9 @@ void Adams::Integrate_ODE(std::vector<double> &f, int start_pt, int end_pt)
 		RightVect.resize(Lagrange_N);
 
 		//set up upper left
-		for (int i = 0; i < Lagrange_N; i++)
+		for (size_t i = 0; i < Lagrange_N; i++)
 		{
-			for (int j = 0; j < Lagrange_N; j++)
+			for (size_t j = 0; j < Lagrange_N; j++)
 			{
 				if (i < Lagrange_N / 2) { LeftMatr[i][j] = Lagrange[i + 1][j + 1]; }
 				else { LeftMatr[i][j] = -Lagrange[Lagrange_N - i - 1][Lagrange_N - j - 1]; }
@@ -574,7 +574,7 @@ void Adams::Integrate_ODE(std::vector<double> &f, int start_pt, int end_pt)
 
 
 		//set up RightVect
-		for (int i = 0; i < Lagrange_N; i++)
+		for (size_t i = 0; i < Lagrange_N; i++)
 		{
 			if (i < Lagrange_N / 2)
 			{
@@ -593,26 +593,26 @@ void Adams::Integrate_ODE(std::vector<double> &f, int start_pt, int end_pt)
 		EigenSolver W;
 		W.SolveSystem(LeftMatr, RightVect, Lagrange_N);
 
-		for (int i = 0; i < Lagrange_N; i++)
+		for (size_t i = 0; i < Lagrange_N; i++)
 		{
 			f[start_pt + incr*(i + 1)] = RightVect[i];
 		}
 	}
 
 	//Calculate derivatives in first Lagrange_N+1 points
-	for (int i = 0; i <= Lagrange_N; i++)
+	for (size_t i = 0; i <= Lagrange_N; i++)
 	{
 		df_dR[start_pt + incr*i] = A[start_pt + incr*i] * f[start_pt + incr*i] + X[start_pt + incr*i];
 	}
 
 
-	for (int i = start; incr*i <= incr*end; i += incr)
+	for (size_t i = start; incr*i <= incr*end; i += incr)
 	{
 		Det = (1.0 - incr * Adams_Coeff[0] * Lattice.dR(i) * A[i]);
 
 		f[i] = f[i - incr] + incr*Adams_Coeff[0] * Lattice.dR(i) * X[i];
 
-		for (int j = 1; j < Adams_N; j++)
+		for (size_t j = 1; j < Adams_N; j++)
 		{
 			f[i] += incr * Adams_Coeff[j] * df_dR[i - incr*j] * Lattice.dR(i - incr*j);
 		}
@@ -646,7 +646,7 @@ vector<double> Interpolation::get_value(const vector<double> &f, const vector<do
 
 			if (close_left < x_ini.size() - order - 1)//Interpolate forwards.
 			{
-				for (int i = 0; i <= order; i++)
+				for (size_t i = 0; i <= order; i++)
 				{
 					P[i] = f[close_left + i];
 					x[i] = x_ini[close_left + i];
@@ -654,16 +654,16 @@ vector<double> Interpolation::get_value(const vector<double> &f, const vector<do
 			}
 			else//X is too close to the end point. Interpolate backwards.
 			{
-				for (int i = 0; i <= order; i++)
+				for (size_t i = 0; i <= order; i++)
 				{
 					P[i] = f[close_left + 1 - i];
 					x[i] = x_ini[close_left + 1 - i];
 				}
 			}
 
-			for (int i = 1; i <= order; i++)
+			for (size_t i = 1; i <= order; i++)
 			{
-				for (int j = 0; j <= order - i; j++)
+				for (size_t j = 0; j <= order - i; j++)
 				{
 					tmp[j] = (P[j] * (x[j + i] - X) + P[j + 1] * (X - x[j])) / (x[j + i] - x[j]);
 					d_tmp[j] = (dP[j] * (x[j + i] - X) - P[j] + dP[j + 1] * (X - x[j]) + P[j + 1]) / (x[j + i] - x[j]);
@@ -699,7 +699,7 @@ vector<double> Interpolation::get_value(PairFunction &S_old, Grid &Lattice_old, 
 
 			if (close_left < Lattice_old.size() - order - 1)//Interpolate forwards.
 			{
-				for (int i = 0; i <= order; i++)
+				for (size_t i = 0; i <= order; i++)
 				{
 					P[i] = S_old.F[close_left + i];
 					dP[i] = 0;
@@ -708,7 +708,7 @@ vector<double> Interpolation::get_value(PairFunction &S_old, Grid &Lattice_old, 
 			}
 			else//X is too close to the end point. Interpolate backwards.
 			{
-				for (int i = 0; i <= order; i++)
+				for (size_t i = 0; i <= order; i++)
 				{
 					P[i] = S_old.F[close_left + 1 - i];
 					dP[i] = 0;
@@ -716,9 +716,9 @@ vector<double> Interpolation::get_value(PairFunction &S_old, Grid &Lattice_old, 
 				}
 			}
 
-			for (int i = 1; i <= order; i++)
+			for (size_t i = 1; i <= order; i++)
 			{
-				for (int j = 0; j <= order - i; j++)
+				for (size_t j = 0; j <= order - i; j++)
 				{
 					tmp[j] = (P[j] * (x[j + i] - X) + P[j + 1] * (X - x[j])) / (x[j + i] - x[j]);
 					d_tmp[j] = (dP[j] * (x[j + i] - X) - P[j] + dP[j + 1] * (X - x[j]) + P[j + 1]) / (x[j + i] - x[j]);
@@ -787,8 +787,8 @@ void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_
   // Adam paramteres.
   vector<double> M(2*order, 0);
   vector<double> V(2*order, 0);
-  double Beta1 = 0.9, Beta2 = 0.999, eta=1;
-  double Beta1_pow_m = 1, Beta2_pow_m = 1, M_hat, V_hat, e = 1;
+//   double Beta1 = 0.9, Beta2 = 0.999, eta=1;
+//   double Beta1_pow_m = 1, Beta2_pow_m = 1, M_hat, V_hat, e = 1;
   
   double Loss = 0;
   Adams I(Lattice, 5);
@@ -799,11 +799,11 @@ void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_
   double tmp, exp_ar2, pred_norm, Lambda = 1, lr = 1e-3;
 
   // TODO: adjust Beta in geometric set from 4 to something 'order' dependent.
-  for (int i = 0; i < order; i++) {
+  for (size_t i = 0; i < order; i++) {
     if (i == 0) a[0] = 0.1;
     else a[i] = 3*a[i-1];
 
-    for (int j = start_pt; j < end_pt; j++) {
+    for (size_t j = start_pt; j < end_pt; j++) {
       tmp = Lattice.R(j)*Lattice.R(j);
       aux_func[j] = tmp*exp(-a[i]*tmp);
     }
@@ -813,14 +813,14 @@ void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_
   
   double epsilon = 1; // relative error.
   
-  for (int m = 0; m < max_iter; m++) {
+  for (size_t m = 0; m < max_iter; m++) {
     // Calculate current loss.
     Loss = 0;
-    for (int j = start_pt; j < end_pt; ++j) {
+    for (size_t j = start_pt; j < end_pt; ++j) {
       Vals_pred[j] = 0;
       tmp = Lattice.R(j);
       tmp *= tmp;
-      for (int i = 0; i < order; i++) Vals_pred[j] += b[i]*tmp*exp(-a[i]*tmp);
+      for (size_t i = 0; i < order; i++) Vals_pred[j] += b[i]*tmp*exp(-a[i]*tmp);
       tmp = Vals_pred[j] - Vals[j];
       aux_func[j] = tmp*tmp;
     }
@@ -831,11 +831,11 @@ void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_
     //Loss += Lambda*fabs(pred_norm - vals_norm);
 
     // Calculate gradients.
-    for (int i = 0; i < order; i++) {
+    for (size_t i = 0; i < order; i++) {
       // Grad b.
       grad_b[i] = 0;
 
-      for (int j = start_pt; j < end_pt; j++) {
+      for (size_t j = start_pt; j < end_pt; j++) {
         tmp = Lattice.R(j);
         tmp *= tmp;
         exp_ar2 = tmp*exp(-a[i]*tmp);
@@ -848,7 +848,7 @@ void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_
 
       // Grad_a.
       grad_a[i] = 0;
-      for (int j = start_pt; j < end_pt; j++) {
+      for (size_t j = start_pt; j < end_pt; j++) {
         tmp = Lattice.R(j);
         tmp *= tmp;
         exp_ar2 = tmp*tmp*exp(-a[i]*tmp);
@@ -860,7 +860,7 @@ void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_
 
     printf("Loss = %3.6f | Norm(S) = %3.6f | Norm(V) = %3.6f\n", Loss, pred_norm, vals_norm);
     
-    for (int i = 0; i < order; i++) {
+    for (size_t i = 0; i < order; i++) {
       tmp = grad_a[i]*lr;
       if (fabs(tmp) > a[i]*0.5) tmp = 0.5*tmp/fabs(tmp)*a[i];
       a[i] -= tmp;
@@ -876,7 +876,7 @@ void Interpolation::gaussian_sum(vector<double> & Vals, Grid & Lattice, int max_
     Beta1_pow_m *= Beta1;
     Beta2_pow_m *= Beta2;
 
-    for (int i = 0; i < order; i++) {
+    for (size_t i = 0; i < order; i++) {
       M[i] = Beta1*M[i] + (1-Beta1)*dLoss_dw[i];
       V[i] = Beta2*V[i] + (1-Beta2)*dLoss_dw[i]*dLoss_dw[i];
 
@@ -959,7 +959,7 @@ vector<double> GaussQuad::get_Gauss_X(double a, double b)
 	// Linear mapping: X[i] = 0.5(b-a)*GaussX[i] + 0.5*(a+b).
 	double l = 0.5*(a + b);
 	vector<double> Result(GaussX.size(), l);
-	for (int i = 0; i < GaussX.size(); i++) {
+	for (size_t i = 0; i < GaussX.size(); i++) {
 		Result[i] += 0.5*(b - a)*GaussX[i];
 	}
 
@@ -971,7 +971,7 @@ double GaussQuad::Integrate(vector<double> &F, vector<double> &x, double a, doub
 	// Gauss quadrature integration formula.
 	double Result = 0;
 	if (GaussX.size() != x.size()) return 0;
-	for (int i = 0; i < x.size(); i++) {
+	for (size_t i = 0; i < x.size(); i++) {
 		Result += F[i]*GaussW[i];
 	}
 	Result *= 0.5*(b - a);

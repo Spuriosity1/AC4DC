@@ -17,7 +17,7 @@ This file is part of AC4DC.
 #pragma once
 
 #include <vector>
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 
 using namespace std;
 

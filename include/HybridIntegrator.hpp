@@ -19,7 +19,7 @@ This file is part of AC4DC.
 #define HYBRID_INTEGRATE_HPP
 
 #include "AdamsIntegrator.hpp"
-#include <Eigen/Dense>
+#include <eigen3/Eigen/Dense>
 
 namespace ode {
 template<typename T>
@@ -114,7 +114,7 @@ void Hybrid<T>::Moulton(unsigned n){
     T tmp;
     tmp *= 0;
     // Now tmp goes back to being an aggregator
-    for (int i = 1; i < this->order; i++) {
+    for (size_t i = 1; i < this->order; i++) {
         T ydot;
         this->sys2(this->y[1+n-i], ydot, this->t[1+n-i]);
         ydot *= this->b_AM[i];
