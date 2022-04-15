@@ -36,7 +36,7 @@ THE SOFTWARE.
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
-#include <vector>>
+#include <vector>
 
 #ifdef __cpp_lib_optional
 #include <optional>

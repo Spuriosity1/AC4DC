@@ -1,0 +1,30 @@
+# Average over configuration fractional occupancy is supported, atomic orbital occupancies are between 0 and 4L+2.
+
+symbol = "Ne"
+
+[electronic_gs]
+nuclear_charge = 18
+nuclear_potential = "coulomb"      # Can be "coulomb" for point-like nucleus, "sphere" for spherical nucleus.
+hamiltonian_form = "HF"            # Hamiltonian form. Can be HF, LDA.
+potential_model = "V_N"          # Potential model. Can be "V_N" for Hartree-Fock, "V_N-1no" for non-orthogonal excited state orbitals, "V_N-1" for classical potential.
+photon_gauge = "length"          # Gauge type for matrix elements involving photon absorption/emission. Can be either "length" or "velocity".
+
+[orbitals]
+# Orbitals and their occupancies
+"1s" = 2
+"2s" = 2
+"2p" = 6
+
+[radialgrid]
+points = 2000         
+min = 0.001	      # Origin of the coordinate grid. Should be > 0.
+max = 100	      # Maximum distance from the nucleus.
+
+# Hartree-Fock implementation numerical parameters.
+[tolerance]
+hf_log10 = -6
+schroedinger_log10 = -10 
+noex_log10 = -3            # No-exchange step convergence tolerance.
+max_iter = 500             # Maximum number of Hartree-Fock iterations.
+
+

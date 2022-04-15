@@ -1,4 +1,4 @@
-#include "src/Dipole.h"
+#include "src/ImpactCrossSection.h"
 #include "src/Constant.h"
 #include <iostream>
 
@@ -16,7 +16,7 @@ int main(int argc, char const *argv[])
     double U = B/7;
     double occ = 2;
 
-    double tot_sigma = Dipole::sigmaBEB(T, B, U, occ);
+    double tot_sigma = ImpactCrossSection::sigmaBEB(T, B, U, occ);
 
     std::cout<<"Total cross-section = "<<tot_sigma<<"\n";
      
@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
     for (size_t i = 0; i < num_integral; i++)
     {
         double W = i*de;
-        tmp += Dipole::DsigmaBEB(T, W, B, U, occ);
+        tmp += ImpactCrossSection::DsigmaBEB(T, W, B, U, occ);
     }
     tmp *= de;
     std::cout<<"Integrated differential cross-section over [0, T-B] = "<<tmp<<"\n";
@@ -44,7 +44,7 @@ int main(int argc, char const *argv[])
     for(size_t i=0; i<num_points; i++) {
         W1 += de;
         W2 -= de;
-        std::cerr<<W1 <<" "<< Dipole::DsigmaBEB(T, W1, B, U, occ)<<" "<<Dipole::DsigmaBEB(T, W2, B, U, occ)<<"\n";
+        std::cerr<<W1 <<" "<< ImpactCrossSection::DsigmaBEB(T, W1, B, U, occ)<<" "<<ImpactCrossSection::DsigmaBEB(T, W2, B, U, occ)<<"\n";
     }
     
     

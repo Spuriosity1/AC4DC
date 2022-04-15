@@ -34,10 +34,6 @@ using namespace std;
 // Let scripts/run.py handle all of these details.
 
 
-
-// Note. this code is NOT compatible with Windows.
-// Rewriting with boost::filesystem is a good idea if this is required.
-
 void print_banner(const char* fname){
     std::ifstream ifs(fname, ifstream::in);
 

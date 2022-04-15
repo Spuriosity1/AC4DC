@@ -1,5 +1,5 @@
 #include "src/Constant.h"
-#include <vector>>
+#include <vector>
 #include <iostream>
 
 using namespace std;
