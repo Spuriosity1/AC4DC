@@ -4,8 +4,6 @@
 #include <filesystem>
 // The containers storing rates as used by rate equation solver
 
-typedef std::vector<double> bound_t;
-
 
 namespace RateData {
 
@@ -61,25 +59,32 @@ namespace RateData {
 	struct Atom
 	{
 		// flags for specifying what to save
-		static const char PHOTO = 0x01;
-		static const char FLUOR = 0x02;
-		static const char AUGER = 0x04;
-		static const char EII   = 0x08;
+		// static const char PHOTO = 0x01;
+		// static const char FLUOR = 0x02;
+		// static const char AUGER = 0x04;
+		// static const char EII   = 0x08;
 		std::vector<std::string> index_names = std::vector<std::string>(0);
 		std::string name = "";
 		double nAtoms = 1.;// atomic number density
 		// double R = 189.; // 100nm focal spot radius.
 		unsigned int num_conf = 1;
+
+		// the true rate data
 		std::vector<RateData::Rate> Photo = std::vector<RateData::Rate>(0);
 		std::vector<RateData::Rate> Fluor = std::vector<RateData::Rate>(0);
 		std::vector<RateData::Rate> Auger = std::vector<RateData::Rate>(0);
 		std::vector<RateData::EIIdata> EIIparams = std::vector<RateData::EIIdata>(0);
-
-		void save_csv(const std::filesystem::path root,  char which = PHOTO | FLUOR | AUGER | EII );
-		void load_csv(const std::filesystem::path root,  char which = PHOTO | FLUOR | AUGER | EII );
 	};
 
 	// Takes the dtailed balance dual
 	std::vector<InverseEIIdata> inverse(const std::vector<EIIdata>& eiiVec);
 
+	// Functional-style save functions modeled on printf/scanf
+	void save_csv(const std::filesystem::path& root, const std::vector<Rate>& rates);
+	void save_csv(const std::filesystem::path& root, const std::vector<EIIdata>& rates);
+	void save_csv(const std::filesystem::path& root, const Atom& a);
+
+	void load_csv(const std::filesystem::path& root, const std::vector<Rate>& rates);
+	void load_csv(const std::filesystem::path& root, const std::vector<EIIdata>& rates);
+	void load_csv(const std::filesystem::path& root, const Atom& a);
 }

@@ -50,12 +50,11 @@ int main (int argc, char**argv){
     }
 
     // check if we can write to the output directory
-    std::filesystem::path logpath = argv[2];
+    std::filesystem::path stem = argv[2];
     // append to path
-    logpath /= infile.replace_extension();
-    logpath += std::string("_") + argv[3] +".log";
+    stem /= infile.replace_extension() + std::string("_") + argv[3] 
     
-    std::ofstream log(logpath);
+    std::ofstream log(stem + ".log");
     if (!log.good())){
         std::cerr<<"Could not access directory "<<argv[2]<<std::endl;
         throw std::runtime_error("Bad outdir");
@@ -75,6 +74,6 @@ int main (int argc, char**argv){
     RateData::Atom rates = Dynamics.SolvePlasmaBEB(max_occ, final_occ, log);
 
     log.close();
-    std::ofstream(logpath.replace_extension(".toml"));
-    rates.save_toml(logpath);
+    
+    RateData::save_csv(stem, rates);
 }

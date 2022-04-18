@@ -25,13 +25,17 @@ This file is part of AC4DC.
 #include "Constant.h"
 #include "FreeDistribution.h"
 
+typedef std::vector<double> bound_t;
 
+// dy/dy = F(y)
+// this is the 'y'
 
 // Class responsible for storing the system state.
 class state_type
 {
 public:
     std::vector<bound_t> atomP; // Probabilities of state for all atoms.
+    // atomp[atom_idx][orbital_idx];
     Distribution F; // Energy distribution function
     double bound_charge;
 
@@ -41,6 +45,7 @@ public:
     state_type& operator+=(const state_type &s);
     state_type& operator*=(const double x);
     // state_type operator+(const state_type& s2);
+
     // state_type operator*(double x);
     // convenience members
     state_type& operator=(const double x);

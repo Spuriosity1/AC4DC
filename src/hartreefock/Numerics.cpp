@@ -20,6 +20,8 @@ This file is part of AC4DC.
 #include "EigenSolver.h"
 #include <algorithm>
 
+// TODO: Unify this with the ABM integrator defined later
+
 static const double adams_10[10] = { 2082753.0 / 7257600.0, 9449717.0 / 7257600.0, -11271304.0 / 7257600.0, 16002320.0 / 7257600.0, -17283646.0 / 7257600.0,
 13510082.0 / 7257600.0, -7394032.0 / 7257600.0, 2687864.0 / 7257600.0, -583435.0 / 7257600.0, 57281.0 / 7257600.0 };
 

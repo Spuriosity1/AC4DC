@@ -17,7 +17,7 @@
 # ---------- Compiler and linker directives ----------
 CXX = g++-11
 
-CXXFLAGS = -std=c++17 -pedantic -g -O1 -Wall -no-pie 
+CXXFLAGS = -std=c++17 -fopenmp -MD -g -Wall -pedantic
 # LDFLAGS = -Wl,--gc-sections
 
 mkfile_path := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
@@ -26,53 +26,44 @@ mkfile_path := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 BIN_PATH = ../bin
 BUILD_PATH = ../build
 
-# ------ Establishing objects and sources ----
-
-# Get all of the .cpp files, however nasty
-SOURCES = $(wildcard *.cpp) $(wildcard */*.cpp)
-
+# ------- System Include  --------------
 # Change ~/include as necessary for your architecture
-INC_PATH = -I /opt/homebrew/include
+INC_PATH = -I/opt/homebrew/include
 
 
+# -------- Establishing objects and sources ------
 
+RATE_SRC = $(wildcard hartreefock/*.cpp) $(wildcard struct_hartreefock/*.cpp) $(wildcard numerical/*.cpp)
+RATE_OBJ = $(addprefix $BUILD_PATH/,$(RATE_SRC:.cpp=.o)))
 
-INC_PATH += -I $(mkfile_path)$(COMMON_DIR) -I $(mkfile_path)$(STRUCT_DIR) -I $(mkfile_path)$(MANAGER_DIR) 
+# ------------- Specific Include -----------
+
+RATE_INC = $(wildcard hartreefock/*.h) $(wildcard struct_hartreefock/*.h) $(wildcard numerical/*.h)
+
 
 # ---------- Libraries needed for linking ----------
 
 # Change or remove ~/lib as necessary for your architecture
-LIB_PATH = -L /opt/homebrew/lib
+LIB_PATH = -L/opt/homebrew/lib 
 
-LIBS_STD = -lstdc++ -lm
-LIBS_GSL = -lgsl -lgslcblas
-LIBS_FFT = -lfftw3
-
-
-# ---------- Compilation rules ----------
-
-# Nontrivial header dependences
-DEPENDS := $(patsubst %.cc,%.d,$(SOURCES))
 
 
 
 # Generic .cc -> .o rule: note we generally don't have .hh files
-$(BUILD_PATH)/%.o: %.cc
-	mkdir -p $(BUILD_PATH)/$(COMMON_DIR)
-	mkdir -p $(BUILD_PATH)/$(MANAGER_DIR)
-	mkdir -p $(BUILD_PATH)/$(STRUCT_DIR)
+$(BUILD_PATH)/%.o: %.cpp
+	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) $(INC_PATH) -MMD -MP $< -c -o $@
-
-
 
 
 # ---------- Linking rules ----------
 
 # Generic .o -> exec rule: uses all prerequisites (meant to be .o files)
-%: $(BUILD_PATH)/%.o $(COMMON_O) $(MANAGER_O) $(STRUCT_O)
+ratecalc: 
 	$(CXX) $(CXXFLAGS) $(INC_PATH) $(LDFLAGS) -MMD $^ \
-	$(LIB_PATH) $(LIBS_STD) $(LIBS_GSL) $(LIBS_FFT) \
-	-o $(BIN_PATH)/$@
+	$(LIB_PATH) -o $(BIN_PATH)/$@
+
+# TODO
+# simulate: 
 
 # Don't allow direct compilation 
 %: %.cc

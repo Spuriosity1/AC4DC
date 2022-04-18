@@ -114,6 +114,6 @@ int main(int argc, char const *argv[]) {
     I.set_initial_condition(temperature, density, sdensity, step);
     I.run_sim(fin_time);
     I.print(fname);
-    I.print(fname + ".raw");
+    I.printraw(fname + ".raw");
     return 0;
 }
