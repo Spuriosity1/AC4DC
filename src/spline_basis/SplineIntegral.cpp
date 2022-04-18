@@ -15,8 +15,8 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-#include "SplineIntegral.h"
-#include "config.h"
+#include "SplineIntegral.hpp"
+#include "config.hpp"
 // #include <GaussQuad.hpp>
 
 // defines for numerical integration

@@ -1,6 +1,6 @@
 #include <iostream>
-#include "src/FreeDistribution.h"
-#include "src/Constant.h"
+#include "src/FreeDistribution.hpp"
+#include "src/Constant.hpp"
 #include <sstream>
 
 using namespace std;

@@ -16,18 +16,18 @@ This file is part of AC4DC.
 ===========================================================================*/
 // (C) Alaric Sanders 2020
 
-#include "ElectronSolver.h"
-#include "HartreeFock.h"
-#include "ComputeRateParam.h"
-#include "SplineIntegral.h"
+#include "ElectronSolver.hpp"
+#include "HartreeFock.hpp"
+#include "ComputeRateParam.hpp"
+#include "SplineIntegral.hpp"
 #include <fstream>
 #include <algorithm>
 #include <eigen3/Eigen/SparseCore>
 #include <eigen3/Eigen/Dense>
 #include <chrono>
-#include <math.h>
-#include <omp.h>
-#include "config.h"
+#include <math.hpp>
+#include <omp.hpp>
+#include "config.hpp"
 
 
 state_type ElectronSolver::get_ground_state() {

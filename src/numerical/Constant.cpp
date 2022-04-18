@@ -16,7 +16,7 @@ This file is part of AC4DC.
 ===========================================================================*/
 #include <vector>
 #include <algorithm>
-#include "Constant.h"
+#include "Constant.hpp"
 #include <cmath>
 #include <fstream>
 #include <sstream>

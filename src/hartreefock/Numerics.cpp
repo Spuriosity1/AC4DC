@@ -14,10 +14,10 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#include "Grid.h"
-#include "Numerics.h"
+#include "Grid.hpp"
+#include "Numerics.hpp"
 #include <vector>
-#include "EigenSolver.h"
+#include "EigenSolver.hpp"
 #include <algorithm>
 
 // TODO: Unify this with the ABM integrator defined later

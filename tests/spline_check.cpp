@@ -1,4 +1,4 @@
-#include "src/SplineBasis.h"
+#include "src/SplineBasis.hpp"
 #include <iostream>
 #include <sstream>
 #include <fstream>

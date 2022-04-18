@@ -15,15 +15,15 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-#include "MolInp.h"
-#include "Constant.h"
+#include "MolInp.hpp"
+#include "Constant.hpp"
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
 #include <map>
-#include "HartreeFock.h"
-#include "ComputeRateParam.h"
+#include "HartreeFock.hpp"
+#include "ComputeRateParam.hpp"
 
 
 MolInp::MolInp(const char* filename, std::ofstream & log)

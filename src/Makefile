@@ -34,11 +34,11 @@ INC_PATH = -I/opt/homebrew/include
 # -------- Establishing objects and sources ------
 
 RATE_SRC = $(wildcard hartreefock/*.cpp) $(wildcard struct_hartreefock/*.cpp) $(wildcard numerical/*.cpp)
-RATE_OBJ = $(addprefix $BUILD_PATH/,$(RATE_SRC:.cpp=.o)))
+RATE_OBJ = $(addprefix $(BUILD_PATH)/,$(RATE_SRC:.cpp=.o)))
 
 # ------------- Specific Include -----------
 
-RATE_INC = $(wildcard hartreefock/*.h) $(wildcard struct_hartreefock/*.h) $(wildcard numerical/*.h)
+RATE_INC = $(wildcard hartreefock/*.hpp) $(wildcard struct_hartreefock/*.hpp) $(wildcard numerical/*.hpp)
 
 
 # ---------- Libraries needed for linking ----------
@@ -58,8 +58,8 @@ $(BUILD_PATH)/%.o: %.cpp
 # ---------- Linking rules ----------
 
 # Generic .o -> exec rule: uses all prerequisites (meant to be .o files)
-ratecalc: 
-	$(CXX) $(CXXFLAGS) $(INC_PATH) $(LDFLAGS) -MMD $^ \
+ratecalc: $(RATE_OBJ)
+	$(CXX) $(CXXFLAGS) $(INC_PATH) $(RATE_INC) $(LDFLAGS) -MMD $^ \
 	$(LIB_PATH) -o $(BIN_PATH)/$@
 
 # TODO

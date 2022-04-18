@@ -16,14 +16,14 @@ This file is part of AC4DC.
 ===========================================================================*/
 #pragma once
 
-#include "HFInput.h"
-#include "Grid.h"
-#include "RadialWF.h"
-#include "Potential.h"
+#include "HFInput.hpp"
+#include "Grid.hpp"
+#include "RadialWF.hpp"
+#include "Potential.hpp"
 #include <vector>
 #include <fstream>
-#include "Numerics.h"
-#include "Constant.h"
+#include "Numerics.hpp"
+#include "Constant.hpp"
 
 
 //Class that performs Hartree-Fock calculations

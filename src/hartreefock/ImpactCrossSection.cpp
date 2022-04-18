@@ -15,9 +15,9 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-#include "ImpactCrossSection.h"
+#include "ImpactCrossSection.hpp"
 #include <cmath>
-#include "Constant.h"
+#include "Constant.hpp"
 #include <cassert>
 
 double ImpactCrossSection::sigmaBEB(double T, double B, double u, int occ)

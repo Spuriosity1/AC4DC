@@ -17,9 +17,9 @@ This file is part of AC4DC.
 #ifndef AC4DC_INPUT_CXX_H
 #define AC4DC_INPUT_CXX_H
 
-#include "RadialWF.h"
-#include "Potential.h"
-#include "Grid.h"
+#include "RadialWF.hpp"
+#include "Potential.hpp"
+#include "Grid.hpp"
 #include <vector>
 #include <string>
 #include <cmath>

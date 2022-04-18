@@ -16,8 +16,8 @@ This file is part of AC4DC.
 ===========================================================================*/
 #pragma once
 
-#include "Grid.h"
-#include "RadialWF.h"
+#include "Grid.hpp"
+#include "RadialWF.hpp"
 #include <string>
 #include <vector>
 #include <memory>

@@ -20,18 +20,18 @@ This file is part of AC4DC.
 
 
 #include <sstream>
-#include <assert.h>
-#include <math.h>
+#include <assert.hpp>
+#include <math.hpp>
 #include <iostream>
 #include <eigen3/Eigen/SparseCore>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/SparseCholesky>
-#include "Constant.h"
-#include "SplineIntegral.h"
-#include "ImpactCrossSection.h"
+#include "Constant.hpp"
+#include "SplineIntegral.hpp"
+#include "ImpactCrossSection.hpp"
 #include "GridSpacing.hpp"
 #include "LossGeometry.hpp"
-#include "config.h"
+#include "config.hpp"
 
 
 // Represents a statistical distribution of electrons. Internal units are atomic units.

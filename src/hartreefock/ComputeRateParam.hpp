@@ -15,27 +15,27 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 #pragma once
-#include "RadialWF.h"
-#include "Grid.h"
-#include "Potential.h"
+#include "RadialWF.hpp"
+#include "Grid.hpp"
+#include "Potential.hpp"
 #include <vector>
-#include "Constant.h"
-// #include "IntegrateRateEquation.h"
-#include "HFInput.h"
-// #include "MolInp.h"
-#include "HartreeFock.h"
-#include "DecayRates.h"
-#include "Numerics.h"
+#include "Constant.hpp"
+// #include "IntegrateRateEquation.hpp"
+#include "HFInput.hpp"
+// #include "MolInp.hpp"
+#include "HartreeFock.hpp"
+#include "DecayRates.hpp"
+#include "Numerics.hpp"
 #include <fstream>
 #include <iostream>
-#include <sys/stat.h>
-#include <dirent.h>
+#include <sys/stat.hpp>
+#include <dirent.hpp>
 #include <sstream>
 #include <string>
-#include <omp.h>
+#include <omp.hpp>
 #include <algorithm>
-#include "EigenSolver.h"
-// #include "Plasma.h"
+#include "EigenSolver.hpp"
+// #include "Plasma.hpp"
 #include <utility>
 
 

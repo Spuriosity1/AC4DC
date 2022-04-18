@@ -1,4 +1,4 @@
-#include "../src/Plasma.h"
+#include "../src/Plasma.hpp"
 #include <cstdio>
 
 void print_est(elec_state_t &es) {

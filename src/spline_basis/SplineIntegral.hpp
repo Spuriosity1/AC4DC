@@ -18,10 +18,10 @@ This file is part of AC4DC.
 #ifndef AC4DC_SPLINEINTEGRAL_CXX_H
 #define AC4DC_SPLINEINTEGRAL_CXX_H
 
-#include "Constant.h"
-#include "ImpactCrossSection.h"
-#include "SplineBasis.h"
-#include <omp.h>
+#include "Constant.hpp"p"
+#include "ImpactCrossSection.hpp"p"
+#include "SplineBasis.hpp"p"
+#include <omp.hpp>p>
 
 struct SparsePair
 {

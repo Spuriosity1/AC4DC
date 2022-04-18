@@ -1,4 +1,4 @@
-#include "RateData.h"
+#include "RateData.hpp"
 
 std::vector<InverseEIIdata> inverse(const std::vector<EIIdata>& eiiVec)
 {

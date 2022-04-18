@@ -17,10 +17,10 @@ This file is part of AC4DC.
 
 // (C) Alaric Sanders 2020
 
-#include "ComputeRateParam.h"
-#include "ElectronSolver.h"
-#include "Input.h"
-#include "Constant.h"
+#include "ComputeRateParam.hpp"
+#include "ElectronSolver.hpp"
+#include "Input.hpp"
+#include "Constant.hpp"
 #include <iostream>
 
 using namespace std;

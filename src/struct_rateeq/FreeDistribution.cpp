@@ -15,10 +15,10 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-#include "FreeDistribution.h"
-#include "ImpactCrossSection.h"
-#include "Constant.h"
-#include "SplineIntegral.h"
+#include "FreeDistribution.hpp"
+#include "ImpactCrossSection.hpp"
+#include "Constant.hpp"
+#include "SplineIntegral.hpp"
 #include <eigen3/Eigen/StdVector>
 
 // #define NDEBUG

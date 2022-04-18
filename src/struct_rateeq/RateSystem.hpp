@@ -20,10 +20,10 @@ This file is part of AC4DC.
 
 
 #include <sstream>
-#include <assert.h>
+#include <assert.hpp>
 #include <iostream>
-#include "Constant.h"
-#include "FreeDistribution.h"
+#include "Constant.hpp"
+#include "FreeDistribution.hpp"
 
 typedef std::vector<double> bound_t;
 

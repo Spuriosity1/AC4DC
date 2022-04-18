@@ -24,11 +24,11 @@ This file should arguably be called RateEquationSOlver, however, for historical 
 */
 // #include <boost/numeric/odeint.hpp>
 #include "HybridIntegrator.hpp"
-#include "RateSystem.h"
-#include "Constant.h"
-#include "MolInp.h"
-#include "Input.h"
-#include "Pulse.h"
+#include "RateSystem.hpp"
+#include "Constant.hpp"
+#include "MolInp.hpp"
+#include "Input.hpp"
+#include "Pulse.hpp"
 #include <iostream>
 #include <stdexcept>
 

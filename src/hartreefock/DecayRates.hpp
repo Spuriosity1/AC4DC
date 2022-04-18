@@ -16,13 +16,13 @@ This file is part of AC4DC.
 ===========================================================================*/
 #pragma once
 
-#include "RadialWF.h"
-#include "Grid.h"
-#include "Potential.h"
+#include "RadialWF.hpp"
+#include "Grid.hpp"
+#include "Potential.hpp"
 #include <vector>
-#include "Constant.h"
+#include "Constant.hpp"
 #include <fstream>
-#include "HFInput.h"
+#include "HFInput.hpp"
 
 
 //Class calculates total photoionization crossection for a given orbital

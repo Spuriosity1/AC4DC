@@ -15,11 +15,11 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-#include "Pulse.h"
+#include "Pulse.hpp"
 #include <fstream>
 #include <iostream>
 #include <cmath>
-#include "Constant.h"
+#include "Constant.hpp"
 
 
 void Pulse::save(const std::vector<double>& Tvec, const std::string& fname) {

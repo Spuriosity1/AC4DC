@@ -14,7 +14,7 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#include "HartreeFock.h"
+#include "HartreeFock.hpp"
 #include <algorithm>
 
 using namespace std;

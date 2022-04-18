@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
-#include "src/FreeDistribution.h"
-#include "src/Constant.h"
+#include "src/FreeDistribution.hpp"
+#include "src/Constant.hpp"
 
 
 using namespace std;

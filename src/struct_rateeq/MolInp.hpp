@@ -18,12 +18,12 @@ This file is part of AC4DC.
 #ifndef AC4DC_CXX_MOLINP_H
 #define AC4DC_CXX_MOLINP_H
 
-#include "Input.h"
-#include "Constant.h"
-#include "SplineBasis.h"
+#include "Input.hpp"
+#include "Constant.hpp"
+#include "SplineBasis.hpp"
 #include "GridSpacing.hpp"
 #include "LossGeometry.hpp"
-#include "Pulse.h"
+#include "Pulse.hpp"
 
 class MolInp
 {

@@ -15,10 +15,10 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-#include "SplineBasis.h"
-#include <assert.h>
-#include "Constant.h"
-#include "BSpline.h"
+#include "SplineBasis.hpp"
+#include <assert.hpp>
+#include "Constant.hpp"
+#include "BSpline.hpp"
 #include <algorithm>
 
 // classic false position method

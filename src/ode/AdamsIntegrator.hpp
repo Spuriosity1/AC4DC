@@ -19,10 +19,10 @@ This file is part of AC4DC.
 #define ADAMS_CXX_H
 
 #include <vector>
-#include "Adams_arrays.h"
+#include "Adams_arrays.hpp"
 #include <iostream>
 #include <iomanip>
-#include <assert.h>
+#include <assert.hpp>
 #include <stdexcept>
 
 #define ODE_MAX_MEOMRY_USE 4000000000

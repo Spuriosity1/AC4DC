@@ -17,8 +17,8 @@ This file is part of AC4DC.
 #pragma once
 
 #include <vector>
-#include "Grid.h"
-#include "RadialWF.h"
+#include "Grid.hpp"
+#include "RadialWF.hpp"
 #include <cmath>
 /*this class deploys the Adams routine for solution of the linear coupled system of ODE dy/dx = f(x)*y
 y is a vector with two components (F G), and f is a 2x2 matrix, so the equation take the following form

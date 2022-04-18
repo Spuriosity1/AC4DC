@@ -1,5 +1,5 @@
-#include "src/ImpactCrossSection.h"
-#include "src/Constant.h"
+#include "src/ImpactCrossSection.hpp"
+#include "src/Constant.hpp"
 #include <iostream>
 
 using namespace std;

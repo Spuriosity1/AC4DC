@@ -14,7 +14,7 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#include "RadialWF.h"
+#include "RadialWF.hpp"
 
 RadialWF::RadialWF(const RadialWF& other) : PairFunction(other), l(other.l), Energy(other.Energy), n(other.n), infinity(other.infinity), turn(other.turn), occup_number(other.occup_number)
 {}

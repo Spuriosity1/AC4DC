@@ -15,9 +15,9 @@ This file is part of AC4DC.
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
 
-#include "RateSystem.h"
-#include "ImpactCrossSection.h"
-#include <math.h>
+#include "RateSystem.hpp"
+#include "ImpactCrossSection.hpp"
+#include <math.hpp>
 // #include <std::stringstream>
 // #define NDEBUG
 

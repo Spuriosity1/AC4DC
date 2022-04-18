@@ -14,9 +14,9 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#include "EigenSolver.h"
+#include "EigenSolver.hpp"
 #include <vector>
-#include "stdafx.h"
+#include "stdafx.hpp"
 
 EigenSolver::EigenSolver()
 {

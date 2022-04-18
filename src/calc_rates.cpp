@@ -14,10 +14,10 @@
 #include <fstream>
 #include <filesystem>
 
-#include "numerical/Constant.h"
-#include "hartreefock/HartreeFock.h"
-#include "hartreefock/ComputeRateParam.h"
-#include "hartreefock/HFInput.h"
+#include "numerical/Constant.hpp"
+#include "hartreefock/HartreeFock.hpp"
+#include "hartreefock/ComputeRateParam.hpp"
+#include "hartreefock/HFInput.hpp"
 
 
 // Usage: 

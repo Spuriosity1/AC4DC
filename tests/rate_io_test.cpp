@@ -1,4 +1,4 @@
-#include "src/ComputeRateParam.h"
+#include "src/ComputeRateParam.hpp"
 
 // This file reads a rate from file and outputs what it thinks is the same thing.
 // Diagnostic tool for parser errors.

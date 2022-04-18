@@ -14,12 +14,12 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#include "Potential.h"
-#include "stdafx.h"
-#include "Constant.h"
-#include "Numerics.h"
+#include "Potential.hpp"
+#include "stdafx.hpp"
+#include "Constant.hpp"
+#include "Numerics.hpp"
 #include <algorithm>
-#include "Wigner/wignerSymbols.h"
+#include "Wigner/wignerSymbols.hpp"
 
 using namespace std;
 
