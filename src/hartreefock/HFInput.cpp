@@ -16,10 +16,159 @@ This file is part of AC4DC.
 ===========================================================================*/
 #include "HFInput.hpp"
 #include "Constant.hpp"
+
+#include <toml++/toml.h>
+
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <map>
+#include <limits>
+
+const std::map<char, unsigned> Orbital::chemists_l = {
+	{'s', 0},
+	{'p', 1},
+	{'d', 2},
+	{'f', 3}
+};
+
+const bool Orbital::is_chemist_l(char symbol){
+	return Orbital::chemists_l.find(symbol) != Orbital::chemists_l.end();
+}
+
+// weak string matching
+bool string_similar(const std::string& s1, const std::string& s2, 
+		const size_t num_match = std::numeric_limits<size_t>::max())
+{
+	size_t num_compared = std::min(std::min(s1.size(), s2.size()), num_match);
+	if (num_compared == 0) {
+		return false;
+	}
+	for (size_t i=0; i<std::min(s1.size(), num_match); i++){
+		if (std::tolower(s1[i]) != std::tolower(s2[i])){
+			return false;
+		}
+	}
+	return true;
+}
+
+// void throw_if_ndef(toml::node_view t, const char* key){
+// 	if (!t[key].has_value()){
+// 		std::cerr<<"No configuration found for "<<key<<"\n";
+// 		throw std::runtime_error("Bad config file");
+// 	}
+// }
+
+void HFInput::interpret_npot(const std::string& s){
+	if ( string_similar(s, "coulomb")){
+		this->nuclear_potential = n_pot_t::coulomb;
+	} else if ( string_similar(s, "sphere")){
+		this->nuclear_potential = n_pot_t::sphere;
+	} else {
+		std::cerr << "Bad specifier: "<< s <<std::endl;
+		throw std::runtime_error("Bad specifier");
+	}
+}
+
+
+void HFInput::interpret_gauge(const std::string& s){
+	if ( string_similar(s, "length") ){
+		this->gauge = gauge_t::length;
+	} else if ( string_similar(s, "velocity") ){
+		this->gauge = gauge_t::velocity;
+	} else {
+		std::cerr << "Bad specifier: "<< s <<std::endl;
+		throw std::runtime_error("Bad specifier");
+	}
+}
+
+void HFInput::interpret_hmodel(const std::string& s){
+	if ( string_similar(s, "HF", 1) ){
+		this->ham_model = ham_mod_t::HF;
+	} else if ( string_similar(s, "LDA", 1) ){
+		this->ham_model = ham_mod_t::LDA;
+	} else {
+		std::cerr << "Bad specifier: "<< s <<std::endl;
+		throw std::runtime_error("Bad specifier");
+	}
+}
+
+void HFInput::interpret_epot(const std::string& s){
+	if ( string_similar(s, "V_N") ){
+		this->orbital_potential = e_pot_t::V_N;
+	} else if ( string_similar(s, "V_N-1no") ){
+		this->orbital_potential = e_pot_t::V_Nm1no;
+	} else if ( string_similar(s, "V_N-1") ){
+		this->orbital_potential = e_pot_t::V_Nm1;
+	} else {
+		std::cerr << "Bad specifier: "<< s <<std::endl;
+		throw std::runtime_error("Bad specifier");
+	}
+}
+
+void HFInput::read_orbital(const std::string& entry){
+	std::stringstream ss(entry);
+	Orbital orb;
+	char ang_label;
+	ss >> orb.n >> ang_label >> orb.max_occ;
+	if (orb.n < 1 || !Orbital::is_chemist_l(ang_label) || orb.max_occ < 0){
+		std::cerr<<"Bad orbital configuration\n";
+		throw std::runtime_error("Bad specifier");
+	} 
+	orb.l = Orbital::chemists_l.at(ang_label);
+	orbitals.push_back(orb);
+}
+
+/**
+ * @brief Parses the stream 'ifs', expected to be TOML-formatted
+ * 
+ * @param ifs 
+ */
+void HFInput::from_toml(std::ifstream& ifs){
+	toml::table config = toml::parse(ifs);
+	this->name = *config["name"].value<std::string>();
+	
+	auto gs = config["electronic_gs"];
+
+	this->Z = *gs["nuclear_charge"].value<int64_t>();
+	
+	// cursed flag interpreters
+
+	// throw_if_ndef(gs, "nuclear_potential");
+	interpret_npot(*gs["nuclear_potential"].value<std::string>());
+	// throw_if_ndef(gs, "hamiltonian_form");
+	interpret_hmodel(*gs["hamiltonian_form"].value<std::string>());
+	// throw_if_ndef(gs, "potential_model");
+	interpret_epot(*gs["potential_model"].value<std::string>());
+	// throw_if_ndef(gs, "photon_gauge");
+	interpret_gauge(*gs["photon_gauge"].value<std::string>());
+
+	
+	toml::array& orbs = *gs["electron_config"].as_array();
+
+	orbitals.resize(0);
+	for (auto&& o : orbs){
+		read_orbital(*o.value<std::string>());
+	}
+
+	auto grid = config["radialgrid"].as_array();
+
+	auto tol = config["tolerance"].as_array();
+
+}
+
+void HFInput::into_toml(std::ofstream& ifs){
+	throw "Not Implemented";
+}
+
+
+
+
+
+/*
+
+//// DEPRECEATED
 
 Input::Input(char *filename, std::vector<RadialWF> &Orbitals, Grid &Lattice, std::ofstream & log)
 {
@@ -178,3 +327,6 @@ int Input::Hamiltonian()
 Input::~Input()
 {
 }
+
+
+*/

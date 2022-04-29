@@ -175,22 +175,22 @@ void Grid::Extend(double new_max_R)
 	NumPts = r.size();
 }
 
-double Grid::R(int i)
+double Grid::R(int i) const
 {
 	return r[i];
 }
 
-double Grid::dR(int i)
+double Grid::dR(int i) const
 {
 	return dr[i];
 }
 
-double Grid::dS()
+double Grid::dS() const
 {
 	return ds;
 }
 
-double Grid::dR_dS(int i)
+double Grid::dR_dS(int i) const
 {
 	return (r[i] / (beta + r[i]));
 }

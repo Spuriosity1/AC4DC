@@ -14,7 +14,8 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#pragma once
+#ifndef	PRAGMA_CXX_H 
+#define PRAGMA_CXX_H
 
 #include <vector>
 #include "Grid.hpp"
@@ -105,3 +106,4 @@ protected:
 // 	std::vector<double> GaussW;
 // 	std::vector<double> GaussX;
 // };
+#endif

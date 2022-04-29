@@ -16,18 +16,18 @@ This file is part of AC4DC.
 ===========================================================================*/
 #include "DecayRates.hpp"
 #include "Numerics.hpp"
-#include "Wigner/wignerSymbols.hpp"
+#include "wignerSymbols.hpp"
 #include <fstream>
 
 using namespace Constant;
+using namespace PhysicalRate;
 
 int IntegrateContinuum(Grid&, Potential&, std::vector<RadialWF>&, RadialWF*, bool);
 double A_k(int k, int L, int l_h, int l_f, int l_e, int l_c);
 bool Triad(int l_a, int l_b, int l_c);
 //int IntegrateContinuumOnce(Grid&, Potential&, RadialWF*);
-
-DecayRates::DecayRates(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &U, HFInput & Inp) : lattice(Lattice), orbitals(Orbitals),
-u(U), input(Inp)
+DecayRates::DecayRates( Grid &Lattice, std::vector<RadialWF> &Orbitals, const Potential &U, const HFInput & Inp) :
+lattice(Lattice), orbitals(Orbitals), u(U), input(Inp)
 {
 }
 
@@ -150,12 +150,14 @@ std::vector<photo> DecayRates::Photo_Ion(double omega, std::ofstream & log)
 							ME = I.Integrate(&density, 0, infinity);
 							break;
 						case HFInput::gauge_t::velocity:
+							{
 							double ang_coeff =  0.5*(Orbitals[i].L() - Continuum.L())*(Orbitals[i].L() + Continuum.L() + 1);
-								for (int s = 0; s < density.size(); s++)	{
+							for (int s = 0; s < density.size(); s++)	{
 								density[s] = Continuum.F[s] *(Orbitals[i].G[s] + ang_coeff * Orbitals[i].F[s]/Lattice.R(s)) ;
 							}
 							ME = I.Integrate(&density, 0, infinity)/omega;
 							break;
+							}
 						default:
 							throw "bad gauge";
 							break;
@@ -218,12 +220,14 @@ std::vector<fluor> DecayRates::Fluor()
 							break;
 						case HFInput::gauge_t::velocity:
 						// Velocity gauge.
+							{
 							double ang_coeff =  0.5*(orbitals[i].L() - orbitals[j].L())*(orbitals[i].L() + orbitals[j].L() + 1);
 								for (int s = 0; s < density.size(); s++)	{
 								density[s] = orbitals[j].F[s] *(orbitals[i].G[s] + ang_coeff * orbitals[i].F[s]/lattice.R(s)) ;
 							}
 							ME = I.Integrate(&density, 0, density.size()-1)/(orbitals[j].Energy - orbitals[i].Energy);
 							break;
+							}
 						default:
 							throw "Bad Gauge";
 							break;
@@ -360,7 +364,7 @@ std::vector<auger> DecayRates::Auger(std::vector<int> Max_occ, std::ofstream & l
 					Continuum.set_N(-1);
 					Continuum.set_infinity(Lattice.size() - 1);
 					Continuum.set_L(0);
-					if (input.ham_model == HFInput::ham_model::LDA) U.LDA_upd_dir(Orbitals);
+					if (input.ham_model == HFInput::ham_mod_t::LDA) U.LDA_upd_dir(Orbitals);
 					else U.HF_upd_dir(&Continuum, Orbitals);
 					if (input.orbital_potential == HFInput::e_pot_t::V_Nm1) U.HF_V_N1(&Continuum, Orbitals, f, true, false);
 					for (int l_E = min_L_cont; l_E <= Orbitals[e].L() + Orbitals[f].L() + Orbitals[h].L(); l_E++)

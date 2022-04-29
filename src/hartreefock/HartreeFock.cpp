@@ -22,7 +22,8 @@ using namespace std;
 int SetBoundaryValues(Grid*, RadialWF*, Potential*);
 int SetBoundaryValuesApprox(Grid*, RadialWF*, Potential*);
 
-HartreeFock::HartreeFock(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &Potential, const HFInput& Inp, std::ofstream & log) : lattice(&Lattice)
+HartreeFock(const Grid &Lattice, std::vector<RadialWF> &Orbitals, const Potential &Potential, const HFInput & Inp, std::ofstream &log):
+ lattice(&Lattice)
 {
 //==========================================================================================================
 // Estimate starting energies using Slater rules.

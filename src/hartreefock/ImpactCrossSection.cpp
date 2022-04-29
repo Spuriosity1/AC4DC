@@ -18,6 +18,7 @@ This file is part of AC4DC.
 #include "ImpactCrossSection.hpp"
 #include <cmath>
 #include "Constant.hpp"
+#include "GaussQuad.hpp"
 #include <cassert>
 
 double ImpactCrossSection::sigmaBEB(double T, double B, double u, int occ)
@@ -52,8 +53,8 @@ double ImpactCrossSection::sigmaBEBw1(double T, double B, double u, int occ)
 	double W = 0, k = 0.5*Wmax;
 	// -1 .. 1 -> 0 .. Wmax [ W = 0.5*Wmax*(x + 1) ]
 	for (int i = 0; i < 13; i++) {
-		W = k*(gaussX_13[i] + 1);
-		Result += gaussW_13[i]*W*ImpactCrossSection::DsigmaBEB(T, W, B, u, occ);
+		W = k*(gauss_quad::X_13[i] + 1);
+		Result += gauss_quad::W_13[i]*W*ImpactCrossSection::DsigmaBEB(T, W, B, u, occ);
 	}
 
 	Result *= 0.5*Wmax;

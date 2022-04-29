@@ -20,6 +20,9 @@ This file is part of AC4DC.
 #include <string>
 
 
+// an absolute mess of a class
+// TODO: unfuck this
+
 class Grid
 {	/* The Grid class creates the coordinate grid on the interval from [r_min, r_max]
 	with "num_grid_pts" points. The grid has not constant node spacing. It is constant
@@ -37,19 +40,29 @@ public:
 	Grid(double r_min, double r_max, double dR_max);//same linear logarithm, but with maximum dR_max. 
 	// Defines number of points on its own. Great for integrals with oscillating functions.
 	Grid(int X) { NumPts = X; }//empty lattice to be defined elsewhere
+	Grid(){NumPts=0;}//empty lattice to be defined elsewhere
 	Grid(std::vector<double> & X, std::vector<double> & dX);
 
 	// Exponential grid for integrals over Gaussian basis set and uniform for continuum states
 	Grid(int num_grid_pts, double r_min, double r_max, std::string mode);
-	//		Grid(const std::string& filename);
+	//		Grid(const std::string& filename);'
+	// Copy constructor
+	Grid(const Grid& g){
+		r = g.r;
+		dr = g.dr;
+		ds = g.ds;
+		NumPts = g.NumPts;
+		beta = g.beta;
+	}
 	~Grid(void);
 
 	void Extend(double new_max_R);
-	double R(int i);
-	double dR(int i);
-	double dR_dS(int i);
-	double dS();
+	double R(int i) const;
+	double dR(int i) const;
+	double dR_dS(int i) const;
+	double dS() const;
 
+	// Copy assignment
 	const Grid& operator=(const Grid& lattice)
 	{
 		r = lattice.r;
@@ -61,7 +74,7 @@ public:
 		return *this;
 	}
 
-	int size() {
+	int size() const {
 		return NumPts;
 	}
 

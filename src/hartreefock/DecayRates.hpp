@@ -14,7 +14,8 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#pragma once
+#ifndef DECAYRATE_CXX_H
+#define DECAYRATE_CXX_H
 
 #include "RadialWF.hpp"
 #include "Grid.hpp"
@@ -30,11 +31,11 @@ This file is part of AC4DC.
 class DecayRates
 {
 public:
-	DecayRates(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &U, HFInput & Input);
+	DecayRates( Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &U, const HFInput & Input);
 
-	std::vector<photo> Photo_Ion(double omega, std::ofstream & log); // All photoinonization crossections. Position in vector indicates orbital
-	std::vector<fluor> Fluor(); // Fluorescence rates for all channels.
-	std::vector<auger> Auger(std::vector<int> Max_occ, std::ofstream & log); // Auger decay rates for all channels.
+	std::vector<PhysicalRate::photo> Photo_Ion(double omega, std::ofstream & log); // All photoinonization crossections. Position in vector indicates orbital
+	std::vector<PhysicalRate::fluor> Fluor(); // Fluorescence rates for all channels.
+	std::vector<PhysicalRate::auger> Auger(std::vector<int> Max_occ, std::ofstream & log); // Auger decay rates for all channels.
 
 	std::vector<double> FT_density(double Q_min = 0, double Q_max = 2, int Q_size = 20);
 	~DecayRates();
@@ -43,11 +44,14 @@ private:
 	int IntegrateContinuum(Grid &Lattice, Potential &U, std::vector<RadialWF> &Core, RadialWF* Current, int c = 0);
 	Grid& lattice;
 	std::vector<RadialWF>& orbitals;
-	Potential& u;
-	HFInput & input;
+	const Potential& u;
+	const HFInput & input;
 
 	// EII internal intepolated data.
 	Grid CntLattice = Grid(0);// Grid for continuum wave calculations.
 	Potential CntU;
 	std::vector<RadialWF> CntOrbitals;// Interpolated onto continuum grid "orbitals".
 };
+
+
+#endif

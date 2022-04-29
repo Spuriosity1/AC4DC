@@ -1,14 +1,15 @@
 #include "RateData.hpp"
+#include <fstream>
 
-std::vector<InverseEIIdata> inverse(const std::vector<EIIdata>& eiiVec)
+std::vector<RateData::InverseEIIdata> inverse(const std::vector<RateData::EIIdata>& eiiVec)
 {
-    std::vector<InverseEIIdata> tbrVec(eiiVec.size()+1);
+    std::vector<RateData::InverseEIIdata> tbrVec(eiiVec.size()+1);
     for (size_t i = 0; i < tbrVec.size(); i++) {
         tbrVec[i].init = i;
     }
     for (auto& eii : eiiVec) {
         for (size_t j=0; j<eii.fin.size(); j++) {
-            InverseEIIdata& inv = tbrVec.at(eii.fin[j]);
+            RateData::InverseEIIdata& inv = tbrVec.at(eii.fin[j]);
             inv.fin.push_back(eii.init);
             inv.occ.push_back(eii.occ[j]);
             inv.ionB.push_back(eii.ionB[j]);
@@ -136,22 +137,20 @@ void WriteEIIParams(const std::string& fname, const std::vector<EIIdata>& rates)
 
 
 // IO version 2
-void RateData::save_csv(const std::filesystem::path& root, const std::vector<Rate>& rates){
-    std::string fname(root + ".csv");
+void RateData::save_csv(const std::filesystem::path& fname, const std::vector<RateData::Rate>& rates){
     FILE * fl = fopen(fname.c_str(), "w");
     fprintf(fl, "# from to rate(1/Ha) energy(Ha)\n");
     for (auto& R : rates) fprintf(fl, "%6ld %6ld %1.8e %1.8e\n", R.from, R.to, R.val, R.energy);
     fclose(fl);
 }
 
-void RateData::load_csv(const std::filesystem::path& root, std::vector<Rate>& rates){
-    std::string fname(root + ".csv");
+void RateData::load_csv(const std::filesystem::path& fname, std::vector<RateData::Rate>& rates){
     std::ifstream ifs(fname);
     if (!ifs.good()){
         throw std::runtime_error("File Not Found");
     }
     std::string line;
-    while (getline(fname, line)){
+    while (std::getline(ifs, line)){
         // ignore comments
         if (line[0] == '#') continue;
         RateData::Rate R;
@@ -159,29 +158,27 @@ void RateData::load_csv(const std::filesystem::path& root, std::vector<Rate>& ra
         iss >> R.from >> R.to >> R.val >> R.energy;
         rates.push_back(R);
     }
+    ifs.close();
 }
 
-void RateData::save_csv(const std::filesystem::path& root, const std::vector<EIIdata>& rates){
-    std::string fname(root + ".csv");
+void RateData::save_csv(const std::filesystem::path& fname, const std::vector<RateData::EIIdata>& rates){
     std::ofstream ofs(fname);
     if (!ofs.good()){
         throw std::runtime_error("File Not Found");
     }
+    ofs << "# from to occ ionB(Ha) kin(Ha)\n";
     // format it
     ofs << std::setprecision(8);
-
-    fprintf(fl, "# from to occ ionB(Ha) kin(Ha)\n");
     for (auto&R : rates) {
         for (size_t j=0; j<R.fin.size(); j++){
             ofs << std::setw(4) <<  R.init << R.fin[j] << R.occ[j];
             ofs << std::setw(10) << R.ionB[j] << R.kin[j] << "\n"; // fuck windows, all my homies hate windows
         }
     }
-    fclose(fl);
+    ofs.close();
 }
 
-void RateData::load_csv(const std::filesystem::path& root, std::vector<EIIdata>& rates){
-    std::string fname(root + ".csv");
+void RateData::load_csv(const std::filesystem::path& fname, std::vector<RateData::EIIdata>& rates){
     std::ifstream ifs(fname);
     if (!ifs.good()){
         throw std::runtime_error("File Not Found");
@@ -189,7 +186,7 @@ void RateData::load_csv(const std::filesystem::path& root, std::vector<EIIdata>&
 
     std::string line;
 
-    while (getline(fname, line)){
+    while (getline(ifs, line)){
         // ignore comments
         if (line[0] == '#') continue;
         RateData::EIIdata eii;
@@ -209,22 +206,32 @@ void RateData::load_csv(const std::filesystem::path& root, std::vector<EIIdata>&
             EIIdata R;
             R.init = init;
             R.push_back(fin, occ, ionB, kin);
-            rates.push_back(R)
+            rates.push_back(R);
         }
-        rates.push_back(R);
     }
+    ifs.close();
 }
 
 void RateData::save_csv(const std::filesystem::path& root, const RateData::Atom& a){
-    save_csv(root + a.name + ".photo", a.Photo);
-    save_csv(root + a.name + ".auger", a.Auger);
-    save_csv(root + a.name + ".fluor", a.Fluor);
-    save_csv(root + a.name + ".eii", a.EIIparams);
+    std::filesystem::path fp;
+    fp = root; fp += ".photo.csv";
+    save_csv(fp, a.Photo);
+    fp = root; fp += ".auger.csv";
+    save_csv(fp, a.Auger);
+    fp = root; fp += ".fluor.csv";
+    save_csv(fp, a.Fluor);
+    fp = root; fp += ".eii.csv";
+    save_csv(fp, a.EIIparams);
 }
 
-void RateData::load_csv(const std::filesystem::path& root, Atom& a){
-    load_csv(root + a.name + ".photo", a.Photo);
-    load_csv(root + a.name + ".auger", a.Auger);
-    load_csv(root + a.name + ".fluor", a.Fluor);
-    load_csv(root + a.name + ".eii", a.EIIparams);
+void RateData::load_csv(const std::filesystem::path& root, RateData::Atom& a){
+    std::filesystem::path fp;
+    fp = root; fp += ".photo.csv";
+    load_csv(fp, a.Photo);
+    fp = root; fp += ".auger.csv";
+    load_csv(fp, a.Auger);
+    fp = root; fp += ".fluor.csv";
+    load_csv(fp, a.Fluor);
+    fp = root; fp += ".eii.csv";
+    load_csv(fp, a.EIIparams);
 }

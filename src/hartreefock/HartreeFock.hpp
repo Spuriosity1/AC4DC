@@ -14,7 +14,8 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#pragma once
+#ifndef HARTREEFOCK_CXX_H
+#define HARTREEFOCK_CXX_H
 
 #include "HFInput.hpp"
 #include "Grid.hpp"
@@ -31,7 +32,7 @@ class HartreeFock
 {
 public:
 //	HamMod = 0 - Hartree-Fock; 1 - LDA.
-	HartreeFock(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &U, const HFInput & Inp, std::ofstream &log);
+	HartreeFock(const Grid &Lattice, std::vector<RadialWF> &Orbitals, const Potential &U, const HFInput & Inp, std::ofstream &log);
 
 	int Get_Virtual(std::vector<RadialWF> &Virtual, std::vector<RadialWF> &Orbitals, Potential &U, std::ofstream &log);
 	int LDA_Get_Virtual(std::vector<RadialWF> &Virtual, std::vector<RadialWF> &Orbitals, Potential &U, std::ofstream &log);
@@ -69,3 +70,4 @@ private:
 	RadialWF * psi;
 	Potential * u;
 };
+#endif

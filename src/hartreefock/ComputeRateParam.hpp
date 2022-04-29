@@ -14,12 +14,17 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#pragma once
+#ifndef COMPUTE_RATE_PARAM_H
+#define COMPUTE_RATE_PARAM_H
+
+
+
 #include "RadialWF.hpp"
 #include "Grid.hpp"
 #include "Potential.hpp"
 #include <vector>
 #include "Constant.hpp"
+#include "RateData.hpp"
 // #include "IntegrateRateEquation.hpp"
 #include "HFInput.hpp"
 // #include "MolInp.hpp"
@@ -28,15 +33,16 @@ This file is part of AC4DC.
 #include "Numerics.hpp"
 #include <fstream>
 #include <iostream>
-#include <sys/stat.hpp>
-#include <dirent.hpp>
+#include <sys/stat.h>
+#include <dirent.h>
 #include <sstream>
 #include <string>
-#include <omp.hpp>
+#include <omp.h>
 #include <algorithm>
 #include "EigenSolver.hpp"
 // #include "Plasma.hpp"
 #include <utility>
+#include <filesystem>
 
 
 
@@ -50,8 +56,8 @@ class ComputeRateParam
 public:
 	//Orbitals are HF wavefunctions. This configuration is an initial state.
 	//Assuming there are no unoccupied states in initial configuration!!!
-	ComputeRateParam(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &U, HFInput & Inp, bool recalc=true) :
-	 	lattice(Lattice), input(Inp), orbitals(Orbitals), u(U), recalculate(recalc) {
+	ComputeRateParam(Grid &Lattice, std::vector<RadialWF> &Orbitals, Potential &U, HFInput & Inp, unsigned num_threads = 4) :
+	 	lattice(Lattice), input(Inp), orbitals(Orbitals), u(U), num_threads(num_threads) {
 		};
 	~ComputeRateParam();
 
@@ -85,20 +91,25 @@ public:
   // Atomic data containers.
 	std::vector<std::vector<double>> density = std::vector<std::vector<double>>(0);
 
-  	Grid & Atom_Mesh() { return lattice; }
+  	const Grid & Atom_Mesh() const  { return lattice; }
+
+	void save_as(std::filesystem::path p){
+		RateData::save_csv(p, Store);
+	}
 
 protected:
-	Grid & lattice;
-	HFInput & input;
+	const Grid & lattice;
+	const HFInput & input;
 	std::vector<RadialWF> & orbitals;
-	Potential& u;
-	bool recalculate; // Flag to determine whether or not to force-recompute everything
+	const Potential& u;
+
+
+	unsigned num_threads;
 
 	std::vector<PhysicalRate::polarize> MixMe;
 	int dimension;//number of configurations
 	// std::vector<std::vector<double>> charge;
-	// std::vector<double> T;// Time grid points.
-	// std::vector<double> dT;// Accurate differentials.
+
 	
 	std::vector<std::vector<int> > Index;
 	int mapOccInd(std::vector<RadialWF> & Orbitals);// Inverse of what Index returns.
@@ -111,13 +122,6 @@ protected:
 	std::vector<PhysicalRate::ffactor> FF;
 	std::vector<int> hole_posit;
 
-	// int extend_I(std::vector<double>& Intensity, double new_max_T, double step_T);
-    // std::vector<double> generate_I(std::vector<double>& T, double I_max, double HalfWidth);
-	// std::vector<double> generate_T(std::vector<double>& dT);
-	// std::vector<double> generate_dT(int num_elem);
-    // double T_avg_RMS(std::vector<std::pair<double, int>> conf_RMS);
-	// double T_avg_Charge();
-
 	static bool sortEIIbyInd(RateData::EIIdata A, RateData::EIIdata B) { return (A.init < B.init); }
 	static bool sortRatesFrom(RateData::Rate A, RateData::Rate B) { return (A.from < B.from); }
 	static bool sortRatesTo(RateData::Rate A, RateData::Rate B) { return (A.to < B.to); }
@@ -125,3 +129,5 @@ protected:
 	std::vector<int> RatesFromKeys;
 	void GenerateRateKeys(std::vector<RateData::Rate> & ToSort);
 };
+
+#endif

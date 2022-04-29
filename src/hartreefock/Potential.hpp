@@ -18,15 +18,20 @@ This file is part of AC4DC.
 
 #include "Grid.hpp"
 #include "RadialWF.hpp"
+#include "HFInput.hpp"
 #include <string>
 #include <vector>
 #include <memory>
 
+
+
 class Potential
 {
 public:
-	Potential(Grid * Lattice, int Z, std::string mod = "coulomb", double Rad_well = 0);
-	Potential(int i = 0) {}
+	// Potential(Grid * Lattice, int Z, std::string mod = "coulomb", double Rad_well = 0);
+	Potential(const Grid * Lattice, int Z, HFInput::n_pot_t mod = HFInput::n_pot_t::coulomb, double Rad_well = 0);
+	
+	Potential() {};
 	~Potential(void) {};
 
 	// Direct and Current orbital exchange in HF approximation.
@@ -49,9 +54,9 @@ public:
 	double Overlap(std::vector<double> density, int infinity);
 	std::vector<double> make_density(std::vector<RadialWF> & Orbitals);
 
-	std::string Type();
-	int NuclCharge() { return n_charge; }
-	double R_well() { return r_well; }
+	HFInput::n_pot_t Type() const { return model; };
+	int NuclCharge() const { return n_charge; }
+	double R_well() const { return r_well; }
 	std::vector<double> V;//Nuclear + Direct
 	std::vector<double> Exchange;
 	std::vector<double> Trial;
@@ -63,32 +68,34 @@ public:
 	// Auxillary functions.
 	std::vector<float> Get_Kinetic(std::vector<RadialWF> & Orbitals, int start_with = 0);
 
-	const Potential& operator = (const Potential& Other) {
-		V = Other.V;
-		Exchange = Other.Exchange;
-		Trial = Other.Trial;
-		LocExc = Other.LocExc;
-		Asympt = Other.Asympt;
-		v0_N1 = Other.v0_N1;
-		model = Other.model;
-		n_charge = Other.n_charge;
-		nuclear = Other.nuclear;
-		r_well = Other.r_well;
-		delete lattice;
-		lattice = Other.lattice;
-		return *this;
-	}
+	// const Potential& operator = (const Potential& Other) {
+	// 	V = Other.V;
+	// 	Exchange = Other.Exchange;
+	// 	Trial = Other.Trial;
+	// 	LocExc = Other.LocExc;
+	// 	Asympt = Other.Asympt;
+	// 	v0_N1 = Other.v0_N1;
+	// 	model = Other.model;
+	// 	n_charge = Other.n_charge;
+	// 	nuclear = Other.nuclear;
+	// 	r_well = Other.r_well;
+	// 	delete lattice;
+	// 	lattice = Other.lattice;
+	// 	return *this;
+	// }
 
 protected:
 	void GenerateNuclear(void);
-	std::string model = "coulomb";
+	HFInput::n_pot_t model = HFInput::n_pot_t::coulomb;
 	int n_charge = 1;
 	double r_well = 0.0000001;
 	std::vector<double> nuclear;
 	Grid * lattice = nullptr;
 };
 
+/*
 
+// TODO: make gauge an initialization-time "pseudo-constexpr" calss member
 class MatrixElems
 {
 public:
@@ -98,14 +105,17 @@ public:
 	// Radial Coulomb integral dr1 dr2 P_a(1) P_b(2) (r<)^k/(r>)^{k+1} P_c(1) P_d(2)
 //	double R_k(int k, RadialWF & A, RadialWF & B, RadialWF & C, RadialWF & D);
 	// Reduced dipole dr P_a(r)P_b(r) r . Gauge can be either "length" or "velocity".
-	double Dipole(RadialWF & A, RadialWF & B, std::string gauge);
+	double Dipole(RadialWF & A, RadialWF & B, HFInput::gauge_t gauge);
 	// Average over configuration dipole matrix element.
-	double DipoleAvg(RadialWF & A, RadialWF & B, std::string gauge);
+	double DipoleAvg(RadialWF & A, RadialWF & B, HFInput::gauge_t gauge);
   // RMS radius of a slater determinant.
   double R_pow_k(std::vector<RadialWF> & Orbitals, int k);
+
+//   double MatrixElems::ImpactCrossSection(RadialWF &A, RadialWF &B, HFInput::gauge_t gauge) ???
 
 	~MatrixElems() {};
 private:
 	double Msum(int La, int Lb, int k);
 	Grid * lattice;
 };
+*/

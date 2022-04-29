@@ -10,6 +10,7 @@
  */
 
 #include <vanity.hpp>
+#include <HFInput.hpp>
 #include <string>
 #include <fstream>
 #include <filesystem>
@@ -35,28 +36,31 @@ int main (int argc, char**argv){
     std::cout<<"under the conditions of the GPLv3; see LICENSE for details."<<"\n";
 
     // check if we have the right # args
-    if (argc < 3) {
-        std::cerr<<"Usage: calc_rates /path/to/atom.toml /path/to/outdir wavelength(Angstrom)"
-        std::cerr<<std::endl;
+    if (argc < 4) {
+        std::cerr<<"Usage: calc_rates /path/to/atom.toml /path/to/outdir wavelength(Angstrom) [num_threads]"<<std::endl;
         throw std::runtime_error("Incorrect usage");
     }
 
     // check if the supplied file exists
     std::filesystem::path infile = argv[1];
     std::ifstream in(infile);
-    if (!in.good())){
+    
+    if (!in.is_open()){
         std::cerr<<"Could not read file "<<argv[1]<<std::endl;
         throw std::runtime_error("Bad infile");
     }
 
+
     // check if we can write to the output directory
     std::filesystem::path stem = argv[2];
     // append to path
-    stem /= infile.replace_extension() + std::string("_") + argv[3] 
-    
-    std::ofstream log(stem + ".log");
-    if (!log.good())){
-        std::cerr<<"Could not access directory "<<argv[2]<<std::endl;
+    stem /= infile.filename().replace_extension();
+    stem += std::string("_") + argv[3] + "A";
+    stem.replace_extension(".log");
+
+    std::ofstream log(stem);
+    if (!log.is_open()){
+        std::cerr<<"Could not access directory "<<stem<<std::endl;
         throw std::runtime_error("Bad outdir");
     }
 
@@ -65,15 +69,36 @@ int main (int argc, char**argv){
     //////////////////////////////////////////////
     // All input params validated
     // Time to calculate
-    std::vector<int> final_occ(Orbits[a].size(), 0);
-    std::vector<int> max_occ(Orbits[a].size(), 0);
-    for (size_t i = 0; i < max_occ.size(); i++) {
-        if (fabs(Orbits[a][i].Energy) > Omega()) final_occ[i] = Orbits[a][i].occupancy();
-        max_occ[i] = Orbits[a][i].occupancy();
+
+    HFInput input;
+    input.from_toml(in);
+
+    std::vector<int> final_occ(input.orbitals.size(), 0);
+    std::vector<int> max_occ(input.orbitals.size(), 0);
+    std::vector<RadialWF> Orbitals;
+    for (auto& orb: input.orbitals){
+        Orbitals.push_back(RadialWF(input.grid_points));
+        Orbitals.back().set_N(orb.n);
+        Orbitals.back().set_L(orb.l);//setting L overwrites occupancy with 4L+2
+        Orbitals.back().set_occupancy(orb.max_occ);
     }
+    
+    for (size_t i = 0; i < max_occ.size(); i++) {
+        if (fabs(Orbitals[i].Energy) > input.omega) final_occ[i] = Orbitals[i].occupancy();
+        max_occ[i] = Orbitals[i].occupancy();
+    }
+
+    // the grid to construct everyhting over
+    Grid lattice(input.grid_points, input.grid_min/input.Z, input.grid_max, 4);
+
+    Potential U(&lattice, input.Z, input.nuclear_potential);
+    
+    ComputeRateParam Dynamics(lattice, Orbitals, U, input, 4);
+
     RateData::Atom rates = Dynamics.SolvePlasmaBEB(max_occ, final_occ, log);
 
     log.close();
+    stem.replace_extension("");
     
     RateData::save_csv(stem, rates);
 }

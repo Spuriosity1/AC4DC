@@ -22,23 +22,29 @@ CXXFLAGS = -std=c++17 -fopenmp -MD -g -Wall -pedantic
 
 mkfile_path := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
+# VPATH += hartreefock numerical ode spline_basis struct_hartreefock struct_rateeq
+
 # Output directory after linking
 BIN_PATH = ../bin
 BUILD_PATH = ../build
 
 # ------- System Include  --------------
 # Change ~/include as necessary for your architecture
-INC_PATH = -I/opt/homebrew/include
+INC_FLAGS = -I../include -I/opt/homebrew/include
+
 
 
 # -------- Establishing objects and sources ------
 
-RATE_SRC = $(wildcard hartreefock/*.cpp) $(wildcard struct_hartreefock/*.cpp) $(wildcard numerical/*.cpp)
-RATE_OBJ = $(addprefix $(BUILD_PATH)/,$(RATE_SRC:.cpp=.o)))
+RATE_SRC = $(wildcard hartreefock/*.cpp) $(wildcard struct_hartreefock/*.cpp) $(wildcard numerical/*.cpp) calc_rates.cpp
+RATE_OBJ = $(addprefix $(BUILD_PATH)/,$(RATE_SRC:.cpp=.o))
 
 # ------------- Specific Include -----------
+# RATE_HEADERS = $(wildcard hartreefock/*.hpp) $(wildcard struct_hartreefock/*.hpp) $(wildcard numerical/*.hpp)
+RATE_DIR = hartreefock struct_hartreefock numerical
 
-RATE_INC = $(wildcard hartreefock/*.hpp) $(wildcard struct_hartreefock/*.hpp) $(wildcard numerical/*.hpp)
+RATE_INC = $(addprefix -I$(mkfile_path),$(RATE_DIR))
+
 
 
 # ---------- Libraries needed for linking ----------
@@ -47,35 +53,33 @@ RATE_INC = $(wildcard hartreefock/*.hpp) $(wildcard struct_hartreefock/*.hpp) $(
 LIB_PATH = -L/opt/homebrew/lib 
 
 
-
-
-# Generic .cc -> .o rule: note we generally don't have .hh files
+# Generic .cc -> .o rule
 $(BUILD_PATH)/%.o: %.cpp
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INC_PATH) -MMD -MP $< -c -o $@
-
+	$(CXX) $(CXXFLAGS) $(INC_FLAGS) $(RATE_INC) $< -c -o $@
 
 # ---------- Linking rules ----------
 
 # Generic .o -> exec rule: uses all prerequisites (meant to be .o files)
 ratecalc: $(RATE_OBJ)
-	$(CXX) $(CXXFLAGS) $(INC_PATH) $(RATE_INC) $(LDFLAGS) -MMD $^ \
+	$(CXX) $(CXXFLAGS) $(INC_PATH) $(RATE_INC) $(LDFLAGS) $^ \
 	$(LIB_PATH) -o $(BIN_PATH)/$@
 
 # TODO
 # simulate: 
 
+echo: 
+	echo "$(RATE_OBJ)"
+	echo "$(BUILD_PATH)"
+
+
 # Don't allow direct compilation 
-%: %.cc
+# %: %.cpp
 # Don't allow removal of object files in chained implicit linking
-.SECONDARY:
+# .SECONDARY:
 
 # Cleanup:
 .PHONY: clean build_directories
 clean:
 	-rm -r $(BUILD_PATH)/**
-print:
-	@echo $(COMMON_O)
-	@echo $(MANAGER_O)
-	@echo $(STRUCT_O)
 

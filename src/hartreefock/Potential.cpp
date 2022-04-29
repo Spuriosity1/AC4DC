@@ -19,12 +19,15 @@ This file is part of AC4DC.
 #include "Constant.hpp"
 #include "Numerics.hpp"
 #include <algorithm>
-#include "Wigner/wignerSymbols.hpp"
+#include "wignerSymbols.hpp"
+#include "HFInput.hpp"
 
 using namespace std;
 
-Potential::Potential(Grid * Lattice, int Z, std::string mod, double Rad_well) : lattice(Lattice)//Nuclear
+//Nuclear
+Potential::Potential(Grid* Lattice, int Z, HFInput::n_pot_t mod, double Rad_well)
 {
+	lattice = Lattice;
 	V.clear();
 	V.resize(Lattice->size());
 	nuclear.clear();
@@ -47,11 +50,15 @@ Potential::Potential(Grid * Lattice, int Z, std::string mod, double Rad_well) : 
 
 void Potential::GenerateNuclear(void)
 {
-	if (model == "coulomb") {
+	switch (model)
+	{
+	case HFInput::n_pot_t::coulomb:
 		for (int i = 0; i < lattice->size(); i++) {
 			nuclear[i] = -n_charge / lattice->R(i);
 		}
-	} else {
+		break;
+	
+	case HFInput::n_pot_t::sphere:
 		for (int i = 0; i < lattice->size(); i++) {
 			if (lattice->R(i) <= r_well) {
 				nuclear[i] = -n_charge*(3.0 - pow((lattice->R(i) / r_well), 2)) / 2 / r_well;
@@ -59,6 +66,10 @@ void Potential::GenerateNuclear(void)
 				nuclear[i] = -n_charge / lattice->R(i);
 			}
 		}
+		break;
+	default:
+		throw std::runtime_error("Bad potential type");
+		break;
 	}
 }
 
@@ -119,10 +130,10 @@ void Potential::ScaleNucl(double Scl_dir)
 	}
 }
 
-std::string Potential::Type()
-{
-	return model;
-}
+// std::string Potential::Type()
+// {
+// 	return model;
+// }
 
 int Potential::HF_upd_dir(RadialWF* Current, std::vector<RadialWF> &Orbitals)
 {
@@ -244,15 +255,17 @@ int Potential::LDA_upd_dir(std::vector<RadialWF> &Orbitals)
 	int Z_eff = N_elec - n_charge - 1;
 
 	double V_tmp = 0;
-	if (model == "coulomb") {
+	switch (model)
+	{
+	case HFInput::n_pot_t::coulomb:
 		for (int i = 0; i < lattice->size(); i++) {
 			Asympt[i] = Z_eff / lattice->R(i);
 			LocExc[i] = -0.635348143*pow((density[i] / lattice->R(i) / lattice->R(i)), 1. / 3.);
 			V[i] = nuclear[i] + y_0[i] / lattice->R(i) + LocExc[i];// Nuclear + Direct potential.
 			if (V[i] > Asympt[i]) V[i] = Asympt[i];// HFS/LDA tail correction.
 		}
-	}
-	else {
+		break;
+	case HFInput::n_pot_t::sphere:
 		for (int i = 0; i < lattice->size(); i++) {
 			if (lattice->R(i) <= r_well) {
 				Asympt[i] = -Z_eff*(3.0 - pow((lattice->R(i) / r_well), 2)) / 2 / r_well;
@@ -263,6 +276,10 @@ int Potential::LDA_upd_dir(std::vector<RadialWF> &Orbitals)
 			V[i] = nuclear[i] + y_0[i] / lattice->R(i) + LocExc[i];// Nuclear + Direct potential.
 			if (V[i] > Asympt[i]) V[i] = Asympt[i];// HFS/LDA tail correction.
 		}
+
+	default:
+		throw "bad potential model";
+		break;
 	}
 
 	return 0;
@@ -479,11 +496,15 @@ std::vector<float> Potential::Get_Kinetic(std::vector<RadialWF> & Orbitals, int 
 	return Result;
 }
 
+/*
+
 MatrixElems::MatrixElems(Grid * Lattice) : lattice(Lattice)
 {
 }
 
-double MatrixElems::ImpactCrossSection(RadialWF &A, RadialWF &B, std::string gauge)
+
+
+double MatrixElems::ImpactCrossSection(RadialWF &A, RadialWF &B, HFInput::gauge_t gauge)
 {
 	double Result = 0;
 
@@ -492,17 +513,19 @@ double MatrixElems::ImpactCrossSection(RadialWF &A, RadialWF &B, std::string gau
 
     std::vector<double> density(infty+1, 0);
 
-    if (gauge == "length") {
+    if (gauge == HFInput::gauge_t::length) {
 		for (int i = 0; i < density.size(); i++) {
 			density[i] = lattice->R(i)*A.F[i]*B.F[i];
 		}
     }
-    else {
+    else if (gauge == HFInput::gauge_t::velocity) {
 		double ang_coeff =  0.5*(A.L() - B.L())*(A.L() + B.L() + 1);
 			for (int i = 0; i < density.size(); i++)	{
 			density[i] = B.F[i] *(A.G[i] + ang_coeff * A.F[i]/lattice->R(i)) ;
 		}
-    }
+    } else {
+		throw runtime_error("Bad Gauge.");
+	}
 
 	Adams I(*lattice, 10);
 	Result = I.Integrate(&density, 0, density.size()-1);
@@ -510,7 +533,7 @@ double MatrixElems::ImpactCrossSection(RadialWF &A, RadialWF &B, std::string gau
 	return Result;
 }
 
-double MatrixElems::DipoleAvg(RadialWF & A, RadialWF & B, std::string gauge)
+double MatrixElems::DipoleAvg(RadialWF & A, RadialWF & B, HFInput::gauge_t gauge)
 {
 	double Result = 0;
 	if (A.L() > B.L()) Result = sqrt((double)A.L());
@@ -518,6 +541,9 @@ double MatrixElems::DipoleAvg(RadialWF & A, RadialWF & B, std::string gauge)
 
 	if ( (A.L() + (A.L() + B.L() + 1)/2) % 2 == 1) Result = -1.*Result;
 	Result *= Msum(A.L(), B.L(), 1)*Dipole(A, B, gauge);
+	// ?????
+	// LMAO this literally never gets called???
+
 
 	return Result;
 }
@@ -565,3 +591,5 @@ double MatrixElems::R_pow_k(std::vector<RadialWF> & Orbitals, int k)
 
   return Result;
 }
+
+*/

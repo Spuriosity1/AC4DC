@@ -17,13 +17,23 @@ This file is part of AC4DC.
 #ifndef AC4DC_INPUT_CXX_H
 #define AC4DC_INPUT_CXX_H
 
-#include "RadialWF.hpp"
-#include "Potential.hpp"
-#include "Grid.hpp"
+// #include "RadialWF.hpp"
+// #include "Potential.hpp"
+// #include "Grid.hpp"
 #include <vector>
 #include <string>
 #include <cmath>
+#include <map>
 
+// orbitals
+struct Orbital{
+	unsigned n;
+	unsigned l;
+	unsigned max_occ;
+
+	static const std::map<char, unsigned> chemists_l;
+	static const bool is_chemist_l(char symbol);
+};
 
 
 struct HFInput
@@ -34,10 +44,6 @@ struct HFInput
 	enum class e_pot_t{V_N, V_Nm1no, V_Nm1};
 	
 	std::string name = ""; // Name of the atom
-	// std::string model;
-	// std::string potential = "V_N";
-	// std::string me_gauge = "length";
-	// std::string hamiltonian = "LDA";
 	double omega = 5000;// XFEL field frequency, Ha
 	
 	int num_time_steps = 0; // Guess number of time steps for time dynamics.
@@ -48,23 +54,41 @@ struct HFInput
 	bool write_intensity = false;
 	int out_time_steps = 500; // Guess number of time steps for time dynamics.
 
+	// Tolerance block
 	double master_tolerance = pow(10, -10);
 	double no_exch_tolerance = pow(10, -3);
 	double HF_tolerance = pow(10, -6);
 	int max_HF_iterations = 500;
 
+	// enumerated flags
 	n_pot_t nuclear_potential = n_pot_t::coulomb;
 	gauge_t gauge = gauge_t::length;
 	ham_mod_t ham_model = ham_mod_t::LDA;
 	e_pot_t orbital_potential = e_pot_t::V_N;
 	
+	std::vector<Orbital> orbitals;
+
+	// gridspec
+	size_t grid_points;
+	double grid_min;	      // Origin of the coordinate grid. Should be > 0.
+	double grid_max;	      // Maximum distance from the nucleus.
+	
 	// serialisers
-	void from_toml(ifstream& ifs);
-	void into_toml(ofstream& ifs);
+	void from_toml(std::ifstream& ifs);
+	void into_toml(std::ofstream& ifs);
+
+private:
+	// boilerplate
+	void interpret_npot(const std::string& s);
+	void interpret_gauge(const std::string& s);
+	void interpret_hmodel(const std::string& s);
+	void interpret_epot(const std::string& s);
+	void read_orbital(const std::string& entry);
 };
 
+/*
 
-// Original input function (deprecated)
+// Original input class (deprecated)
 class Input
 {
 public:
@@ -158,5 +182,5 @@ private:
 	int max_HF_iterations = 500;
 };
 
-
+*/
 #endif /* end of include guard: AC4DC_INPUT_CXX_H */

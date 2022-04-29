@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <vector>
 // The containers storing rates as used by rate equation solver
 
 
@@ -84,7 +85,7 @@ namespace RateData {
 	void save_csv(const std::filesystem::path& root, const std::vector<EIIdata>& rates);
 	void save_csv(const std::filesystem::path& root, const Atom& a);
 
-	void load_csv(const std::filesystem::path& root, const std::vector<Rate>& rates);
-	void load_csv(const std::filesystem::path& root, const std::vector<EIIdata>& rates);
-	void load_csv(const std::filesystem::path& root, const Atom& a);
+	void load_csv(const std::filesystem::path& root, std::vector<Rate>& rates);
+	void load_csv(const std::filesystem::path& root, std::vector<EIIdata>& rates);
+	void load_csv(const std::filesystem::path& root, Atom& a);
 }

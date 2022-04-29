@@ -14,7 +14,8 @@ This file is part of AC4DC.
     You should have received a copy of the GNU General Public License
     along with AC4DC.  If not, see <https://www.gnu.org/licenses/>.
 ===========================================================================*/
-#pragma once
+#ifndef EIGENSOLVER_CXX_H
+#define EIGENSOLVER_CXX_H
 
 #include <vector>
 #include <eigen3/Eigen/Dense>
@@ -46,3 +47,5 @@ private:
 	Eigen::MatrixXd EigenVectors;
 	Eigen::VectorXd EigenValues;
 };
+
+#endif 

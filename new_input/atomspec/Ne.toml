@@ -8,12 +8,7 @@ nuclear_potential = "coulomb"      # Can be "coulomb" for point-like nucleus, "s
 hamiltonian_form = "HF"            # Hamiltonian form. Can be HF, LDA.
 potential_model = "V_N"          # Potential model. Can be "V_N" for Hartree-Fock, "V_N-1no" for non-orthogonal excited state orbitals, "V_N-1" for classical potential.
 photon_gauge = "length"          # Gauge type for matrix elements involving photon absorption/emission. Can be either "length" or "velocity".
-
-[orbitals]
-# Orbitals and their occupancies
-"1s" = 2
-"2s" = 2
-"2p" = 6
+electron_config = ["1s2", "2s2", "2p6"]
 
 [radialgrid]
 points = 2000         
