@@ -3,9 +3,8 @@
  * @brief 
  * 
  */
-
-#include "../include/HybridIntegrator.hpp"
-#include "../include/RateSystem.h"
+#include "HybridIntegrator.hpp"
+#include "RateSystem.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>

@@ -38,9 +38,9 @@ __pycache__
 *.xpdb
 *input/batch_*
 core
-*.html
 *.svg
 scripts/scattering/R_plots
 *.pickle
 scripts/scattering/dmg_data
 valgrind-out*
+.cache

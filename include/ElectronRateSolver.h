@@ -49,57 +49,10 @@ This file is part of AC4DC.
 
 #define MAX_T_PTS 1e6
 
-class ElectronRateSolver : private ode::Hybrid<state_type>
+class ElectronRateSolver : protected ode::Hybrid<state_type>
 {
 public:
-    ElectronRateSolver(const char* filename, ofstream& log) :
-    Hybrid(3), input_params(filename, log), pf() // (order Adams method), argument of Hybrid = order. num steps used for implicit adams-moulton = order - 1.
-    {
-        log_config_settings(log);
-
-        param_cutoffs = input_params.param_cutoffs;
-        
-        pf.set_shape(input_params.pulse_shape);
-        pf.set_pulse(input_params.Fluence(), input_params.Width());
-        
-        timespan_au = round_time(input_params.timespan_factor*input_params.Width());
-        if (input_params.pulse_shape ==  PulseShape::square){  //-FWHM <= t <= 3FWHM (we've squished the pulse into the first FWHM.)
-            if (timespan_au <= 0)  // 0 by default
-                timespan_au = round_time(input_params.Width()*4,true); // 4*FWHM, capturing effectively entire pulse.
-            simulation_start_time = -input_params.Width(); // e.g. if the timespan_au is 10 fwhm, the first fwhm is the pulse.
-        } else { //-1.2FWHM <= t <= 1.2 FWHM
-            if (timespan_au <= 0) // 0 by default
-                timespan_au = round_time(input_params.Width()*2.4,true);   // > 99% of pulse, (similar to Neutze)
-            
-            simulation_start_time = -timespan_au/2;
-            if (input_params.negative_timespan_factor != 0)
-                simulation_start_time = -input_params.negative_timespan_factor*input_params.Width();
-        }
-        simulation_start_time = round_time(simulation_start_time);
-        simulation_end_time =  simulation_start_time + timespan_au; 
-        std::cout<<"\033[33m"<<"Imaging from "<<simulation_start_time/input_params.Width() <<" FWHM to " 
-        << simulation_end_time/input_params.Width() <<" FWHM"<<"\033[0m"<<std::endl;
-        
-        if (input_params.Cutoff_Inputted()){
-            if (input_params.Simulation_Cutoff() > simulation_end_time){
-                std::cout <<"Ignoring cutoff, as cutoff is past the end time."<<endl;
-            }
-            simulation_end_time = min(input_params.Simulation_Cutoff(),simulation_end_time); 
-        }
-        simulation_resume_time = simulation_start_time;  // If loading simulation, is overridden by ElectronRateSolver::set_starting_state();
-         
-
-        set_grid_regions(input_params.elec_grid_regions);
-
-        grid_update_period = input_params.Grid_Update_Period();  // TODO the grid update period should be made to be at least 3x (probably much more) longer with a gaussian pulse, since early times need it to be updated far less often to avoid instability for such a pulse. 
-        steps_per_time_update = max(1 , (int)(input_params.time_update_gap/(timespan_au/input_params.num_time_steps))); 
-
-        if(input_params.Filtration_File() != ""){
-            load_filtration_file();
-        }
-
-        time_of_last_save = std::chrono::high_resolution_clock::now(); 
-    }
+    ElectronRateSolver(const char* filename, ofstream& log);
     /// Solve the rate equations
     void solve(ofstream & _log, const string& tmp_data_folder);
     void save(const std::string& folder);
@@ -119,14 +72,14 @@ public:
     pre_tbr_time, transport_time, eii_time, tbr_time,  // sys_bound
     ee_time, apply_delta_time; //sys_ee 
 
-    std::chrono::_V2::system_clock::time_point time_of_last_save;   
+    std::chrono::system_clock::time_point time_of_last_save;   
     #ifndef NO_BACKUP_SAVING
     std::chrono::minutes minutes_per_save{60};
     #else
     std::chrono::minutes minutes_per_save{99999999};
     #endif
 
-private:
+protected:
     double IVP_step_tolerance = 5e-3;
     MolInp input_params;  // (Note this is initialised/constructed in the above constructor)  // TODO need to refactor to store variables that we change later rather than alter input_params directly. Currently doing a hybrid of this.
     ManualGridBoundaries elec_grid_regions;
@@ -165,8 +118,7 @@ private:
     size_t load_checkpoint_and_decrease_dt(ofstream& _log, size_t current_n, Checkpoint _checkpoint);
     void increase_dt(ofstream& _log, size_t current_n); // bugged
 
-    // Display stuff
-    Plotting py_plotter;  
+
     int steps_per_time_update;    
 
     /////// Overrides virtual system state methods

@@ -5,8 +5,8 @@
  * https://www.gnu.org/licenses/lgpl.html.              -/
  ********************************************************/
 
-#include "commonFunctions.h"
-#include "wignerSymbols.h"
+#include <commonFunctions.h>
+#include <wignerSymbols.h>
 
 namespace WignerSymbols {
 std::vector<double> wigner3j(double l2, double l3,

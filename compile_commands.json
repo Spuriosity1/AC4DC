@@ -1,0 +1,146 @@
+[
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Isrc/Wigner/libWigner.a.p -Isrc/Wigner -I../src/Wigner -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -MD -MQ src/Wigner/libWigner.a.p/wignerSymbols.cpp.o -MF src/Wigner/libWigner.a.p/wignerSymbols.cpp.o.d -o src/Wigner/libWigner.a.p/wignerSymbols.cpp.o -c ../src/Wigner/wignerSymbols.cpp",
+    "file": "../src/Wigner/wignerSymbols.cpp",
+    "output": "src/Wigner/libWigner.a.p/wignerSymbols.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_BoundTransport.cpp.o -MF ac4dc.p/src_BoundTransport.cpp.o.d -o ac4dc.p/src_BoundTransport.cpp.o -c ../src/BoundTransport.cpp",
+    "file": "../src/BoundTransport.cpp",
+    "output": "ac4dc.p/src_BoundTransport.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_ComputeRateParam.cpp.o -MF ac4dc.p/src_ComputeRateParam.cpp.o.d -o ac4dc.p/src_ComputeRateParam.cpp.o -c ../src/ComputeRateParam.cpp",
+    "file": "../src/ComputeRateParam.cpp",
+    "output": "ac4dc.p/src_ComputeRateParam.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_Constant.cpp.o -MF ac4dc.p/src_Constant.cpp.o.d -o ac4dc.p/src_Constant.cpp.o -c ../src/Constant.cpp",
+    "file": "../src/Constant.cpp",
+    "output": "ac4dc.p/src_Constant.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_DecayRates.cpp.o -MF ac4dc.p/src_DecayRates.cpp.o.d -o ac4dc.p/src_DecayRates.cpp.o -c ../src/DecayRates.cpp",
+    "file": "../src/DecayRates.cpp",
+    "output": "ac4dc.p/src_DecayRates.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_Dipole.cpp.o -MF ac4dc.p/src_Dipole.cpp.o.d -o ac4dc.p/src_Dipole.cpp.o -c ../src/Dipole.cpp",
+    "file": "../src/Dipole.cpp",
+    "output": "ac4dc.p/src_Dipole.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_DynamicRegions.cpp.o -MF ac4dc.p/src_DynamicRegions.cpp.o.d -o ac4dc.p/src_DynamicRegions.cpp.o -c ../src/DynamicRegions.cpp",
+    "file": "../src/DynamicRegions.cpp",
+    "output": "ac4dc.p/src_DynamicRegions.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_EigenSolver.cpp.o -MF ac4dc.p/src_EigenSolver.cpp.o.d -o ac4dc.p/src_EigenSolver.cpp.o -c ../src/EigenSolver.cpp",
+    "file": "../src/EigenSolver.cpp",
+    "output": "ac4dc.p/src_EigenSolver.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_ElectronRateSolver.cpp.o -MF ac4dc.p/src_ElectronRateSolver.cpp.o.d -o ac4dc.p/src_ElectronRateSolver.cpp.o -c ../src/ElectronRateSolver.cpp",
+    "file": "../src/ElectronRateSolver.cpp",
+    "output": "ac4dc.p/src_ElectronRateSolver.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_ElectronSolverGridDynamics.cpp.o -MF ac4dc.p/src_ElectronSolverGridDynamics.cpp.o.d -o ac4dc.p/src_ElectronSolverGridDynamics.cpp.o -c ../src/ElectronSolverGridDynamics.cpp",
+    "file": "../src/ElectronSolverGridDynamics.cpp",
+    "output": "ac4dc.p/src_ElectronSolverGridDynamics.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_ElectronSolverIO.cpp.o -MF ac4dc.p/src_ElectronSolverIO.cpp.o.d -o ac4dc.p/src_ElectronSolverIO.cpp.o -c ../src/ElectronSolverIO.cpp",
+    "file": "../src/ElectronSolverIO.cpp",
+    "output": "ac4dc.p/src_ElectronSolverIO.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_FreeDistribution.cpp.o -MF ac4dc.p/src_FreeDistribution.cpp.o.d -o ac4dc.p/src_FreeDistribution.cpp.o -c ../src/FreeDistribution.cpp",
+    "file": "../src/FreeDistribution.cpp",
+    "output": "ac4dc.p/src_FreeDistribution.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_Grid.cpp.o -MF ac4dc.p/src_Grid.cpp.o.d -o ac4dc.p/src_Grid.cpp.o -c ../src/Grid.cpp",
+    "file": "../src/Grid.cpp",
+    "output": "ac4dc.p/src_Grid.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_HartreeFock.cpp.o -MF ac4dc.p/src_HartreeFock.cpp.o.d -o ac4dc.p/src_HartreeFock.cpp.o -c ../src/HartreeFock.cpp",
+    "file": "../src/HartreeFock.cpp",
+    "output": "ac4dc.p/src_HartreeFock.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_Input.cpp.o -MF ac4dc.p/src_Input.cpp.o.d -o ac4dc.p/src_Input.cpp.o -c ../src/Input.cpp",
+    "file": "../src/Input.cpp",
+    "output": "ac4dc.p/src_Input.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_MolInp.cpp.o -MF ac4dc.p/src_MolInp.cpp.o.d -o ac4dc.p/src_MolInp.cpp.o -c ../src/MolInp.cpp",
+    "file": "../src/MolInp.cpp",
+    "output": "ac4dc.p/src_MolInp.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_Numerics.cpp.o -MF ac4dc.p/src_Numerics.cpp.o.d -o ac4dc.p/src_Numerics.cpp.o -c ../src/Numerics.cpp",
+    "file": "../src/Numerics.cpp",
+    "output": "ac4dc.p/src_Numerics.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_Potential.cpp.o -MF ac4dc.p/src_Potential.cpp.o.d -o ac4dc.p/src_Potential.cpp.o -c ../src/Potential.cpp",
+    "file": "../src/Potential.cpp",
+    "output": "ac4dc.p/src_Potential.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_Pulse.cpp.o -MF ac4dc.p/src_Pulse.cpp.o.d -o ac4dc.p/src_Pulse.cpp.o -c ../src/Pulse.cpp",
+    "file": "../src/Pulse.cpp",
+    "output": "ac4dc.p/src_Pulse.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_RadialWF.cpp.o -MF ac4dc.p/src_RadialWF.cpp.o.d -o ac4dc.p/src_RadialWF.cpp.o -c ../src/RadialWF.cpp",
+    "file": "../src/RadialWF.cpp",
+    "output": "ac4dc.p/src_RadialWF.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_RateSystem.cpp.o -MF ac4dc.p/src_RateSystem.cpp.o.d -o ac4dc.p/src_RateSystem.cpp.o -c ../src/RateSystem.cpp",
+    "file": "../src/RateSystem.cpp",
+    "output": "ac4dc.p/src_RateSystem.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_SplineBasis.cpp.o -MF ac4dc.p/src_SplineBasis.cpp.o.d -o ac4dc.p/src_SplineBasis.cpp.o -c ../src/SplineBasis.cpp",
+    "file": "../src/SplineBasis.cpp",
+    "output": "ac4dc.p/src_SplineBasis.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_SplineIntegral.cpp.o -MF ac4dc.p/src_SplineIntegral.cpp.o.d -o ac4dc.p/src_SplineIntegral.cpp.o -c ../src/SplineIntegral.cpp",
+    "file": "../src/SplineIntegral.cpp",
+    "output": "ac4dc.p/src_SplineIntegral.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/build",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/pybind11/2.11.1/libexec/lib/python3.11/site-packages/pybind11/include -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -I/opt/homebrew/opt/python@3.11/Frameworks/Python.framework/Versions/3.11/include/python3.11 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -DNCURSES -MD -MQ ac4dc.p/src_main.cpp.o -MF ac4dc.p/src_main.cpp.o.d -o ac4dc.p/src_main.cpp.o -c ../src/main.cpp",
+    "file": "../src/main.cpp",
+    "output": "ac4dc.p/src_main.cpp.o"
+  }
+]

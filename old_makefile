@@ -50,7 +50,7 @@ all: $(TARGET)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 	@mkdir -p $(BUILDDIR) bin $(BUILDDIR)/Wigner $(BUILDDIR)/$(MAINSUBDIR)
-	@echo " $(CPP) $(CXXFLAGS) $(INC) -c -o $@ $<"; $(CPP) $(CXXFLAGS) $(INC) -c -o  $@ $<
+	$(CPP) $(CXXFLAGS) $(INC) -c -o  $@ $<
 
 test: $(TESTS)
 	@mkdir -p bin/tests tmp testOutput
