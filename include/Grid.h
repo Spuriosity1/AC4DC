@@ -52,6 +52,8 @@ public:
 	Grid(int num_grid_pts, double r_min, double r_max, std::string mode);
 	//		Grid(const std::string& filename);
 	~Grid(void);
+//	Grid(const Grid&other) :
+//		r(other.r), ds(other.ds), beta(other.beta), NumPts(other.NumPts){}
 
 	void Extend(double new_max_R);
 	double R(int i);
@@ -59,18 +61,18 @@ public:
 	double dR_dS(int i);
 	double dS();
 
-	const Grid& operator=(const Grid& lattice)
-	{
-		r = lattice.r;
-		dr = lattice.dr;
-		ds = lattice.ds;
-		NumPts = lattice.NumPts;
-		beta = lattice.beta;
+//	const Grid& operator=(const Grid& lattice)
+//	{
+//		r = lattice.r;
+//		dr = lattice.dr;
+//		ds = lattice.ds;
+//		NumPts = lattice.NumPts;
+//		beta = lattice.beta;
+//
+//		return *this;
+//	}
 
-		return *this;
-	}
-
-	int size() {
+	size_t size() {
 		return NumPts;
 	}
 

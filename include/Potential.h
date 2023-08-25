@@ -33,7 +33,7 @@ class Potential
 {
 public:
 	Potential(Grid * Lattice, int Z, string mod = "coulomb", double Rad_well = 0);
-	Potential(int i = 0) {}
+	Potential() {}
 	~Potential(void) {};
 
 	// Direct and Current orbital exchange in HF approximation.

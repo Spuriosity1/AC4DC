@@ -41,7 +41,7 @@ Grid::Grid(int num_grid_pts, double r_min, double r_max, double Beta)
 		s_tmp = r_min + beta*log(r_min);
 		ds = (r_max + beta*log(r_max) - s_tmp) / (num_grid_pts - 1);
 
-		for (unsigned int i = 1; i < num_grid_pts; i++)
+		for (int i = 1; i < num_grid_pts; i++)
 		{
 			s_i = s_tmp + ds;
 			alert = 1;
@@ -115,7 +115,7 @@ Grid::Grid(int num_grid_pts, double r_min, double r_max, std::string mode)
 				s = pow(r_max / r_min - num_grid_pts + 1, 1. / (num_grid_pts - 1));
 				h = log(s);
 				tmp = s;
-				for (int i = 1; i < r.size(); i++)
+				for (unsigned i = 1; i < r.size(); i++)
 				{
 					r[i] = (tmp + i)*r_min;
 					dr[i] = r[i] * h + r_min*(1 - h*i);
@@ -126,7 +126,7 @@ Grid::Grid(int num_grid_pts, double r_min, double r_max, std::string mode)
 		if (mode == "exponential") {
 				s = pow(r_max / r_min, 1. / (num_grid_pts - 1));
 				h = log(s);
-				for (int i = 1; i < r.size(); i++)
+				for (unsigned i = 1; i < r.size(); i++)
 				{
 					r[i] = r[i - 1] * s;
 					dr[i] = r[i] * h;
@@ -135,7 +135,7 @@ Grid::Grid(int num_grid_pts, double r_min, double r_max, std::string mode)
 		if (mode == "linear")
 		{
 			h = (r_max - r_min) / (num_grid_pts - 1);
-			for (int i = 1; i < r.size(); i++)
+			for (unsigned i = 1; i < r.size(); i++)
 			{
 				r[i] = r[i - 1] + h;
 				dr[i] = h;

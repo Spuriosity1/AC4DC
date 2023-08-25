@@ -21,7 +21,7 @@ This file is part of AC4DC.
 
 #ifndef B_SPLINE_CXX_H
 #define B_SPLINE_CXX_H
-
+#include <cmath>
 
 namespace BSpline{
     // Template voodoo
@@ -45,7 +45,7 @@ namespace BSpline{
     }
 
     template <>
-    double BSpline<1>(double x, const double *t)
+    inline double BSpline<1>(double x, const double *t)
     {
         if (*t <= x && x < *(t+1))
             return 1.;
@@ -71,11 +71,14 @@ namespace BSpline{
         }
     }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
     template <>
-    double DBSpline<1>(double x, const double *t)
+    inline double DBSpline<1>(double x, const double *t)
     {
         return 0.;
     }
 };
+#pragma GCC diagnostic pop
 
 #endif /* end of include guard: B_SPLINE_CXX_H */

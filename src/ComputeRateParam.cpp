@@ -53,6 +53,7 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 		mkdir("output", ACCESSPERMS);
 	}
 
+	assert(dimension != 0);
 
 	string RateLocation = "./output/" + input.Name() + "/Xsections/";
 
@@ -90,6 +91,7 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 		vector<RateData::Rate> LocalFluor(0);
 		vector<RateData::Rate> LocalAuger(0);
 		vector<ffactor> LocalFF(0);
+		
 
 		#pragma omp parallel default(none) num_threads(input.Num_Threads()) \
 		shared(cout, runlog, have_Aug, have_Flr, have_Pht, saveFF) private(Tmp, Max_occ, LocalPhoto, LocalAuger, LocalFluor, LocalFF)
@@ -112,7 +114,7 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 				DecayRates Transit(Lattice, Orbitals, u, input);
 
 				// ======= Experimental =========
-				if (saveFF) LocalFF.push_back({i, Transit.FT_density()});
+				if (saveFF) LocalFF.push_back({(int)i, Transit.FT_density()});
 				Tmp.from = i;
 
 				if (!have_Pht) {
@@ -218,6 +220,8 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 
 	Store.num_conf = dimension;
 
+	assert(dimension != 0);
+
 
 	string RateLocation = "./output/" + input.Name() + "/Xsections/";
 	if (!exists_test("./output/" + input.Name())) {
@@ -291,10 +295,10 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 			{
 				vector<RadialWF> Orbitals = orbitals;
 				cout << "[HF BEB] configuration " << i << " thread " << omp_get_thread_num() << endl;
-				int N_elec = 0;
+				//int N_elec = 0;
 				for (size_t j = 0;j < Orbitals.size(); j++) {
 					Orbitals[j].set_occupancy(orbitals[j].occupancy() - Index[i][j]);
-					N_elec += Orbitals[j].occupancy();
+					//N_elec += Orbitals[j].occupancy();
 					// Store shell flag if orbital corresponds to shell
 					if(shell_check[j]) Orbitals[j].flag_shell(true);
 				}
@@ -306,14 +310,14 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 				// EII parameters to store for Later BEB model calculation.
 				tmpEIIparams.init = i;
 				int size = 0;
-				for (int n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) size++;
+				for (size_t n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) size++;
 				tmpEIIparams.kin = U.Get_Kinetic(Orbitals, MaxBindInd);
 				tmpEIIparams.ionB = vector<float>(size, 0);
 				tmpEIIparams.fin = vector<int>(size, 0);
 				tmpEIIparams.occ = vector<int>(size, 0);
 				size = 0;
 				//tmpEIIparams.inds.resize(tmpEIIparams.vec2.size(), 0);
-				for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+				for (size_t j = MaxBindInd; j < Orbitals.size(); j++) {
 					if (Orbitals[j].occupancy() == 0) continue;
 					int old_occ = Orbitals[j].occupancy();
 					Orbitals[j].set_occupancy(old_occ - 1);
@@ -331,16 +335,16 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 					assert(Max_occ.size() == Orbitals.size());
 					size = 0;
 					double valence_energy = 0;
-					for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+					for (size_t j = MaxBindInd; j < Orbitals.size(); j++) {
 						if (Orbitals[j].occupancy() == 0) continue;
 						valence_energy = -tmpEIIparams.ionB[size];
 						size++;
 					}
 					int receiver_orbital = -1;
 					int donator_orbital = -1;
-					int receiver_occupancy= -1;
-					int donator_occupancy = -1;
-					for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+					//int receiver_occupancy= -1;
+					//int donator_occupancy = -1;
+					for (size_t j = MaxBindInd; j < Orbitals.size(); j++) {
 						if (Orbitals[j].occupancy() == 0) continue;
 						donator_orbital = j;
 						receiver_orbital = j;
@@ -350,7 +354,7 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 					int donator_idx;
 					int receiver_idx;
 					// Find index of config after electron is transported to this config
-					if (receiver_orbital >= Orbitals.size())
+					if (receiver_orbital >= (int)Orbitals.size())
 						// maximum orbital is filled - Transport is disallowed.
 						receiver_idx = -1;
 					else{
@@ -375,7 +379,7 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 				}
 				DecayRates Transit(lattice, Orbitals, u, input);
 
-				if (saveFF) LocalFF.push_back({i, Transit.FT_density()});
+				if (saveFF) LocalFF.push_back({(int)i, Transit.FT_density()});
 				Tmp.from = i;
 
 				if (!have_Pht) {
@@ -496,7 +500,6 @@ int ComputeRateParam::Symbolic(const string & input, const string & output)
 			ofstream Rates_out(output);
 
 			RateData::Rate Tmp;
-			char type;
 
 			while (!Rates_in.eof())
 			{
@@ -582,8 +585,8 @@ bool ComputeRateParam::SetupIndex(vector<int> Max_occ, vector<int> Final_occ, of
 	}
 	// Work out the number of allowed configurations
 	dimension = 1;
-	int orbitals_size = orbitals.size();
-	int l_hole = 0;//lowest energy orbital with allowed holes
+	size_t orbitals_size = orbitals.size();
+//	int l_hole = 0;//lowest energy orbital with allowed holes
 	hole_posit.clear();
 	hole_posit.resize(orbitals.size());
 
@@ -591,7 +594,7 @@ bool ComputeRateParam::SetupIndex(vector<int> Max_occ, vector<int> Final_occ, of
 	for (int i = orbitals_size - 1; i >= 0; i--)
 	{
 		max_holes[i] = Max_occ[i] - Final_occ[i] + 1;
-		if (Max_occ[i] == Final_occ[i]) l_hole++;
+//		if (Max_occ[i] == Final_occ[i]) l_hole++;
 		hole_posit[i] = dimension;
 		dimension *= max_holes[i];
 	}
@@ -619,7 +622,7 @@ ComputeRateParam::~ComputeRateParam()
 {
 }
 
-vector<double> ComputeRateParam::generate_dT(int num_elem)//default time interval
+vector<double> ComputeRateParam::generate_dT(unsigned num_elem)//default time interval
 {
 	vector<double> Result(num_elem, 0);
 	double tmp = 1;
@@ -634,11 +637,11 @@ vector<double> ComputeRateParam::generate_T(vector<double>& dT)//default time
 {
 	vector<double> Result(dT.size(), 0);
 	vector<double> Bashforth_4{ 55. / 24., -59. / 24., 37. / 24., -9. / 24. }; //Adams�Bashforth method
-	for (int i = 1; i < Bashforth_4.size(); i++)//initial few points
+	for (unsigned i = 1; i < Bashforth_4.size(); i++)//initial few points
 	{
 		Result[i] = Result[i - 1] + dT[i - 1];
 	}
-	for (int i = Bashforth_4.size(); i < Result.size(); i++)//subsequent points
+	for (unsigned i = Bashforth_4.size(); i < Result.size(); i++)//subsequent points
 	{
 		Result[i] = Result[i - 1];
 		for (size_t j = 0;j < Bashforth_4.size(); j++)
@@ -661,7 +664,7 @@ vector<double> ComputeRateParam::generate_I(vector<double>& Time, double Fluence
 	//include the window function to make it exactly 0 at the beginning and smoothly increase toward Gaussian
 
 
-  int smooth = T.size()/10;
+  unsigned smooth = T.size()/10;
   double tmp = 0;
 	for (size_t i = 0;i < Time.size(); i++)
 	{
@@ -703,7 +706,7 @@ int ComputeRateParam::extend_I(vector<double>& Intensity, double new_max_T, doub
 
 void SmoothOrigin(vector<double> & T, vector<double> & F)
 {
-	int smooth = T.size() / 10;
+	unsigned smooth = T.size() / 10;
 	for (size_t i = 0;i < smooth; i++)
 	{
 		F[i] *= (T[i] / T[smooth])*(T[i] / T[smooth])*(3 - 2 * (T[i] / T[smooth]));
@@ -728,7 +731,7 @@ void ComputeRateParam::GenerateRateKeys(vector<RateData::Rate> & ToSort)
 	int CurrentFrom = 0;
 	int start = 0;
 	RatesFromKeys.push_back(0);
-	for (int i = 1; i < ToSort.size(); i++) {
+	for (unsigned i = 1; i < ToSort.size(); i++) {
 		if (ToSort[i].from != CurrentFrom) {
 			CurrentFrom = ToSort[i].from;
 			start = RatesFromKeys.back();
@@ -755,7 +758,7 @@ double ComputeRateParam::T_avg_RMS(vector<pair<double, int>> conf_RMS)
 
   vector<double> intensity = generate_G();
   if (P.size()-1 != density.size()) return -1;
-  for (int m = 0; m < T.size(); m++) {
+  for (unsigned m = 0; m < T.size(); m++) {
     tmp = 0;
     for (size_t i = 0;i < conf_RMS.size(); i++) tmp += P[i][m]*conf_RMS[i].first;
     intensity[m] *= tmp;
@@ -774,7 +777,7 @@ double ComputeRateParam::T_avg_Charge()
   double tmp = 0;
 
   vector<double> intensity = generate_G();
-  for (int m = 0; m < T.size(); m++) {
+  for (unsigned m = 0; m < T.size(); m++) {
     tmp = 0;
     for (size_t i = 0;i < charge.size(); i++) tmp += (input.Nuclear_Z() - i)*charge[i][m];
     intensity[m] *= tmp;
@@ -786,278 +789,3 @@ double ComputeRateParam::T_avg_Charge()
   return I.Integrate(&intensity, 0, T.size()-1);
 }
 
-
-// Unfinished or archived:
-//
-// int ComputeRateParam::SetupAndSolve(ofstream & runlog)
-// {
-// 	// initial conditions for rate equation
-// 	// first index represents the configuration
-// 	// second index represents the time. The routine will expand it itself unless
-// 	// you provide first adams_n points yourself.
-// 	double fluence = input.Fluence();
-// 	double Sigma = input.Width()/ (2*sqrt(2*log(2.)));
-// 	int T_size = input.TimePts();
-// 	vector<double> InitCond(dimension, 0);
-// 	InitCond[0] = 1;
-// 	P.clear();
-//
-// 	vector<double> Intensity;
-// 	double scaling_T = 1;
-//
-// 	int converged = 1;
-// 	Plasma Mxwll(T.size());
-// 	while (converged != 0)
-// 	{
-// 		dT.clear();
-// 		dT = generate_dT(T_size);
-// 		T.clear();
-// 		T = generate_T(dT);
-// 		scaling_T = 4 * input.Width() / T.back();
-// 		for (size_t i = 0;i < T.size(); i++) {
-// 			T[i]  *= scaling_T;
-// 			dT[i] *= scaling_T;
-// 		}
-// 		Intensity = generate_I(T, fluence, Sigma);
-// 		// SmoothOrigin(T, Intensity);
-// 		IntegrateRateEquation Calc(dT, T, Store, InitCond, Intensity);
-// 		converged = Calc.Solve(0, 1, input.Out_T_size());
-// 		if (converged == 0) {
-// 			cout << "[Rates] Final number of time steps: " << T_size << endl;
-// 			P = Calc.GetP();
-// 			T.clear();
-// 			T = Calc.GetT();
-// 			dT.clear();
-// 			dT = vector<double>(T.size(), 0);
-// 		    for (int m = 1; m < T.size(); m++) dT[m-1] = T[m] - T[m-1];
-// 		    dT[T.size()-1] = dT[T.size()-2];
-// 		} else {
-// 			cout << "[Rates] Diverged at step: " << converged << " of " << T_size << endl;
-// 			cout << "Halving timestep..." << endl;
-// 			T_size *= 2;
-// 		}
-// 	}
-//
-//
-// 	Intensity.clear();
-// 	Intensity = generate_I(T, fluence, Sigma);
-// 	SmoothOrigin(T, Intensity);
-//
-// 	int tmp = 0;
-// 	for (size_t i = 0;i < Index.back().size(); i++) tmp += Index.back()[i] - Index.begin()->at(i);
-// 	charge.clear();
-// 	charge.resize(tmp + 1);
-// 	for (auto& ch: charge) ch = vector<double>(T.size(), 0);
-// 	for (size_t i = 0;i < P.size(); i++)
-// 	{
-// 		tmp = Charge(i);
-// 		for (int m = 0; m < P[i].size(); m++) {
-// 			charge[tmp][m] += P[i][m];
-// 		}
-// 	}
-//
-// 	double t_tmp = 0;
-// 		for (int m = 0; m < T.size(); m++) {
-// 		T[m] = (T[m]-0.5*T.back())*Constant::fs_per_au;
-// 		dT[m] *= Constant::fs_per_au;
-// 	}
-//
-// 	if (input.Write_Charges()) {
-// 		cout << "Writing charges..."<<endl;
-// 		string ChargeName = "./output/Charge_" + input.Name() + ".txt";
-// 		ofstream charge_out(ChargeName);
-// 		double chrg_tmp = 0;
-// 		for (int m = 0; m < T.size(); m++) {
-// 			for (size_t i = 0;i < charge.size(); i++) {
-// 				chrg_tmp = charge[i][m];
-// 				if (chrg_tmp <= 0.00000001) charge_out << 0 << " ";
-// 				else charge_out << chrg_tmp << " ";
-// 			}
-// 			charge_out << T[m];
-// 			if (m != T.size() - 1) charge_out << endl;
-// 		}
-//
-// 		charge_out.close();
-// 	}
-//
-// 	if (input.Write_Intensity()) {
-// 		cout << "Writing intensity..."<<endl;
-// 		string IntensityName = "./output/Intensity_" + input.Name() + ".txt";
-// 		ofstream intensity_out(IntensityName);
-//
-// 		double I_max = *max_element(begin(Intensity), end(Intensity));
-// 		for (int m = 0; m < T.size(); m++) {
-// 			intensity_out << Intensity[m] / I_max << " " << T[m];
-// 			if (m != T.size() - 1) intensity_out << endl;
-// 		}
-//
-// 		intensity_out.close();
-// 	}
-//
-//
-//
-// 	return 0;
-// }
-//
-//
-// int ComputeRateParam::SetupAndSolve(MolInp & Input, ofstream & runlog)
-// {
-// 	// initial conditions for rate equation
-// 	// first index represents the configuration
-// 	// second index represents the time. The routine will expand it itself unless
-// 	// you provide first adams_n points yourself.
-// 	double fluence = Input.Fluence();
-// 	double Sigma = Input.Width()/ (2*sqrt(2*log(2.)));
-// 	int T_size = Input.ini_T_size();
-//
-// 	P.clear();
-//
-// 	vector<double> Intensity;
-// 	double scaling_T = 1;
-//
-// 	int converged = 1;
-// 	Plasma Mxwll(T.size());
-// 	while (converged != 0)
-// 	{
-// 		dT.clear();
-// 		dT = generate_dT(T_size);
-// 		T.clear();
-// 		T = generate_T(dT);
-// 		scaling_T = 4*input.Width() / T.back();
-// 		for (size_t i = 0;i < T.size(); i++) {
-//       //T[i] = T[i]-0.5*T.back();
-// 			T[i] *= scaling_T;
-// 			dT[i] *= scaling_T;
-// 		}
-// 		Intensity = generate_I(T, fluence, Sigma);
-//
-// 		//SmoothOrigin(T, Intensity);
-//  		Mxwll.resize(T.size());
-// 		IntegrateRateEquation Calc(dT, T, Input.Store, Mxwll, Intensity);
-//
-//     	T_size = T.size();
-//
-// 		converged = Calc.Solve(Mxwll, Input.Store, Input.Out_T_size());
-//
-// 		if (converged == 0)
-// 		{
-// 			cout << "Final number of time steps: " << T_size << endl;
-// 			P = Calc.GetP();
-// 			T.clear();
-// 			T = Calc.GetT();
-// 			dT.clear();
-// 			dT = generate_dT(T.size());
-// 		}
-// 		else
-// 		{
-// 			cout << "Diverged at step: " << converged << " of " << T_size << endl;
-// 			T_size *= 2;
-// 		}
-// 	}
-//
-// 	Intensity.clear();
-// 	Intensity = generate_I(T, fluence, Sigma);
-//
-// 	double t_tmp = 0;
-// 	double I_max = *max_element(begin(Intensity), end(Intensity));
-//
-// 	for (int m = 0; m < T.size(); m++) {
-// 		T[m] = (T[m]-0.5*T.back())*Constant::fs_per_au;
-// 		dT[m] *= Constant::fs_per_au;
-// 	}
-//
-// 	int shift = 0;
-// 	vector<int> P_to_charge(0);
-//
-//   // Aggregate and output charges, plasma parameters, and other parameters into an output.
-//   // Charges.
-//   vector<vector<double>> AllAtomCharge(Input.Atomic.size(), vector<double>(T.size(), 0));
-//
-// 	for (int a = 0; a < Input.Atomic.size(); a++) {
-//
-// 		// Occupancies associated with the atom "a".
-// 		vector<vector<double*>> map_p(Input.Store[a].num_conf);
-// 		for (size_t i = 0;i < Input.Store[a].num_conf; i++) {
-// 			map_p[a].push_back(P[i + shift].data());
-// 		}
-//
-// 		// Work out charges of all configurations.
-// 		double chrg_tmp = 0;
-// 		int tmp = Input.Index[a][0].size();
-// 		P_to_charge.clear();
-// 		P_to_charge.resize(Input.Store[a].num_conf, 0);
-// 		for (size_t i = 0;i < Input.Index[a].size(); i++) {
-// 			for (size_t j = 0;j < tmp; j++) P_to_charge[i] += Input.Index[a][i][j];
-// 			chrg_tmp = 0;
-// 		}
-//
-// 		charge.clear();
-// 		charge.resize(*max_element(begin(P_to_charge), end(P_to_charge)) + 1);
-// 		for (auto& ch: charge) ch = vector<double>(T.size(), 0);
-// 		for (size_t i = 0;i < map_p[a].size(); i++)
-// 		{
-// 			tmp = P_to_charge[i];
-// 			for (int m = 0; m < P[i].size(); m++) charge[tmp][m] += *(map_p[a][i] + m);
-// 		}
-//
-//     for (int m = 0; m < T.size(); m++) {
-// 			for (int i = 1; i < charge.size(); i++) {
-//         AllAtomCharge[a][m] += i*charge[i][m];
-//       }
-//     }
-//
-// 		shift += Input.Store[a].num_conf;
-//
-// 		if (Input.Write_Charges()) {
-// 			string ChargeName = "./output/Charge_" + Input.Store[a].name + ".txt";
-// 			ofstream charge_out(ChargeName);
-// 			double chrg_tmp = 0;
-// 			for (int m = 0; m < T.size(); m++) {
-// 				for (size_t i = 0;i < charge.size(); i++) {
-// 					chrg_tmp = charge[i][m];
-// 					if (chrg_tmp <= 0.00000001) charge_out << 0 << " ";
-// 					else charge_out << chrg_tmp << " ";
-// 				}
-// 				charge_out << T[m];
-// 				if (m != T.size() - 1) charge_out << endl;
-// 			}
-//
-// 			charge_out.close();
-// 		}
-//
-// 	}
-//
-// 	if (Input.Write_MD_data()) {
-// 		string MD_Data = "./output/MD_Data.txt";
-// 		ofstream OutFile(MD_Data);
-// 		OutFile << T.size() << endl;
-// 		OutFile << "Time ";
-// 		for (int a = 0; a < Input.Atomic.size(); a++) OutFile << Input.Atomic[a].Nuclear_Z() << " ";
-// 		OutFile << "N(elec) E(elec)";
-// 		for (int m = 0; m < T.size(); m++) {
-// 			OutFile << endl << T[m] << " ";
-// 			for (int a = 0; a < AllAtomCharge.size(); a++) {
-// 				OutFile << AllAtomCharge[a][m] << " ";
-// 			}
-// 			if (m != 0) OutFile << Mxwll.state[m].N << " " << Mxwll.state[m].E;
-// 			else OutFile << 0 << " " << 0;
-// 		}
-//
-// 		OutFile.close();
-// 	}
-//
-// 	if (Input.Write_Intensity()) {
-// 		string IntensityName = "./output/Intensity_" + Input.name + ".txt";
-// 		ofstream intensity_out(IntensityName);
-//
-// 		double I_max = *max_element(begin(Intensity), end(Intensity));
-// 		for (int m = 0; m < T.size(); m++) {
-// 			intensity_out << Intensity[m] / I_max << " " << T[m];
-// 			if (m != T.size() - 1) intensity_out << endl;
-// 		}
-//
-// 		intensity_out.close();
-// 	}
-//
-// 	return 0;
-// }

@@ -453,7 +453,8 @@ double wigner6j(double l1, double l2, double l3,
 
 	return wigner6j(l2,l3,l4,l5,l6)[index];
 }
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 double wigner3j_auxA(double l1, double l2, double l3,
 						double m1, double m2, double m3)
 {
@@ -505,3 +506,4 @@ double wigner6j_auxB(double l1, double l2, double l3,
 	return (T0*(T1*T2+T3*T4+T5*T6-T7));
 }
 }
+#pragma GCC diagnostic pop

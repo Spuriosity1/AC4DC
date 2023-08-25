@@ -20,6 +20,7 @@ This file is part of AC4DC.
 ===========================================================================*/
 #pragma once
 
+#include <cstddef>
 #include <vector>
 
 class PairFunction
@@ -31,6 +32,12 @@ public:
 		if (size > 0) {
 			resize(size);
 		}
+	}
+	// explicit copy constructor
+	PairFunction(const PairFunction& other)
+	{
+		this->F = other.F;
+		this->G = other.G;
 	}
 
 	std::vector<double> F, G;  // Large and small components of radial wavefunction and it's derivatives
@@ -47,11 +54,11 @@ public:
 		G.resize(size);
 	}
 
-	int size() { return static_cast<int>(F.size()); }
+	size_t size() { return F.size(); }
 
 	void scale(double norm)
 	{
-		for (int i = 0; i < size(); i++) {
+		for (size_t i = 0; i < size(); i++) {
 			F[i] *= norm;
 			G[i] *= norm;
 		}
@@ -64,6 +71,7 @@ public:
 
 		return *this;
 	}
+
 
 	~PairFunction() {}
 };

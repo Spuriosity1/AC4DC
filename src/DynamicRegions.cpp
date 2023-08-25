@@ -47,7 +47,7 @@ This file is part of AC4DC.
  */
 
 GridRegions::GridRegions(){
-    int pts_per_dirac = 10; 
+//    int pts_per_dirac = 10; 
     // Defaults for Maxwell-Boltzmann (thermalised electrons) region bounds, but overwritten in some presets.
     mb_min_over_kT =  0.2922; //  90% of electrons above this point
     mb_max_over_kT =  2.3208; //  80% of electrons below this point (lower since not as sharp)
@@ -218,7 +218,8 @@ double GridRegions::dynamic_max_inner_knot(){
 // void GridRegions::set_static_region_energies(vector<double> energy_boundaries){
 
 // }
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 void Region::update_region(double new_centre, double new_min, double new_max){
     assert(type != "static");    
     if (E_min != new_min || E_max != new_max){
@@ -231,6 +232,7 @@ void Region::update_region(double new_centre, double new_min, double new_max){
     }
     else std::cout<<"Energy range of region of type '"<<type<<"' had NO update." <<std::endl;
 }
+#pragma GCC diagnostic pop
 
 // powers not implemented yet since doesn't seem necessary
 /**

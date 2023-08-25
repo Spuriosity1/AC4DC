@@ -42,20 +42,22 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	if (omega <= 0) return Result;
 
 	photo PhotoTmp;
-	int j = 0, N_elec = 0;
+	int j = 0;
+	//int N_elec = 0;
 	int infinity, L;
-	double Infinity = 0, k_min = sqrt(2*omega), k_max = 0, V_tmp = 0;
+	double Infinity = 0, k_min = sqrt(2*omega), k_max = 0;
+	//, V_tmp = 0;
 
 	vector<RadialWF> Orbitals(orbitals.size());
 
-	for (int i = 0; i < orbitals.size(); i++)
+	for (unsigned i = 0; i < orbitals.size(); i++)
 	{
 		Orbitals[i].set_N(orbitals[i].N());
 		Orbitals[i].set_L(orbitals[i].L());        // Resets occupancy
 		Orbitals[i].Energy = orbitals[i].Energy;
 		if (orbitals[i].occupancy() != 0)
 		{
-			N_elec += orbitals[i].occupancy();
+	//		N_elec += orbitals[i].occupancy();
 			if (j < orbitals[i].pract_infinity()) { j = orbitals[i].pract_infinity(); Infinity = lattice.R(j); }
 			if (omega + orbitals[i].Energy >= 0.25)
 			{
@@ -74,12 +76,12 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 //	Interpolate orbitals on the new grid
 	Interpolation W(6);
 
-	for (int i = 0; i < Orbitals.size(); i++) {
+	for (unsigned i = 0; i < Orbitals.size(); i++) {
 		if (input.Exited_Pot_Model() != "V_N-1" && orbitals[i].occupancy() == 0) continue;
 		if (orbitals[i].F[0] != 0) W.RecalcWF(orbitals[i], lattice, Orbitals[i], Lattice);
 		Infinity = lattice.R(orbitals[i].pract_infinity());
 		j = 0;
-		while (Lattice.R(j) < Infinity && j < Lattice.size() - 1) j++;
+		while (Lattice.R(j) < Infinity && j < (int)Lattice.size() - 1) j++;
 		Orbitals[i].set_infinity(j);
 	}
 
@@ -102,7 +104,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	double ME = 0;
 
 // main loop over all the possible transitions
-	for (int i = 0; i < Orbitals.size(); i++)
+	for (unsigned i = 0; i < Orbitals.size(); i++)
 	{
 		if (Orbitals[i].occupancy() > 0)
 		{
@@ -110,7 +112,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 
 			density.clear();
 			density.resize(infinity + 1);
-			for (int s = 0; s < density.size(); s++) density[s] = pow(Orbitals[i].F[s], 2);
+			for (unsigned s = 0; s < density.size(); s++) density[s] = pow(Orbitals[i].F[s], 2);
 			ME = I.Integrate(&density, 0, infinity);
 
 			j = Orbitals[i].occupancy();
@@ -136,7 +138,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 						if (IntegrateContinuum(Lattice, U, Orbitals, &Continuum, i) < 0) {
 						log << "====================================================================" << endl;
 							log << "Continuum didn't converge: " << endl;
-							for (int i = 0; i < orbitals.size(); i++)
+							for (unsigned i = 0; i < orbitals.size(); i++)
 							{
 								log << i + 1 << ") n = " << orbitals[i].N() << " l = " << orbitals[i].L()
 									<< " Energy = " << orbitals[i].Energy << " Occup = " << orbitals[i].occupancy() << endl;
@@ -147,7 +149,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 						density.clear();
 						density.resize(infinity + 1);
 						if (input.Gauge() == "length") {
-								for (int s = 0; s < density.size(); s++)	{
+								for (unsigned s = 0; s < density.size(); s++)	{
 								density[s] = Lattice.R(s)*Continuum.F[s] * Orbitals[i].F[s];
 							}
 							ME = I.Integrate(&density, 0, infinity);
@@ -155,7 +157,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 						else {
 						// Velocity gauge.
 							double ang_coeff =  0.5*(Orbitals[i].L() - Continuum.L())*(Orbitals[i].L() + Continuum.L() + 1);
-								for (int s = 0; s < density.size(); s++)	{
+								for (unsigned s = 0; s < density.size(); s++)	{
 								density[s] = Continuum.F[s] *(Orbitals[i].G[s] + ang_coeff * Orbitals[i].F[s]/Lattice.R(s)) ;
 							}
 							ME = I.Integrate(&density, 0, infinity)/omega;
@@ -188,12 +190,12 @@ vector<fluor> DecayRates::Fluor()
 
 	Adams I(lattice, 10);
 
-	for (int i = 0; i < orbitals.size(); i++)
+	for (unsigned i = 0; i < orbitals.size(); i++)
 	{
 		if (orbitals[i].occupancy() < 4 * orbitals[i].L() + 2)//check if there is a hole
 		{
 			N_h = 4 * orbitals[i].L() + 2 - orbitals[i].occupancy();
-			for (int j = i + 1; j < orbitals.size(); j++)
+			for (unsigned j = i + 1; j < orbitals.size(); j++)
 			{
 				if (orbitals[j].L() == orbitals[i].L() + 1 || orbitals[j].L() == orbitals[i].L() - 1)//selection rules
 				{
@@ -208,7 +210,7 @@ vector<fluor> DecayRates::Fluor()
 						density.resize(L_max);
 
 						if (input.Gauge() == "length") {
-							for (int s = 0; s < density.size(); s++)	{
+							for (unsigned s = 0; s < density.size(); s++)	{
 								density[s] = lattice.R(s) * orbitals[i].F[s] * orbitals[j].F[s];
 							}
 							ME = I.Integrate(&density, 0, density.size()-1);// Electric dipole matrix element
@@ -216,7 +218,7 @@ vector<fluor> DecayRates::Fluor()
 						else {
 						// Velocity gauge.
 							double ang_coeff =  0.5*(orbitals[i].L() - orbitals[j].L())*(orbitals[i].L() + orbitals[j].L() + 1);
-								for (int s = 0; s < density.size(); s++)	{
+								for (unsigned s = 0; s < density.size(); s++)	{
 								density[s] = orbitals[j].F[s] *(orbitals[i].G[s] + ang_coeff * orbitals[i].F[s]/lattice.R(s)) ;
 							}
 							ME = I.Integrate(&density, 0, density.size()-1)/(orbitals[j].Energy - orbitals[i].Energy);
@@ -249,18 +251,19 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 	vector<auger> Result;
 	auger Tmp;
 	int N_h;
-	double N_fe, E_cont, V_tmp, Infinity;
+	double N_fe, E_cont, Infinity;
 	assert(Max_occ.size() == orbitals.size());
 	//Create new lattice, core and potential suitable for continuum states
 	double k = 0;
-	for (int i = 0; i < orbitals.size(); i++)//find k that corresponds to shortest wavelength
+	for (unsigned i = 0; i < orbitals.size(); i++)//find k that corresponds to shortest wavelength
 	{
 		if (orbitals[i].occupancy() < Max_occ[i]) {
 			k = sqrt(-2 * orbitals[i].Energy);
 			break;
 		}
 	}
-	int N_elec = 0, allowed = 0;
+	int N_elec = 0;
+	unsigned allowed = 0;
 
 	vector<RadialWF> Orbitals(orbitals.size());
 
@@ -284,12 +287,12 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 
 	//check if there are electrons above current orbital that can fill
 	//empty orbital. If above > 1 auger is possible and even hollow orbital should be interpolated
-	for (int i = 0; i < orbitals.size(); i++) {
+	for (unsigned i = 0; i < orbitals.size(); i++) {
 		//if (input.Exited_Pot_Model() != "V_N-1" && orbitals[i].occupancy() == 0) continue;
 		if (input.Exited_Pot_Model() == "V_N-1" || i <= allowed) W.RecalcWF(orbitals[i], lattice, Orbitals[i], Lattice);
 		Infinity = lattice.R(orbitals[i].pract_infinity());
 		int j = 0;
-		while (Lattice.R(j) < Infinity && j < Lattice.size() - 1) j++;
+		while (Lattice.R(j) < Infinity && j < (int)Lattice.size() - 1) j++;
 		Orbitals[i].set_infinity(j);
 	}
 	//	potential on the new grid
@@ -299,7 +302,7 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 	bool select;
 	int h_occ = 0, e_occ = 0, f_occ = 0;
 
-	for (int h = 0; h < allowed; h++)
+	for (unsigned h = 0; h < allowed; h++)
 	{
 		if (Orbitals[h].occupancy() < Max_occ[h])//check if there is a hole
 		{
@@ -307,13 +310,13 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 			Tmp.hole = h;
 			h_occ = Orbitals[h].occupancy();
 			if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[h].set_occupancy(h_occ + 1);
-			for (int f = h + 1; f <= allowed; f++)//fill the hole
+			for (unsigned f = h + 1; f <= allowed; f++)//fill the hole
 			{
 				Tmp.fill = f;
 				f_occ = Orbitals[f].occupancy();
 				if (f_occ == 0) continue;
 				if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[f].set_occupancy(f_occ - 1);
-				for (int e = f; e <= allowed; e++)//eject
+				for (unsigned e = f; e <= allowed; e++)//eject
 				{
 					e_occ = Orbitals[e].occupancy();
 					if (e_occ == 0) continue;
@@ -361,7 +364,7 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 						Continuum.set_L(l_E); //TODO make sure this is fine -S.P.
 						if (IntegrateContinuum(Lattice, U, Orbitals, &Continuum, f) < 0) {
 							log << "Continuum didn't converge: " << endl;
-							for (int i = 0; i < orbitals.size(); i++)
+							for (unsigned i = 0; i < orbitals.size(); i++)
 							{
 								log << i + 1 << ") n = " << orbitals[i].N() << " l = " << orbitals[i].L()
 									<< " Energy = " << orbitals[i].Energy << " Occup = " << orbitals[i].occupancy() << endl;
@@ -461,7 +464,7 @@ vector<double> DecayRates::FT_density(double Q_min, double Q_max, int Q_size)
 			vector<double> density = Inp_density;
 			Inp_density.clear();
 			Inp_density.resize(Inp_lattice.size(), 0);
-			for (int i = 0; i < Inp_lattice.size(); i++) {
+			for (unsigned i = 0; i < Inp_lattice.size(); i++) {
 				Inp_density[i] = IN.get_value(density, lattice.all_R(), Inp_lattice.R(i))[0];
 			}
 			integr.clear();
@@ -469,11 +472,11 @@ vector<double> DecayRates::FT_density(double Q_min, double Q_max, int Q_size)
 		}
 
 		if (Q == 0) {
-			for (int i = 0; i < integr.size(); i++) {
+			for (unsigned i = 0; i < integr.size(); i++) {
 				integr[i] = Inp_density[i];
 			}
 		} else {
-			for (int i = 0; i < integr.size(); i++) {
+			for (unsigned i = 0; i < integr.size(); i++) {
 				tmp = 2*M_PI*Inp_lattice.R(i)*Q;
 				integr[i] = Inp_density[i]*sin(tmp)/tmp;
 			}
@@ -512,11 +515,11 @@ int DecayRates::IntegrateContinuum(Grid &Lattice, Potential &U, vector<RadialWF>
 	int Core_infinity = 0;
 
 	// Try to optimize practical infinity.
-	for (int i = 0; i < Core.size(); i++) {
+	for (unsigned i = 0; i < Core.size(); i++) {
 		if (Core[i].pract_infinity() > Core_infinity) Core_infinity = Core[i].pract_infinity();
 	}
 
-	for (int i = 0; i < Lattice.size(); i++) {
+	for (unsigned i = 0; i < Lattice.size(); i++) {
 		if (Current->Energy > -5 * U.V[i]) {
 			infinity = i;
 			break;
@@ -528,7 +531,7 @@ int DecayRates::IntegrateContinuum(Grid &Lattice, Potential &U, vector<RadialWF>
 
 	Adams NumIntgr(Lattice, 10);
 
-	for (int i = 0; i < Lattice.size(); i++)
+	for (unsigned i = 0; i < Lattice.size(); i++)
 	{
 		NumIntgr.B[i] = 1.;
 		NumIntgr.C[i] = -2 * (Current->Energy - U.V[i] - 0.5*Current->L()*(Current->L() + 1) / Lattice.R(i) / Lattice.R(i));

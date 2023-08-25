@@ -27,6 +27,7 @@ This file is part of AC4DC.
 #include "Constant.h"
 #include "SplineIntegral.h"
 #include <Eigen/StdVector>
+#include <cstring>
 
 // #define NDEBUG
 // to remove asserts
@@ -120,17 +121,18 @@ void Distribution::get_Q_eii (Eigen::VectorXd& v, size_t a, const bound_t& P, co
 void Distribution::get_Q_tbr (Eigen::VectorXd& v, size_t a, const bound_t& P, const int & threads) const {
     assert(basis.has_Qtbr());
     assert(P.size() == basis.Q_TBR[a].size());
-    double v_copy [size] = {0}; 
-    #pragma omp parallel for num_threads(threads) reduction(+ : v_copy) collapse(2)
-    for (size_t eta=0; eta<P.size(); eta++) {          // size = num configurations
-        // Loop over configurations that P refers to
-        for (size_t J=0; J<size; J++) {                   // size = num grid points
+    double v_copy[size] = {0};
+    #pragma omp parallel for num_threads(threads) reduction(+ : v_copy) collapse(2) 
+    for (size_t J=0; J<size; J++) {                   // size = num grid points
+        for (size_t eta=0; eta<P.size(); eta++) {          // size = num configurations
+            // Loop over configurations that P refers to
             for (auto& q : basis.Q_TBR[a][eta][J]) {   // Thousands of iterations for each J - S.P.
                  v_copy[J] += q.val * P[eta] * f[q.K] * f[q.L];
             }
         }
     }
     v += Eigen::Map<Eigen::VectorXd>(v_copy,size);
+    
 }
 
 // Puts the Q_EE changes in the supplied vector v
@@ -140,13 +142,15 @@ void Distribution::get_Q_ee(Eigen::VectorXd& v, const int & threads) const {
     // double CoulombLog = 3.4;
     if (CoulombLog <= 0) return; // skip calculation if LnLambda vanishes
 
-    if (isnan(CoulombLog) || CoulombLog > 11.5) CoulombLog = 11.5;
+    if (isnan(CoulombLog) || CoulombLog > 11.5) CoulombLog = 11.5; // TODO make this cutoff user-configurable
     // double LnLambdaD = 0.5*log(this->k_temperature()/4/Constant::Pi/this->density());
     // if (isnan(LnLambdaD)) LnLambdaD = 11;
     // cerr<<"LnDebLen = "<<LnLambdaD<<endl;
     // A guess. This should only happen when density is zero, so Debye length is infinity.
     // Guess the sample size is about 10^5 Bohr. This shouldn't ultimately matter much.   /// Attention - S.P. // Actually it seems this isn't active? Something something fences on roads.
+    // // what the fuck?
     double v_copy [size] = {0}; 
+
     #pragma omp parallel for num_threads(threads) reduction(+ : v_copy)  collapse(2)       
     for (size_t J=0; J<size; J++) {
         for (size_t K=0; K<size; K++) {
@@ -189,7 +193,7 @@ void Distribution::add_maxwellian(double T, double N) {
 void Distribution::transform_basis(std::vector<double> new_knots){
     int new_basis_order = basis.BSPLINE_ORDER;
     //// Get knots that have densities
-    int num_new_splines = get_trimmed_knots(new_knots).size();   // TODO replace get_trimmed_knots with get_num_funcs?. 
+    unsigned num_new_splines = get_trimmed_knots(new_knots).size();   // TODO replace get_trimmed_knots with get_num_funcs?. 
     //// Compute densities for knots
     std::vector<std::vector<double>> new_densities(num_new_splines, std::vector<double>(64, 0));
 

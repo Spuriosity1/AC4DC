@@ -19,6 +19,7 @@ This file is part of AC4DC.
 #include <vector>
 #include "EigenSolver.h"
 #include <algorithm>
+#pragma GCC diagnostic ignored "-Wunused-variable"
 
 static const double adams_10[10] = { 2082753.0 / 7257600.0, 9449717.0 / 7257600.0, -11271304.0 / 7257600.0, 16002320.0 / 7257600.0, -17283646.0 / 7257600.0,
 13510082.0 / 7257600.0, -7394032.0 / 7257600.0, 2687864.0 / 7257600.0, -583435.0 / 7257600.0, 57281.0 / 7257600.0 };
@@ -325,7 +326,7 @@ double Adams::Integrate(std::vector<double>* Func, int start_pt, int end_pt)
 
 	assert(Result.size() <= RightVect.size());
 
-	for (int i = 0; i < Result.size(); i++)
+	for (size_t i = 0; i < Result.size(); i++)
 	{
 		if (std::isnan(Result[i])){throw std::runtime_error("Adams::Integrate returned nan!");}
 		Result[i] = RightVect[i];
@@ -642,7 +643,7 @@ Interpolation::Interpolation(int Order)
 
 vector<double> Interpolation::get_value(const vector<double> &f, const vector<double> &x_ini, double X)
 {
-	int close_left = 0;
+	size_t close_left = 0;
 	vector<double> Result(2, 0);
 	vector<double> P(order + 1, 0);
 	vector<double> x(order + 1, 0);
@@ -695,7 +696,7 @@ vector<double> Interpolation::get_value(const vector<double> &f, const vector<do
 
 vector<double> Interpolation::get_value(PairFunction &S_old, Grid &Lattice_old, double X)
 {
-	int close_left = 0;
+	size_t close_left = 0;
 	vector<double> Result(2, 0);
 	vector<double> P(order + 1, 0);
 	vector<double> x(order + 1, 0);
@@ -752,7 +753,7 @@ int Interpolation::RecalcWF(RadialWF &S_old, Grid &Lattice_old, RadialWF &S_new,
 {
 	if (S_old.size() == Lattice_old.size())
 	{
-		int j = 0;
+		unsigned j = 0;
 		double Infinity = Lattice_old.R(S_old.pract_infinity());
 		vector<double> Tmp(2, 0);
 		S_new.clear();
@@ -971,7 +972,7 @@ vector<double> GaussQuad::get_Gauss_X(double a, double b)
 	// Linear mapping: X[i] = 0.5(b-a)*GaussX[i] + 0.5*(a+b).
 	double l = 0.5*(a + b);
 	vector<double> Result(GaussX.size(), l);
-	for (int i = 0; i < GaussX.size(); i++) {
+	for (size_t i = 0; i < GaussX.size(); i++) {
 		Result[i] += 0.5*(b - a)*GaussX[i];
 	}
 
@@ -983,7 +984,7 @@ double GaussQuad::Integrate(vector<double> &F, vector<double> &x, double a, doub
 	// Gauss quadrature integration formula.
 	double Result = 0;
 	if (GaussX.size() != x.size()) return 0;
-	for (int i = 0; i < x.size(); i++) {
+	for (size_t i = 0; i < x.size(); i++) {
 		Result += F[i]*GaussW[i];
 	}
 	Result *= 0.5*(b - a);

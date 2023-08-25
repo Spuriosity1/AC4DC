@@ -1,0 +1,772 @@
+[1/26] Compiling C++ object ac4dc_headless.p/src_Dipole.cpp.o
+[2/26] Compiling C++ object src/Wigner/libWigner.a.p/wignerSymbols.cpp.o
+../src/Wigner/wignerSymbols.cpp: In function 'double WignerSymbols::wigner3j_auxA(double, double, double, double, double, double)':
+../src/Wigner/wignerSymbols.cpp:458:67: warning: unused parameter 'm2' [-Wunused-parameter]
+  458 |                                                 double m1, double m2, double m3)
+      |                                                            ~~~~~~~^~
+../src/Wigner/wignerSymbols.cpp:458:78: warning: unused parameter 'm3' [-Wunused-parameter]
+  458 |                                                 double m1, double m2, double m3)
+      |                                                                       ~~~~~~~^~
+../src/Wigner/wignerSymbols.cpp: In function 'double WignerSymbols::wigner6j_auxA(double, double, double, double, double, double)':
+../src/Wigner/wignerSymbols.cpp:479:56: warning: unused parameter 'l4' [-Wunused-parameter]
+  479 |                                                 double l4, double l5, double l6)
+      |                                                 ~~~~~~~^~
+[3/26] Linking static target src/Wigner/libWigner.a
+[4/26] Compiling C++ object ac4dc_headless.p/src_Constant.cpp.o
+[5/26] Compiling C++ object ac4dc_headless.p/src_DecayRates.cpp.o
+[6/26] Compiling C++ object ac4dc_headless.p/src_DynamicRegions.cpp.o
+[7/26] Compiling C++ object ac4dc_headless.p/src_Grid.cpp.o
+[8/26] Compiling C++ object ac4dc_headless.p/src_HartreeFock.cpp.o
+../src/HartreeFock.cpp: In constructor 'HartreeFock::HartreeFock(Grid&, std::vector<RadialWF>&, Potential&, Input&, std::ofstream&)':
+../src/HartreeFock.cpp:181:43: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  181 |                         for (int j = 0; j < Lattice.size(); j++) {
+      |                                         ~~^~~~~~~~~~~~~~~~
+../src/HartreeFock.cpp:320:59: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  320 |                                         for (int j = 0; j < Lattice.size(); j++) {
+      |                                                         ~~^~~~~~~~~~~~~~~~
+[9/26] Compiling C++ object ac4dc_headless.p/src_Input.cpp.o
+[10/26] Compiling C++ object ac4dc_headless.p/src_BoundTransport.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseLU:14,
+                 from ../include/SplineBasis.h:26,
+                 from ../include/MolInp.h:27,
+                 from ../include/ComputeRateParam.h:30,
+                 from ../src/BoundTransport.cpp:6:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+../src/BoundTransport.cpp: In constructor 'BoundTransport::BoundTransport(std::vector<RadialWF>&, std::vector<RadialWF>&, Input&)':
+../src/BoundTransport.cpp:10:50: warning: unused parameter 'light_orbitals' [-Wunused-parameter]
+   10 | BoundTransport::BoundTransport(vector<RadialWF> &light_orbitals, vector<RadialWF>&heavy_orbitals, Input & Input){
+      |                                ~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+../src/BoundTransport.cpp:10:83: warning: unused parameter 'heavy_orbitals' [-Wunused-parameter]
+   10 | BoundTransport::BoundTransport(vector<RadialWF> &light_orbitals, vector<RadialWF>&heavy_orbitals, Input & Input){
+      |                                                                  ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~
+../src/BoundTransport.cpp:10:107: warning: unused parameter 'Input' [-Wunused-parameter]
+   10 | BoundTransport::BoundTransport(vector<RadialWF> &light_orbitals, vector<RadialWF>&heavy_orbitals, Input & Input){
+      |                                                                                                   ~~~~~~~~^~~~~
+[11/26] Compiling C++ object ac4dc_headless.p/src_Pulse.cpp.o
+[12/26] Compiling C++ object ac4dc_headless.p/src_ElectronSolverGridDynamics.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from ../include/FreeDistribution.h:32,
+                 from ../include/HybridIntegrator.hpp:27,
+                 from ../include/ElectronRateSolver.h:30,
+                 from ../src/ElectronSolverGridDynamics.cpp:25:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+[13/26] Compiling C++ object ac4dc_headless.p/src_Potential.cpp.o
+../src/Potential.cpp:536:9: warning: multi-line comment [-Wcomment]
+  536 |         // Calculates Sum_m (-1)^m / La Lb k \
+      |         ^
+../src/Potential.cpp: In member function 'void Potential::GenerateNuclear()':
+../src/Potential.cpp:51:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+   51 |                 for (int i = 0; i < lattice->size(); i++) {
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:55:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+   55 |                 for (int i = 0; i < lattice->size(); i++) {
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'void Potential::GenerateTrial(std::vector<RadialWF>&)':
+../src/Potential.cpp:87:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+   87 |                 for (int i = 0; i < lattice->size(); i++)
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:105:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  105 |                 for (int i = 0; i < lattice->size(); i++) V[i] = nuclear[i];
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'void Potential::ScaleNucl(double)':
+../src/Potential.cpp:117:27: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  117 |         for (int i = 0; i < lattice->size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'int Potential::HF_upd_dir(RadialWF*, std::vector<RadialWF>&)':
+../src/Potential.cpp:149:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  149 |         for (int i = 0; i < Orbitals.size(); i++)
+      |                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:172:67: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  172 |                                                 for (int j = 0; j < lattice->size(); j++)       {
+      |                                                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:197:27: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  197 |         for (int i = 0; i < lattice->size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'int Potential::LDA_upd_dir(std::vector<RadialWF>&)':
+../src/Potential.cpp:225:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  225 |         for (int i = 0; i < Orbitals.size(); i++)
+      |                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:241:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  241 |                 for (int i = 0; i < lattice->size(); i++) {
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:252:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  252 |                 for (int i = 0; i < lattice->size(); i++) {
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:260:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  260 |                 for (int i = 0; i < lattice->size(); i++) {
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:250:16: warning: unused variable 'V_tmp' [-Wunused-variable]
+  250 |         double V_tmp = 0;
+      |                ^~~~~
+../src/Potential.cpp: In member function 'int Potential::HF_upd_exc(RadialWF*, std::vector<RadialWF>&)':
+../src/Potential.cpp:286:27: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  286 |         for (int i = 0; i < lattice->size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:293:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  293 |         for (int i = 0; i < Orbitals.size(); i++)
+      |                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:312:43: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  312 |                         for (int j = 0; j < lattice->size(); j++) Exchange[j] -= angular * y_k[j] * Orbitals[i].F[j] / lattice->R(j);
+      |                                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'int Potential::HF_V_N1(RadialWF*, std::vector<RadialWF>&, int, bool, bool)':
+../src/Potential.cpp:337:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  337 |                 for (int i = 0; i < lattice->size(); i++) v0_N1[i] /= lattice->R(i);
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:341:35: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  341 |                 for (int i = 0; i < lattice->size(); i++) V[i] -= v0_N1[i];
+      |                                 ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:354:43: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  354 |                         for (int i = 0; i < lattice->size(); i++) {
+      |                                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'std::vector<double> Potential::Y_k(int, std::vector<double>, int, int)':
+../src/Potential.cpp:398:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  398 |         for (int i = 0; i < density.size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~~
+../src/Potential.cpp:410:27: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  410 |         for (int i = 0; i < lattice->size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:423:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  423 |         for (int i = 0; i < density.size(); i++)
+      |                         ~~^~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'std::vector<double> Potential::make_density(std::vector<RadialWF>&)':
+../src/Potential.cpp:440:28: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  440 |         for (int i = 0 ; i < Orbitals.size(); i++) {
+      |                          ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:444:35: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  444 |                 for (int j = 0; j < Result.size(); j++) {
+      |                                 ~~^~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'std::vector<float> Potential::Get_Kinetic(std::vector<RadialWF>&, int)':
+../src/Potential.cpp:466:36: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  466 |         for (int i = start_with; i < Orbitals.size(); i++) if (Orbitals[i].occupancy() != 0) size++;
+      |                                  ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp:477:36: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  477 |         for (int i = start_with; i < Orbitals.size(); i++) {
+      |                                  ~~^~~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'double MatrixElems::Dipole(RadialWF&, RadialWF&, std::string)':
+../src/Potential.cpp:504:35: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  504 |                 for (int i = 0; i < density.size(); i++) {
+      |                                 ~~^~~~~~~~~~~~~~~~
+../src/Potential.cpp:510:43: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  510 |                         for (int i = 0; i < density.size(); i++)        {
+      |                                         ~~^~~~~~~~~~~~~~~~
+../src/Potential.cpp: In member function 'double MatrixElems::R_pow_k(std::vector<RadialWF>&, int)':
+../src/Potential.cpp:566:21: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  566 |   for (int i = 0; i < density.size(); i++) {
+      |                   ~~^~~~~~~~~~~~~~~~
+[14/26] Compiling C++ object ac4dc_headless.p/src_FreeDistribution.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from ../include/FreeDistribution.h:32,
+                 from ../src/FreeDistribution.cpp:25:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+../src/FreeDistribution.cpp: In member function 'void Distribution::get_Q_eii(Eigen::VectorXd&, size_t, const bound_t&, const int&) const':
+../src/FreeDistribution.cpp:100:16: warning: ISO C++ forbids variable length array 'v_copy' [-Wvla]
+  100 |         double v_copy [size] = {0};
+      |                ^~~~~~
+../src/FreeDistribution.cpp: In member function 'void Distribution::get_Q_tbr(Eigen::VectorXd&, size_t, const bound_t&, const int&) const':
+../src/FreeDistribution.cpp:123:12: warning: ISO C++ forbids variable length array 'v_copy' [-Wvla]
+  123 |     double v_copy [size] = {0};
+      |            ^~~~~~
+../src/FreeDistribution.cpp: In member function 'void Distribution::get_Q_ee(Eigen::VectorXd&, const int&) const':
+../src/FreeDistribution.cpp:149:12: warning: ISO C++ forbids variable length array 'v_copy' [-Wvla]
+  149 |     double v_copy [size] = {0};
+      |            ^~~~~~
+../src/FreeDistribution.cpp: In member function 'void Distribution::transform_basis(std::vector<double>)':
+../src/FreeDistribution.cpp:197:23: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  197 |     for (size_t i=0; i<num_new_splines; i++){
+      |                      ~^~~~~~~~~~~~~~~~
+../src/FreeDistribution.cpp: In static member function 'static size_t Distribution::next_knot_change_idx(size_t)':
+../src/FreeDistribution.cpp:275:31: warning: overflow in conversion from 'float' to 'size_t' {aka 'long unsigned int'} changes value from '+Inff' to '18446744073709551615' [-Woverflow]
+  275 |     size_t next_knot_update = INFINITY;
+      |                               ^~~~~~~~
+../src/FreeDistribution.cpp: In member function 'void Distribution::applyDeltaF(const Eigen::VectorXd&, const int&)':
+../src/FreeDistribution.cpp:447:69: warning: unused parameter 'threads' [-Wunused-parameter]
+  447 | void Distribution::applyDeltaF(const Eigen::VectorXd& v,const int & threads) {
+      |                                                         ~~~~~~~~~~~~^~~~~~~
+[15/26] Compiling C++ object ac4dc_headless.p/src_RadialWF.cpp.o
+In file included from ../src/RadialWF.cpp:17:
+../include/RadialWF.h: In copy constructor 'RadialWF::RadialWF(const RadialWF&)':
+../include/RadialWF.h:83:13: warning: 'RadialWF::l' will be initialized after [-Wreorder]
+   83 |         int l;
+      |             ^
+../include/RadialWF.h:41:16: warning:   'double RadialWF::Energy' [-Wreorder]
+   41 |         double Energy = 0;
+      |                ^~~~~~
+../src/RadialWF.cpp:22:1: warning:   when initialized here [-Wreorder]
+   22 | RadialWF::RadialWF(const RadialWF& other) : PairFunction(other), l(other.l), Energy(other.Energy), n(other.n), infinity(other.infinity), turn(other.turn), occup_number(other.occup_number),shell_flag(other.shell_flag) // Necessary due to use of push_back. Cursed. - S.P.
+      | ^~~~~~~~
+../src/RadialWF.cpp:22:216: warning: implicitly-declared 'PairFunction::PairFunction(const PairFunction&)' is deprecated [-Wdeprecated-copy]
+   22 | RadialWF::RadialWF(const RadialWF& other) : PairFunction(other), l(other.l), Energy(other.Energy), n(other.n), infinity(other.infinity), turn(other.turn), occup_number(other.occup_number),shell_flag(other.shell_flag) // Necessary due to use of push_back. Cursed. - S.P.
+      |                                                                                                                                                                                                                        ^
+In file included from ../include/RadialWF.h:24:
+../include/PairFunction.h:60:29: note: because 'PairFunction' has user-provided 'const PairFunction& PairFunction::operator=(const PairFunction&)'
+   60 |         const PairFunction& operator=(const PairFunction& Psi)
+      |                             ^~~~~~~~
+../src/RadialWF.cpp: In member function 'std::vector<int> RadialWF::get_subshell_occupancies()':
+../src/RadialWF.cpp:83:14: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<int>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+   83 |         if(i != shell_orbital_occupancy.size() - 1 && shell_orbital_occupancy[i+1] > 0){
+      |            ~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[16/26] Compiling C++ object ac4dc_headless.p/src_ComputeRateParam.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseLU:14,
+                 from ../include/SplineBasis.h:26,
+                 from ../include/MolInp.h:27,
+                 from ../include/ComputeRateParam.h:30,
+                 from ../src/ComputeRateParam.cpp:21:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp: In member function 'int ComputeRateParam::SolveFrozen(std::vector<int>, std::vector<int>, std::ofstream&)':
+../src/ComputeRateParam.cpp:98:45: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+   98 |                         for (size_t i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
+      |                                           ~~^~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:115:64: warning: narrowing conversion of 'i' from 'size_t' {aka 'long unsigned int'} to 'int' [-Wnarrowing]
+  115 |                                 if (saveFF) LocalFF.push_back({i, Transit.FT_density()});
+      |                                                                ^
+../src/ComputeRateParam.cpp: In member function 'RateData::Atom ComputeRateParam::SolvePlasmaBEB(std::vector<int>, std::vector<int>, std::vector<bool>, std::ofstream&)':
+../src/ComputeRateParam.cpp:290:45: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  290 |                         for (size_t i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
+      |                                           ~~^~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:309:60: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  309 |                                 for (int n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) size++;
+      |                                                          ~~^~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:316:60: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  316 |                                 for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+      |                                                          ~~^~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:334:68: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  334 |                                         for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+      |                                                                  ~~^~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:343:68: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  343 |                                         for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+      |                                                                  ~~^~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:353:62: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RadialWF>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  353 |                                         if (receiver_orbital >= Orbitals.size())
+      |                                             ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:341:45: warning: unused variable 'receiver_occupancy' [-Wunused-variable]
+  341 |                                         int receiver_occupancy= -1;
+      |                                             ^~~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:342:45: warning: unused variable 'donator_occupancy' [-Wunused-variable]
+  342 |                                         int donator_occupancy = -1;
+      |                                             ^~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:378:64: warning: narrowing conversion of 'i' from 'size_t' {aka 'long unsigned int'} to 'int' [-Wnarrowing]
+  378 |                                 if (saveFF) LocalFF.push_back({i, Transit.FT_density()});
+      |                                                                ^
+../src/ComputeRateParam.cpp: In member function 'int ComputeRateParam::Symbolic(const std::string&, const std::string&)':
+../src/ComputeRateParam.cpp:499:30: warning: unused variable 'type' [-Wunused-variable]
+  499 |                         char type;
+      |                              ^~~~
+../src/ComputeRateParam.cpp: In member function 'bool ComputeRateParam::SetupIndex(std::vector<int>, std::vector<int>, std::ofstream&)':
+../src/ComputeRateParam.cpp:605:29: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  605 |         for (size_t i = 0;i < dimension; i++)
+      |                           ~~^~~~~~~~~~~
+../src/ComputeRateParam.cpp:608:37: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  608 |                 for (size_t j = 0;j < orbitals_size; j++)
+      |                                   ~~^~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp: In member function 'std::vector<double> ComputeRateParam::generate_dT(int)':
+../src/ComputeRateParam.cpp:626:29: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  626 |         for (size_t i = 0;i < num_elem; i++) {
+      |                           ~~^~~~~~~~~~
+../src/ComputeRateParam.cpp: In member function 'std::vector<double> ComputeRateParam::generate_T(std::vector<double>&)':
+../src/ComputeRateParam.cpp:637:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  637 |         for (int i = 1; i < Bashforth_4.size(); i++)//initial few points
+      |                         ~~^~~~~~~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp:641:44: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  641 |         for (int i = Bashforth_4.size(); i < Result.size(); i++)//subsequent points
+      |                                          ~~^~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp: In member function 'std::vector<double> ComputeRateParam::generate_I(std::vector<double>&, double, double)':
+../src/ComputeRateParam.cpp:669:11: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  669 |     if (i < smooth) {
+      |         ~~^~~~~~~~
+../src/ComputeRateParam.cpp: In member function 'int ComputeRateParam::extend_I(std::vector<double>&, double, double)':
+../src/ComputeRateParam.cpp:687:84: warning: unused parameter 'step_T' [-Wunused-parameter]
+  687 | int ComputeRateParam::extend_I(vector<double>& Intensity, double new_max_T, double step_T)
+      |                                                                             ~~~~~~~^~~~~~
+../src/ComputeRateParam.cpp: In function 'void SmoothOrigin(std::vector<double>&, std::vector<double>&)':
+../src/ComputeRateParam.cpp:707:29: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  707 |         for (size_t i = 0;i < smooth; i++)
+      |                           ~~^~~~~~~~
+../src/ComputeRateParam.cpp: In member function 'void ComputeRateParam::GenerateRateKeys(std::vector<RateData::Rate>&)':
+../src/ComputeRateParam.cpp:731:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<RateData::Rate>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  731 |         for (int i = 1; i < ToSort.size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~
+../src/ComputeRateParam.cpp: In member function 'double ComputeRateParam::T_avg_RMS(std::vector<std::pair<double, int> >)':
+../src/ComputeRateParam.cpp:758:21: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  758 |   for (int m = 0; m < T.size(); m++) {
+      |                   ~~^~~~~~~~~~
+../src/ComputeRateParam.cpp: In member function 'double ComputeRateParam::T_avg_Charge()':
+../src/ComputeRateParam.cpp:777:21: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  777 |   for (int m = 0; m < T.size(); m++) {
+      |                   ~~^~~~~~~~~~
+[17/26] Compiling C++ object ac4dc_headless.p/src_ElectronRateSolver.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from ../include/FreeDistribution.h:32,
+                 from ../include/HybridIntegrator.hpp:27,
+                 from ../include/ElectronRateSolver.h:30,
+                 from ../src/ElectronRateSolver.cpp:27:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+../src/ElectronRateSolver.cpp: In member function 'void ElectronRateSolver::set_up_grid_and_compute_cross_sections(std::ofstream&, bool, size_t, bool)':
+../src/ElectronRateSolver.cpp:170:20: warning: unused variable 'photo_peak' [-Wunused-variable]
+  170 |             double photo_peak = -1, photo_min = 1e9, photo_max = -1e9;
+      |                    ^~~~~~~~~~
+../src/ElectronRateSolver.cpp: In member function 'void ElectronRateSolver::solve(std::ofstream&, const std::string&)':
+../src/ElectronRateSolver.cpp:317:12: warning: unused variable 'time' [-Wunused-variable]
+  317 |     double time = this->t[0];
+      |            ^~~~
+../src/ElectronRateSolver.cpp:318:9: warning: unused variable 'retries' [-Wunused-variable]
+  318 |     int retries = 0;  // int retries = 1;  <---- Turned off for now
+      |         ^~~~~~~
+../src/ElectronRateSolver.cpp: In member function 'virtual void ElectronRateSolver::sys_bound(const state_type&, state_type&, state_type&, double)':
+../src/ElectronRateSolver.cpp:522:16: warning: ISO C++ forbids variable length array 'Pdot_subst' [-Wvla]
+  522 |         double Pdot_subst [Pdot.size()] = {0};    // subst = substitute.
+      |                ^~~~~~~~~~
+../src/ElectronRateSolver.cpp:409:87: warning: unused parameter 's_bg' [-Wunused-parameter]
+  409 | void ElectronRateSolver::sys_bound(const state_type& s, state_type& sdot, state_type& s_bg ,const double t) {
+      |                                                                           ~~~~~~~~~~~~^~~~
+../src/ElectronRateSolver.cpp: In member function 'size_t ElectronRateSolver::load_checkpoint_and_decrease_dt(std::ofstream&, size_t, Checkpoint)':
+../src/ElectronRateSolver.cpp:680:25: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  680 |     for (size_t i=n+1; i<input_params.num_time_steps; i++){   // TODO check potential inconsistency(?) with hybrid's iterate(): npoints = (t_final - t_initial)/this->dt + 1
+      |                        ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/gcc/13.1.0/include/c++/13/cassert:44,
+                 from ../include/LossGeometry.hpp:24,
+                 from ../include/MolInp.h:29,
+                 from ../include/ElectronRateSolver.h:33:
+../src/ElectronRateSolver.cpp:711:32: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  711 |                 assert(rel_idx < saved_times.size());
+      |                        ~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+../src/ElectronRateSolver.cpp: In member function 'virtual void ElectronRateSolver::pre_ode_step(std::ofstream&, size_t&, int)':
+../src/ElectronRateSolver.cpp:914:49: warning: unused parameter '_log' [-Wunused-parameter]
+  914 | void ElectronRateSolver::pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update){};
+      |                                       ~~~~~~~~~~^~~~
+../src/ElectronRateSolver.cpp:914:63: warning: unused parameter 'n' [-Wunused-parameter]
+  914 | void ElectronRateSolver::pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update){};
+      |                                                       ~~~~~~~~^
+../src/ElectronRateSolver.cpp:914:75: warning: unused parameter 'steps_per_time_update' [-Wunused-parameter]
+  914 | void ElectronRateSolver::pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update){};
+      |                                                                 ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+../src/ElectronRateSolver.cpp: In member function 'virtual int ElectronRateSolver::post_ode_step(std::ofstream&, size_t&)':
+../src/ElectronRateSolver.cpp:915:66: warning: no return statement in function returning non-void [-Wreturn-type]
+  915 | int ElectronRateSolver::post_ode_step(ofstream& _log, size_t& n){};
+      |                                                                  ^
+../src/ElectronRateSolver.cpp:915:49: warning: unused parameter '_log' [-Wunused-parameter]
+  915 | int ElectronRateSolver::post_ode_step(ofstream& _log, size_t& n){};
+      |                                       ~~~~~~~~~~^~~~
+../src/ElectronRateSolver.cpp:915:63: warning: unused parameter 'n' [-Wunused-parameter]
+  915 | int ElectronRateSolver::post_ode_step(ofstream& _log, size_t& n){};
+      |                                                       ~~~~~~~~^
+../include/HybridIntegrator.hpp: In instantiation of 'void ode::Hybrid<T>::initialise_transient_y(int) [with T = state_type]':
+../src/ElectronRateSolver.cpp:834:27:   required from here
+../include/HybridIntegrator.hpp:422:26: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+  422 |         for(int i = 0; i < this->order; i++){  // Technically we don't need to fill the first idx, but we may as well.
+      |                        ~~^~~~~~~~~~~~~
+../include/HybridIntegrator.hpp:436:26: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+  436 |         for(int i = 0; i < this->order; i++){
+      |                        ~~^~~~~~~~~~~~~
+In file included from ../include/HybridIntegrator.hpp:25:
+../include/AdamsIntegrator.hpp: In instantiation of 'void ode::Adams_BM<T>::step_nonstiff_part(int) [with T = state_type]':
+../include/HybridIntegrator.hpp:258:33:   required from 'void ode::Hybrid<T>::run_steps(std::ofstream&, double, int) [with T = state_type; std::ofstream = std::basic_ofstream<char>]'
+../include/HybridIntegrator.hpp:188:11:   required from 'void ode::Hybrid<T>::iterate(std::ofstream&, double, size_t, double, int) [with T = state_type; std::ofstream = std::basic_ofstream<char>; size_t = long unsigned int]'
+../src/ElectronRateSolver.cpp:311:18:   required from here
+../include/AdamsIntegrator.hpp:209:23: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+  209 |     for (int i = 1; i < order; i++) {
+      |                     ~~^~~~~~~
+../include/HybridIntegrator.hpp: In instantiation of 'void ode::Hybrid<T>::step_stiff_part(unsigned int) [with T = state_type]':
+../include/HybridIntegrator.hpp:266:15:   required from 'void ode::Hybrid<T>::run_steps(std::ofstream&, double, int) [with T = state_type; std::ofstream = std::basic_ofstream<char>]'
+../include/HybridIntegrator.hpp:188:11:   required from 'void ode::Hybrid<T>::iterate(std::ofstream&, double, size_t, double, int) [with T = state_type; std::ofstream = std::basic_ofstream<char>; size_t = long unsigned int]'
+../src/ElectronRateSolver.cpp:311:18:   required from here
+../include/HybridIntegrator.hpp:336:27: warning: comparison of integer expressions of different signedness: 'int' and 'unsigned int' [-Wsign-compare]
+  336 |         for (int i = 1; i < this->order; i++){  // work through last N=order-1 ministeps. i.e. Order = 3 corresponds to 2 step method.
+      |                         ~~^~~~~~~~~~~~~
+../include/HybridIntegrator.hpp:325:9: warning: unused variable 'excess_count' [-Wunused-variable]
+  325 |     int excess_count = 0;
+      |         ^~~~~~~~~~~~
+../include/HybridIntegrator.hpp:326:9: warning: unused variable 'under_count' [-Wunused-variable]
+  326 |     int under_count = 0;
+      |         ^~~~~~~~~~~
+../include/HybridIntegrator.hpp: In instantiation of 'void ode::Hybrid<T>::modify_ministeps(int, int) [with T = state_type]':
+../include/HybridIntegrator.hpp:369:17:   required from 'void ode::Hybrid<T>::step_stiff_part(unsigned int) [with T = state_type]'
+../include/HybridIntegrator.hpp:266:15:   required from 'void ode::Hybrid<T>::run_steps(std::ofstream&, double, int) [with T = state_type; std::ofstream = std::basic_ofstream<char>]'
+../include/HybridIntegrator.hpp:188:11:   required from 'void ode::Hybrid<T>::iterate(std::ofstream&, double, size_t, double, int) [with T = state_type; std::ofstream = std::basic_ofstream<char>; size_t = long unsigned int]'
+../src/ElectronRateSolver.cpp:311:18:   required from here
+../include/HybridIntegrator.hpp:505:44: warning: unused parameter 'n' [-Wunused-parameter]
+  505 | void Hybrid<T>::modify_ministeps(const int n,const int num_ministeps){
+      |                                  ~~~~~~~~~~^
+../include/HybridIntegrator.hpp:505:56: warning: unused parameter 'num_ministeps' [-Wunused-parameter]
+  505 | void Hybrid<T>::modify_ministeps(const int n,const int num_ministeps){
+      |                                              ~~~~~~~~~~^~~~~~~~~~~~~
+[18/26] Compiling C++ object ac4dc_headless.p/src_ElectronSolverIO.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from ../include/FreeDistribution.h:32,
+                 from ../include/HybridIntegrator.hpp:27,
+                 from ../include/ElectronRateSolver.h:30,
+                 from ../src/ElectronSolverIO.cpp:26:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+../src/ElectronSolverIO.cpp: In member function 'void ElectronRateSolver::save(const std::string&)':
+../src/ElectronSolverIO.cpp:62:47: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+   62 |         if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+      |                                              ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/ElectronSolverIO.cpp: In member function 'void ElectronRateSolver::saveFree(const std::string&)':
+../src/ElectronSolverIO.cpp:123:47: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  123 |         if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+      |                                              ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/ElectronSolverIO.cpp: In member function 'void ElectronRateSolver::saveFreeRaw(const std::string&)':
+../src/ElectronSolverIO.cpp:160:47: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  160 |         if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+      |                                              ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/ElectronSolverIO.cpp: In member function 'void ElectronRateSolver::saveBound(const std::string&)':
+../src/ElectronSolverIO.cpp:196:51: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  196 |             if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+      |                                                  ~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/ElectronSolverIO.cpp: In member function 'void ElectronRateSolver::loadFreeRaw_and_times()':
+../src/ElectronSolverIO.cpp:401:62: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<state_type>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  401 |         if(saved_time[i] > input_params.Load_Time_Max() || i >= y.size()){
+      |                                                            ~~^~~~~~~~~~~
+../src/ElectronSolverIO.cpp: In member function 'void ElectronRateSolver::loadBound()':
+../src/ElectronSolverIO.cpp:611:37: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  611 |         for(size_t count = 1; count < num_steps; count++){
+      |                               ~~~~~~^~~~~~~~~~~
+../src/ElectronSolverIO.cpp:629:30: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  629 |             if (matching_idx >= t.size()){
+      |                 ~~~~~~~~~~~~~^~~~~~~~~~~
+../src/ElectronSolverIO.cpp:648:21: warning: comparison of integer expressions of different signedness: 'std::vector<double>::size_type' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  648 |         if(t.size() != matching_idx + 1){
+      |            ~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+[19/26] Compiling C++ object ac4dc_headless.p/src_Numerics.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Dense:1,
+                 from ../include/EigenSolver.h:24,
+                 from ../src/Numerics.cpp:20:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+../src/Numerics.cpp: In member function 'double Adams::Integrate(std::vector<double>*, int, int)':
+../src/Numerics.cpp:328:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  328 |         for (int i = 0; i < Result.size(); i++)
+      |                         ~~^~~~~~~~~~~~~~~
+../src/Numerics.cpp: In member function 'std::vector<double> Interpolation::get_value(const std::vector<double>&, const std::vector<double>&, double)':
+../src/Numerics.cpp:659:40: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  659 |                         if (close_left < x_ini.size() - order - 1)//Interpolate forwards.
+      |                             ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/Numerics.cpp: In member function 'std::vector<double> Interpolation::get_value(PairFunction&, Grid&, double)':
+../src/Numerics.cpp:706:58: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  706 |         if (Lattice_old.size() > 0 && Lattice_old.size() == S_old.size())
+      |                                       ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~
+../src/Numerics.cpp:712:40: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  712 |                         if (close_left < Lattice_old.size() - order - 1)//Interpolate forwards.
+      |                             ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../src/Numerics.cpp: In member function 'int Interpolation::RecalcWF(RadialWF&, Grid&, RadialWF&, Grid&)':
+../src/Numerics.cpp:753:26: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  753 |         if (S_old.size() == Lattice_old.size())
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+../src/Numerics.cpp:760:57: warning: comparison of integer expressions of different signedness: 'int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  760 |                 while (Lattice_new.R(j) < Infinity && j < Lattice_new.size() - 1)
+      |                                                       ~~^~~~~~~~~~~~~~~~~~~~~~~~
+../src/Numerics.cpp: In member function 'void Interpolation::gaussian_sum(std::vector<double>&, Grid&, int, double)':
+../src/Numerics.cpp:802:10: warning: unused variable 'Beta1' [-Wunused-variable]
+  802 |   double Beta1 = 0.9, Beta2 = 0.999, eta=1;
+      |          ^~~~~
+../src/Numerics.cpp:802:23: warning: unused variable 'Beta2' [-Wunused-variable]
+  802 |   double Beta1 = 0.9, Beta2 = 0.999, eta=1;
+      |                       ^~~~~
+../src/Numerics.cpp:802:38: warning: unused variable 'eta' [-Wunused-variable]
+  802 |   double Beta1 = 0.9, Beta2 = 0.999, eta=1;
+      |                                      ^~~
+../src/Numerics.cpp:803:10: warning: unused variable 'Beta1_pow_m' [-Wunused-variable]
+  803 |   double Beta1_pow_m = 1, Beta2_pow_m = 1, M_hat, V_hat, e = 1;
+      |          ^~~~~~~~~~~
+../src/Numerics.cpp:803:27: warning: unused variable 'Beta2_pow_m' [-Wunused-variable]
+  803 |   double Beta1_pow_m = 1, Beta2_pow_m = 1, M_hat, V_hat, e = 1;
+      |                           ^~~~~~~~~~~
+../src/Numerics.cpp:803:44: warning: unused variable 'M_hat' [-Wunused-variable]
+  803 |   double Beta1_pow_m = 1, Beta2_pow_m = 1, M_hat, V_hat, e = 1;
+      |                                            ^~~~~
+../src/Numerics.cpp:803:51: warning: unused variable 'V_hat' [-Wunused-variable]
+  803 |   double Beta1_pow_m = 1, Beta2_pow_m = 1, M_hat, V_hat, e = 1;
+      |                                                   ^~~~~
+../src/Numerics.cpp:803:58: warning: unused variable 'e' [-Wunused-variable]
+  803 |   double Beta1_pow_m = 1, Beta2_pow_m = 1, M_hat, V_hat, e = 1;
+      |                                                          ^
+../src/Numerics.cpp: In member function 'std::vector<double> GaussQuad::get_Gauss_X(double, double)':
+../src/Numerics.cpp:974:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  974 |         for (int i = 0; i < GaussX.size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~
+../src/Numerics.cpp: In member function 'double GaussQuad::Integrate(std::vector<double>&, std::vector<double>&, double, double)':
+../src/Numerics.cpp:986:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+  986 |         for (int i = 0; i < x.size(); i++) {
+      |                         ~~^~~~~~~~~~
+[20/26] Compiling C++ object ac4dc_headless.p/src_MolInp.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseLU:14,
+                 from ../include/SplineBasis.h:26,
+                 from ../include/MolInp.h:27,
+                 from ../src/MolInp.cpp:18:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+../src/MolInp.cpp: In constructor 'MolInp::MolInp(const char*, std::ofstream&)':
+../src/MolInp.cpp:104:22: warning: unused variable 'tmp' [-Wunused-variable]
+  104 |                 char tmp;
+      |                      ^~~
+[21/26] Compiling C++ object ac4dc_headless.p/src_RateSystem.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from ../include/FreeDistribution.h:32,
+                 from ../include/RateSystem.h:30,
+                 from ../src/RateSystem.cpp:22:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+[22/26] Compiling C++ object ac4dc_headless.p/src_SplineIntegral.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseLU:14,
+                 from ../include/SplineBasis.h:26,
+                 from ../include/SplineIntegral.h:29,
+                 from ../src/SplineIntegral.cpp:18:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+[23/26] Compiling C++ object ac4dc_headless.p/src_main.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseLU:14,
+                 from ../include/SplineBasis.h:26,
+                 from ../include/MolInp.h:27,
+                 from ../include/ComputeRateParam.h:30,
+                 from ../src/main.cpp:20:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+[24/26] Compiling C++ object ac4dc_headless.p/src_EigenSolver.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Dense:1,
+                 from ../include/EigenSolver.h:24,
+                 from ../src/EigenSolver.cpp:17:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+../src/EigenSolver.cpp: In member function 'std::vector<double> EigenSolver::EigenVals()':
+../src/EigenSolver.cpp:88:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<double>::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+   88 |         for (int i = 0; i < Result.size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~
+../src/EigenSolver.cpp: In member function 'std::vector<std::vector<double> > EigenSolver::EigenVecs()':
+../src/EigenSolver.cpp:98:27: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::vector<double> >::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+   98 |         for (int i = 0; i < Result.size(); i++) {
+      |                         ~~^~~~~~~~~~~~~~~
+../src/EigenSolver.cpp:99:35: warning: comparison of integer expressions of different signedness: 'int' and 'std::vector<std::vector<double> >::size_type' {aka 'long unsigned int'} [-Wsign-compare]
+   99 |                 for (int j = 0; j < Result.size(); j++) {
+      |                                 ~~^~~~~~~~~~~~~~~
+[25/26] Compiling C++ object ac4dc_headless.p/src_SplineBasis.cpp.o
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:214,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseCore:11,
+                 from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/SparseLU:14,
+                 from ../include/SplineBasis.h:26,
+                 from ../src/SplineBasis.cpp:23:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::pload(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1671:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1671 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/Core:172:
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h: In function 'Packet Eigen::internal::ploadu(const typename unpacket_traits<T>::type*) [with Packet = eigen_packet_wrapper<int, 2>; typename unpacket_traits<T>::type = signed char]':
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/arch/NEON/PacketMath.h:1716:9: warning: 'void* memcpy(void*, const void*, size_t)' copying an object of non-trivial type 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} from an array of 'const int8_t' {aka 'const signed char'} [-Wclass-memaccess]
+ 1716 |   memcpy(&res, from, sizeof(Packet4c));
+      |   ~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3/Eigen/src/Core/GenericPacketMath.h:159:8: note: 'Eigen::internal::Packet4c' {aka 'struct Eigen::internal::eigen_packet_wrapper<int, 2>'} declared here
+  159 | struct eigen_packet_wrapper
+      |        ^~~~~~~~~~~~~~~~~~~~
+In file included from ../src/SplineBasis.cpp:26:
+../include/BSpline.h: In function 'double BSpline::DBSpline(double, const double*) [with unsigned int k = 1]':
+../include/BSpline.h:75:31: warning: unused parameter 'x' [-Wunused-parameter]
+   75 |     double DBSpline<1>(double x, const double *t)
+      |                        ~~~~~~~^
+../include/BSpline.h:75:48: warning: unused parameter 't' [-Wunused-parameter]
+   75 |     double DBSpline<1>(double x, const double *t)
+      |                                  ~~~~~~~~~~~~~~^
+../src/SplineBasis.cpp: In member function 'void BasisSet::manual_set_knot(const GridSpacing&)':
+../src/SplineBasis.cpp:275:31: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and '__gnu_cxx::__alloc_traits<std::allocator<int>, int>::value_type' {aka 'int'} [-Wsign-compare]
+  275 |                 if( i - start < _manual_region_bndry_index[rgn+1]
+In file included from ../src/SplineBasis.cpp:24:
+../src/SplineBasis.cpp: In member function 'double BasisSet::raw_bspline(size_t, double) const':
+../src/SplineBasis.cpp:431:31: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+  431 |     assert(i < num_funcs && i >= 0);
+      |                             ~~^~~~
+../src/SplineBasis.cpp: In member function 'double BasisSet::raw_Dbspline(size_t, double) const':
+../src/SplineBasis.cpp:436:31: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+  436 |     assert(i < num_funcs && i >= 0);
+      |                             ~~^~~~
+../src/SplineBasis.cpp: In member function 'double BasisSet::operator()(size_t, double) const':
+../src/SplineBasis.cpp:441:31: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+  441 |     assert(i < num_funcs && i >= 0);
+      |                             ~~^~~~
+../src/SplineBasis.cpp: In member function 'double BasisSet::at(size_t, double) const':
+../src/SplineBasis.cpp:452:27: warning: comparison of unsigned expression in '< 0' is always false [-Wtype-limits]
+  452 |     if(i >= num_funcs || i<0) return 0;
+      |                          ~^~
+../src/SplineBasis.cpp: In member function 'double BasisSet::D(size_t, double) const':
+../src/SplineBasis.cpp:458:31: warning: comparison of unsigned expression in '>= 0' is always true [-Wtype-limits]
+  458 |     assert(i < num_funcs && i >= 0);
+      |                             ~~^~~~
+[26/26] Linking target ac4dc_headless

@@ -322,8 +322,8 @@ void Hybrid<T>::step_stiff_part(unsigned n){
     assert(this->y[n].F[3] == y_transient[last_rel_idx].F[3]);
     #endif
 
-    int excess_count = 0;
-    int under_count = 0;
+//    int excess_count = 0;
+//    int under_count = 0;
     int num_ministep_reductions = 0;
     old_mini_n = mini_n;
     old_y_transient = y_transient; // Stores final ministeps of step n-1.
@@ -455,7 +455,7 @@ void Hybrid<T>::initialise_transient_y(int n) {
 template<typename T>
 std::vector<T> Hybrid<T>::lagrange_interpolate(const std::vector<double> x,  const std::vector<T> y, const std::vector<double> new_x){
     // y(x) = sum(wn/(x-x_n).y_n)/D, where D = sum(w_n/(x-x_n))
-    double D = 0; 
+    //double D = 0; 
     std::vector<T> new_y(new_x.size()); 
     // Compute (inverse) weights
     std::vector<double> inv_w(new_x.size()); 

@@ -49,7 +49,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 	Potential.GenerateTrial(Orbitals);
 
 	// TODO I feel like this many for loops is a sin, rejigging how inputs work or vectorising would help -S.P.
-	for (int i = 0; i < Orbitals.size(); i++)
+	for (unsigned i = 0; i < Orbitals.size(); i++)
 	{
 		N_elec_n0 = -1; // Electron does not screen itself //Orbitals[i].occupancy() - 1;
 		N_elec_n1 = 0;
@@ -57,10 +57,10 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 		Orbitals[i].Energy = 0;
 		shell_occupancies = Orbitals[i].get_subshell_occupancies(); // 
 		// Iterate through each subshell
-		for (int L = 0; L < shell_occupancies.size(); L++)
+		for (unsigned L = 0; L < shell_occupancies.size(); L++)
 		{
 			// Get the screening contribution on an electron in the i'th orbital/shell with orbital L, due to the j'th orbital/shell.
-			for (int j = 0; j < Orbitals.size(); j++)
+			for (unsigned j = 0; j < Orbitals.size(); j++)
 			{
 				if (Orbitals[j].occupancy() == 0) continue; // No contribution to screening. 
 				screening_shell_occupancies = Orbitals[j].get_subshell_occupancies();
@@ -79,7 +79,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 				}
 				// [nd] and [nf] groups closer to the nucleus.
 				else
-				{ 	for(int L_other = 0; L_other < screening_shell_occupancies.size(); L_other++){ 
+				{ 	for(unsigned L_other = 0; L_other < screening_shell_occupancies.size(); L_other++){ 
 						if (L > L_other && Orbitals[i].N() >= Orbitals[j].N())
 						{ N_elec_n2_plus += Orbitals[j].occupancy();
 						}
@@ -102,7 +102,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 		}
 	}
 	// Quick and dirty approximation of shells to a p orbital. TODO
-	for (int i = 0; i < Orbitals.size();i++){
+	for (unsigned i = 0; i < Orbitals.size();i++){
 		if(Orbitals[i].L() == -10){ 
 			Orbitals[i].set_L(1,false);  
 		}	
@@ -121,22 +121,22 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 	Master_tolerance = Inp.Master_toll();
 	No_exchange_tolerance = Inp.No_Exch_toll();
 	HF_tolerance = Inp.HF_toll();
-	max_HF_iterations = Inp.max_HF_iters();
+	max_HF_iterations = (unsigned) Inp.max_HF_iters();
 
-	double Norm = 0.;
+	//double Norm = 0.;
 	vector<double> E_rel_change(Orbitals.size(), 1);
-	double duration;
-	int infinity = 0;  // First I've heard of it -S.P.
+	//double duration;
+	//int infinity = 0;  // First I've heard of it -S.P.
 
 	Adams I(Lattice, 10);
-	int m = 0;
+	unsigned m = 0;
 	double E_max_error = 0;
 
 	E_max_error = 1;
 
 // Check if the atom has a single (occupied) orbital
 	int num_occupied_orbs = 0, single_orb_idx = -1;
-	for (int i = 0; i < Orbitals.size(); i++)
+	for (unsigned i = 0; i < Orbitals.size(); i++)
 	{
 		if (Orbitals[i].occupancy() != 0)
 		{
@@ -150,7 +150,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 
 	if (num_occupied_orbs == 1 && Orbitals[single_orb_idx].occupancy() == 1) Potential.Reset();
 	
-	for (int i = 0; i < Orbitals.size(); i++) {
+	for (unsigned i = 0; i < Orbitals.size(); i++) {
 		if (std::isnan(Orbitals[Orbitals.size()-1].F[i])){throw std::runtime_error("F invalid pre-Master!");}
 		Master(&Lattice, &Orbitals[i], &Potential, Master_tolerance, log);
 		if (std::isnan(Orbitals[Orbitals.size()-1].F[i])){throw std::runtime_error("F invalid post-Master!");}
@@ -160,7 +160,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 	// Solve a single shell problem. Single shell Hartree-Fock/Hartree-fock-Slater.
 	vector<RadialWF> Orbitals_old = Orbitals;
 	vector<double> V_old = Potential.V;
-	double V_tmp = 0;
+	//double V_tmp = 0;
 	if (num_occupied_orbs == 1 && Orbitals[single_orb_idx].occupancy() > 1 && Inp.Hamiltonian() == 0) {
 		float p = 1;
 		// A single occupied orbital. HF (with Exchange) solution is here.
@@ -178,7 +178,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 			}
 
 			Potential.HF_upd_dir(&Orbitals[single_orb_idx], Orbitals);
-			for (int j = 0; j < Lattice.size(); j++) {
+			for (unsigned j = 0; j < Lattice.size(); j++) {
 				Potential.V[j] = p*Potential.V[j] + (1 - p)*V_old[j];
 			}
 			if (m == 0) p = 0.5;
@@ -234,7 +234,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 				}
 			}*/
 
-			for (int i = 0; i < Orbitals.size(); i++)
+			for (unsigned i = 0; i < Orbitals.size(); i++)
 			{
 				/*if (i == single) {
 					E_rel_change[i] = 0;
@@ -251,7 +251,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 					log << endl;
 					Orbitals[i] = Orbitals_old[i];
 					E_max_error = 0;
-					for (int j = 0; j < Orbitals.size(); j++) {
+					for (unsigned j = 0; j < Orbitals.size(); j++) {
 						if (E_rel_change[j] > E_max_error && j != i) E_max_error = E_rel_change[j];
 					}
 					Orbitals[i].Energy *= 1 + 0.99*E_max_error;
@@ -267,7 +267,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 
 			// Find new largest relative error.
 			E_max_error = 0;
-			for (int i = 0; i < Orbitals.size(); i++) {
+			for (unsigned i = 0; i < Orbitals.size(); i++) {
 				if (Orbitals[i].Energy != Orbitals_old[i].Energy) {
 					E_rel_change[i] = fabs(Orbitals[i].Energy / Orbitals_old[i].Energy - 1);
 				}
@@ -298,14 +298,14 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 			double correction_scaling = 1, change_cs = 1;
 			E_max_error = 1;
 			m = 0;
-			double max_norm_dev = 1;
+			//double max_norm_dev = 1;
 
 			// Hartree-Fock loop with exchange
 			while (E_max_error > HF_tolerance || m < 1)
 			{
 				if (m > max_HF_iterations) { break; }
 
-				for (int i = 0; i < Orbitals.size(); i++)
+				for (int i = 0; i < (int)Orbitals.size(); i++)
 				{
 					if (i == single_orb_idx) continue;
 					if (E_rel_change[i] < E_max_error && m != 0) continue;
@@ -317,7 +317,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 					else p = 0.5;
 					if (m == 0) p = 1;
 
-					for (int j = 0; j < Lattice.size(); j++) {
+					for (unsigned j = 0; j < Lattice.size(); j++) {
 						Potential.V[j] = p*Potential.V[j] + (1 - p)*Direct_old[i][j];
 						Potential.Exchange[j] = p*Potential.Exchange[j] + (1 - p)*Exchange_old[i][j];
 					}
@@ -340,7 +340,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 						if (max_iter > 20)
 						{
 							int new_max = 0;
-							for (int j = 0; j < E_rel_change.size(); j++)
+							for (int j = 0; j < (int) E_rel_change.size(); j++)
 							{
 								if (j == i) continue;
 								if (E_rel_change[new_max] < E_rel_change[j]) new_max = j;
@@ -369,7 +369,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 					} while (correction_scaling != 1);
 				}
 				E_max_error = 0;
-				for (int i = 0; i < Orbitals.size(); i++) {
+				for (unsigned i = 0; i < Orbitals.size(); i++) {
 					// Find new largest relative error.
 					/*if (Orbitals[i].Energy != Orbitals_old[i].Energy) {
 						E_rel_change[i] = fabs(Orbitals[i].Energy / Orbitals_old[i].Energy - 1);
@@ -381,7 +381,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 				m++;
 				if (E_max_error < HF_tolerance && !Final_Check)
 				{
-					for (int i = 0; i < Orbitals.size(); i++)
+					for (unsigned i = 0; i < Orbitals.size(); i++)
 					{
 						E_rel_change[i] = 1;
 					}
@@ -396,7 +396,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 	if (m >= max_HF_iterations && log.is_open()) {
 		log << "====================================================================" << endl;
 		log << "Too many iterations in Hartree-Fock" << endl;
-		for (int i = 0; i < Orbitals.size(); i++) {
+		for (unsigned i = 0; i < Orbitals.size(); i++) {
 			log << i + 1 << ") n = " << Orbitals[i].N() << " l = " << Orbitals[i].L()
 				<< " Energy = " << Orbitals[i].Energy << " Occup = " << Orbitals[i].occupancy() << endl;
 		}
@@ -412,9 +412,9 @@ double HartreeFock::OrthogonalityTest(vector<RadialWF> &Orbitals)
 	double ort = 0;
 	vector<double> density(lattice->size(), 0);
 
-	for (int i = 0; i < Orbitals.size(); i++)
+	for (unsigned i = 0; i < Orbitals.size(); i++)
 	{
-		for (int j = i + 1; j < Orbitals.size(); j++)
+		for (unsigned j = i + 1; j < Orbitals.size(); j++)
 		{
 			if (Orbitals[i].L() != Orbitals[j].L()) continue;
 			int max_R = max(Orbitals[i].pract_infinity(), Orbitals[j].pract_infinity());
@@ -502,7 +502,7 @@ int SetBoundaryValuesApprox(Grid * Lattice, RadialWF * Psi, Potential* U)
 	if (Psi->Energy < 0.)
 	{
 
-		while (Psi->Energy > U->V[Turn] && Turn < Lattice->size() - 1)
+		while (Psi->Energy > U->V[Turn] && Turn < ((int)Lattice->size()) - 1)
 		{
 			Turn++;
 		}
@@ -513,7 +513,7 @@ int SetBoundaryValuesApprox(Grid * Lattice, RadialWF * Psi, Potential* U)
 		while (S < 17. || U->Exchange[infinity] > exchange_correction)
 		{
 			S += sqrt(U->V[infinity] - Psi->Energy)*Lattice->dR(infinity);
-			if (infinity >= (Lattice->size() - 1)) { break; }
+			if (infinity >= ((int) Lattice->size() - 1)) { break; }
 			infinity++;
 		}
 
@@ -523,7 +523,7 @@ int SetBoundaryValuesApprox(Grid * Lattice, RadialWF * Psi, Potential* U)
 
 		a[0] = 1;
 		b[0] = -lambda;
-		for (int i = 1; i < a.size(); i++)
+		for (unsigned i = 1; i < a.size(); i++)
 		{
 			a[i] = a[i - 1] * (Psi->L()*(Psi->L() + 1) - (sigma - i)*(sigma - i + 1)) / (2 * i*lambda);
 			b[i] = a[i - 1] * ((sigma + i)*(sigma - i + 1) - Psi->L()*(Psi->L() + 1)) / (2 * i);
@@ -541,8 +541,8 @@ int SetBoundaryValuesApprox(Grid * Lattice, RadialWF * Psi, Potential* U)
 			Psi->F[Inf] += a[0];
 			Psi->G[Inf] += b[0];
 			S = pow(Lattice->R(Inf), sigma)*exp(-lambda*Lattice->R(Inf));
-			double F_inf_old = Psi->F[Inf];
-			double G_inf_old = Psi->G[Inf];
+			//double F_inf_old = Psi->F[Inf];
+			//double G_inf_old = Psi->G[Inf];
 			Psi->F[Inf] *= S;
 			Psi->G[Inf] *= S;
 			if (std::isinf(Psi->F[Inf])){
@@ -577,10 +577,10 @@ int HartreeFock::Master(Grid* Lattice, RadialWF* Psi, Potential* U, double Epsil
 	int Alarm = 0;
 	Adams NumIntgr(*Lattice, 10);
 
-	while (Psi->Energy > U->V[Turn] && Turn < Lattice->size() - 1) Turn++;
+	while (Psi->Energy > U->V[Turn] && Turn < (int) Lattice->size() - 1) Turn++;
 
 
-	for (int i = 0; i < Lattice->size(); i++)
+	for (int i = 0; i < (int) Lattice->size(); i++)
 	{
 		NumIntgr.B[i] = 1.;
 		NumIntgr.C[i] = -2 * (Psi->Energy - U->V[i] - 0.5*Psi->L()*(Psi->L() + 1) / Lattice->R(i) / Lattice->R(i));
@@ -604,9 +604,9 @@ int HartreeFock::Master(Grid* Lattice, RadialWF* Psi, Potential* U, double Epsil
 	
 		infinity = SetBoundaryValuesApprox(Lattice, Psi, U);//Approx
 		Turn = Psi->turn_pt();
-		if (Psi->pract_infinity() == Lattice->size() - 1) {
+		if (Psi->pract_infinity() == (int)Lattice->size() - 1) {
 			E_tmp = -2 * Psi->Energy;
-			for (int i = 0; i < Lattice->size(); i++) {
+			for (unsigned i = 0; i < Lattice->size(); i++) {
 				NumIntgr.C[i] += E_tmp;
 			}
 			Psi->Energy *= 2;
@@ -690,7 +690,7 @@ int HartreeFock::Master(Grid* Lattice, RadialWF* Psi, Potential* U, double Epsil
 		}
 		*/
 		E_tmp = -2 * (Psi->Energy - old_Energy);
-		for (int i = 0; i < Lattice->size(); i++) {
+		for (unsigned i = 0; i < Lattice->size(); i++) {
 			NumIntgr.C[i] += E_tmp;
 		}
 		E_tmp *= 0.5;
@@ -707,8 +707,10 @@ int HartreeFock::Master(Grid* Lattice, RadialWF* Psi, Potential* U, double Epsil
 
 GreensMethod::GreensMethod(Grid* Lattice, RadialWF* Psi, Potential* U) : Adams(*Lattice, 10), lattice(Lattice), psi(Psi), u(U)
 {
-	int infinity, track_sign, NumNodes = -1;
-	double dEnergy = Psi->Energy, E_tolerance = pow(10, -8), Norm_tolerance = pow(10, -10);
+	int infinity, track_sign;
+	//int NumNodes = -1;
+	double dEnergy = Psi->Energy, E_tolerance = pow(10, -8);
+	// double Norm_tolerance = pow(10, -10);
 	double W, Norm = 0, correct = 0;
 	std::vector<double> Integrand(Lattice->size(), 0);
 
@@ -720,7 +722,7 @@ GreensMethod::GreensMethod(Grid* Lattice, RadialWF* Psi, Potential* U) : Adams(*
 	if (Psi->F[0] < 0) { track_sign = -1; }
 	else { track_sign = 1; }
 
-	for (int i = 0; i < Lattice->size(); i++)
+	for (unsigned i = 0; i < Lattice->size(); i++)
 	{
 		B[i] = 1.;
 		C[i] = -2 * (Psi->Energy - U->V[i] - 0.5*Psi->L()*(Psi->L() + 1) / Lattice->R(i) / Lattice->R(i));
@@ -819,7 +821,7 @@ GreensMethod::GreensMethod(Grid* Lattice, RadialWF* Psi, Potential* U) : Adams(*
 
 		if (Psi->Energy < HydroEnergy) Psi->Energy = HydroEnergy;
 
-		for (int i = 0; i < lattice->size(); i++)
+		for (int i = 0; i < (int)lattice->size(); i++)
 		{
 			if (i <= Psi->pract_infinity()) {
 				Psi->F[i] -= 2 * dEnergy*(Psi_Inf.F[i] * Green_O[i] + Psi_O.F[i] * Green_Inf[i]);
@@ -833,7 +835,7 @@ GreensMethod::GreensMethod(Grid* Lattice, RadialWF* Psi, Potential* U) : Adams(*
 		//use the last bit again
 		if (fabs(dEnergy) > E_tolerance)
 		{
-			for (int i = 0; i < Lattice->size(); i++)
+			for (unsigned i = 0; i < Lattice->size(); i++)
 			{
 				B[i] = 1.;
 				C[i] -= 2 * dEnergy;
@@ -939,8 +941,8 @@ double HartreeFock::Conf_En(vector<RadialWF> &Orbitals, Potential &U)
 	double wght = 0; // Complete shell occupancy.
 	double eAB = 0;
 	double angular = 0;
-	for (int a = 0; a < Orbitals.size(); a++) {
-		for (int b = a; b < Orbitals.size(); b++) {
+	for (int a = 0; a < (int)Orbitals.size(); a++) {
+		for (int b = a; b < (int)Orbitals.size(); b++) {
 			if (b != a) wght = 1.*Orbitals[b].occupancy();
 			else wght = 0.5*(4*Orbitals[b].L() + 2)*(Orbitals[b].occupancy() - 1)/(4*Orbitals[b].L() + 1);
 			if (wght == 0) continue;
@@ -969,13 +971,13 @@ double HartreeFock::Conf_En(vector<RadialWF> &Orbitals, vector<RadialWF> &Virtua
 	int OneElec = 0;
 
 	vector<RadialWF*> Occupied(0);
-	for (int i = 0; i < Orbitals.size(); i++) {
+	for (unsigned i = 0; i < Orbitals.size(); i++) {
 		if (Orbitals[i].occupancy() != 0) {
 			Occupied.push_back(&Orbitals[i]);
 			OneElec += Orbitals[i].occupancy();
 		}
 	}
-	for (int i = 0; i < Virtual.size(); i++) {
+	for (unsigned i = 0; i < Virtual.size(); i++) {
 		if (Virtual[i].occupancy() != 0) {
 			Occupied.push_back(&Virtual[i]);
 			OneElec += Orbitals[i].occupancy();
@@ -988,8 +990,8 @@ double HartreeFock::Conf_En(vector<RadialWF> &Orbitals, vector<RadialWF> &Virtua
 	double wght = 0; // Complete shell occupancy.
 	double eAB = 0;
 	double angular = 0;
-	for (int a = 0; a < Occupied.size(); a++) {
-		for (int b = a; b < Occupied.size(); b++) {
+	for (int a = 0; a < (int)Occupied.size(); a++) {
+		for (int b = a; b < (int)Occupied.size(); b++) {
 			wght = Occupied[a]->occupancy();
 			if (b != a) wght *= Occupied[b]->occupancy();
 			else wght *= 0.5*(4*Occupied[b]->L() + 2)*(Occupied[b]->occupancy() - 1)/(4*Occupied[b]->L() + 1);
@@ -1018,7 +1020,7 @@ void HartreeFock::MixOldNew(RadialWF * New_Orbital, RadialWF * Old_Orbital)
 	double Norm = 0;
 	int Infty = max(New_Orbital->pract_infinity(), Old_Orbital->pract_infinity());
 
-	for (int i = 0; i < lattice->size(); i++) {
+	for (unsigned i = 0; i < lattice->size(); i++) {
 		New_Orbital->F[i] += Old_Orbital->F[i];
 		density[i] = New_Orbital->F[i] * New_Orbital->F[i];
 	}

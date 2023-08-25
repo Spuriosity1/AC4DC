@@ -54,10 +54,14 @@ struct indexed_knot
 class Distribution
 {
 public:
-    Distribution() {
+    Distribution(unsigned size=0) {
         f.resize(size);
     }
 
+    // Since we defined custom operator=, must also define custom copy-constructor
+    Distribution( const Distribution& other){
+        this->f = other.f; // STL does everything we actually need
+    }
     /**
      * @brief Get spline factor at 
      * @param n 
@@ -110,6 +114,7 @@ public:
         return *this;
     }
 
+
     /**
      * @brief Sets the spline factors at each grid point (energy) to the given double.
      * @param y Value for the electron density to be set to. 
@@ -123,6 +128,7 @@ public:
         }
         return *this;
     }
+
 
     static vector<double> get_knot_energies(){return basis.get_knot();}
     static double num_basis_funcs(){return basis.num_funcs;}
@@ -270,7 +276,7 @@ public:
     static double get_mb_max(){
         return basis.mb_max_over_kT;
     }
-    static size_t size;
+    static size_t size; 
     double my_size(){return f.size();}
     static std::vector<double> load_knots_from_history(size_t step_idx);
     static size_t most_recent_knot_change_idx(size_t step_idx);

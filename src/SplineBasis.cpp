@@ -272,7 +272,7 @@ void BasisSet::manual_set_knot(const GridSpacing& gt){
             //  Get the index of the region (rgn) that this point is part of.
             size_t rgn = 0;
             for( ; rgn < _region_powers.size(); rgn++){
-                if( i - start < _manual_region_bndry_index[rgn+1]
+                if( (int)i - (int)start < _manual_region_bndry_index[rgn+1]
                     || rgn == _region_powers.size() - 1){
                     break;
                     }
@@ -428,17 +428,17 @@ Eigen::MatrixXd BasisSet::Sinv(const Eigen::MatrixXd& J) {
 }
 
 double BasisSet::raw_bspline(size_t i, double x) const {
-    assert(i < num_funcs && i >= 0);
+    assert(i < num_funcs );
     return BSpline::BSpline<BSPLINE_ORDER>(x, &knot[i]);
 }
 
 double BasisSet::raw_Dbspline(size_t i, double x) const {
-    assert(i < num_funcs && i >= 0);
+    assert(i < num_funcs );
     return BSpline::DBSpline<BSPLINE_ORDER>(x, &knot[i]);
 }
 
 double BasisSet::operator()(size_t i, double x) const {
-    assert(i < num_funcs && i >= 0);
+    assert(i < num_funcs );
     // Returns the i^th B-spline of order BSPLINE_ORDER
     
     static_assert(USING_SQRTE_PREFACTOR);
@@ -449,13 +449,13 @@ double BasisSet::operator()(size_t i, double x) const {
 
 // Returns the i^th B-spline of order BSPLINE_ORDER evaluated at x (safe version)
 double BasisSet::at(size_t i, double x) const {
-    if(i >= num_funcs || i<0) return 0;
+    if(i >= num_funcs ) return 0;
     return operator()(i, x);
 }
 
 // Returns the first derivative of the i^th B-spline of order BSPLINE_ORDER evaluated at x
 double BasisSet::D(size_t i, double x) const {
-    assert(i < num_funcs && i >= 0);
+    assert(i < num_funcs);
     static_assert(BSPLINE_ORDER > 1);
     
     static_assert(USING_SQRTE_PREFACTOR);

@@ -58,8 +58,8 @@ private:
 	double Master_tolerance = pow(10, -10);
 	double No_exchange_tolerance = pow(10, -3);
 	double HF_tolerance = pow(10, -6);
-	int max_HF_iterations = 2500;
-	int max_Virt_iterations = 70;
+	unsigned max_HF_iterations = 2500;
+	unsigned max_Virt_iterations = 70;
 	Grid * lattice;
 	double OrthogonalityTest(vector<RadialWF> &Orbitals);
 	void MixOldNew(RadialWF * New_Orbital, RadialWF * Old_Orbital);

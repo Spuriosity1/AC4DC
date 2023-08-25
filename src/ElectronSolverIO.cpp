@@ -59,7 +59,7 @@ void ElectronRateSolver::save(const std::string& _dir) {
     int i = -1;
     while (i < static_cast<int>(t.size())-1){  //TODO make this some constructed function or something
         i++;
-        if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+        if(t[i] < previous_t + t_fineness && i<= (int)t.size()-extra_fine_steps_out){
             continue;
         }        
         times.push_back(t[i]);
@@ -120,7 +120,7 @@ void ElectronRateSolver::saveFree(const std::string& fname) {
             Distribution::load_knots_from_history(i+order);
             next_knot_update = Distribution::next_knot_change_idx(i+order);
         } 
-        if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+        if(t[i] < previous_t + t_fineness && i<= (int)t.size()-extra_fine_steps_out){
             continue;
         }
         f<<round_time(t[i]*Constant::fs_per_au)<<" "<<y[i].F.output_densities(this->input_params.Out_F_size(),reference_knots)<<endl;
@@ -157,7 +157,7 @@ void ElectronRateSolver::saveFreeRaw(const std::string& fname) {
             Distribution::load_knots_from_history(i+order);
             next_knot_update = Distribution::next_knot_change_idx(i+order);
         } 
-        if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+        if(t[i] < previous_t + t_fineness && i<= (int)t.size()-extra_fine_steps_out){
             continue;
         }
         f<<round_time(t[i]*Constant::fs_per_au)<<" "<<y[i].F<<endl;  // Note that the << operator divides the factors by Constant::eV_per_Ha.
@@ -193,7 +193,7 @@ void ElectronRateSolver::saveBound(const std::string& dir) {
         int i = -1;
         while (i <  static_cast<int>(t.size())-1){
             i++;
-            if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){ 
+            if(t[i] < previous_t + t_fineness && i<= (int)t.size()-extra_fine_steps_out){ 
                 continue;
             }            
             // Make sure all "natom-dimensioned" objects are the size expected
@@ -293,9 +293,9 @@ void ElectronRateSolver::loadFreeRaw_and_times() {
     cout << "[ Caution ] Ensure same atomic input files are used!"<<endl;
     
     ifstream infile(fname);
-	if (infile.good())
+	if (infile.good()) {
         std::cout<<"Opened successfully!"<<endl;
-    else {
+    } else {
         std::cerr<<"Opening failed."<<endl;
 		exit(EXIT_FAILURE); // Quit with a huff.
         return;
@@ -398,7 +398,7 @@ void ElectronRateSolver::loadFreeRaw_and_times() {
         s >> str_time;
         saved_time[i] = convert_str_time(str_time);                
 
-        if(saved_time[i] > input_params.Load_Time_Max() || i >= y.size()){
+        if(saved_time[i] > input_params.Load_Time_Max() || i >= (int)y.size()){
             // time is past the maximum
             y.resize(i); // (Resized later by integrator for full sim.)
             t.resize(i);
@@ -496,9 +496,9 @@ void ElectronRateSolver::loadKnots() {
     cout << "\n[ Dynamic Grid ] Loading knots from file path: "<<fname<<"..."<<endl;
     
     ifstream infile(fname);
-	if (infile.good())
+	if (infile.good()){
         std::cout<<"Opened successfully!"<<endl;
-    else {
+    } else {
         std::cerr<<"Opening failed."<<endl;
 		exit(EXIT_FAILURE); // Quit with a huff.
         return;
@@ -601,7 +601,7 @@ void ElectronRateSolver::loadBound() {
         }        
         
 
-        int num_steps = y.size();
+        size_t num_steps = y.size();
         if (y.size()==0){
             cout << y.size() << " <- y.size()" << endl;
             cout << "[[Dev warning]] It seems loadBound was run before loadFreeRaw_and_times, but this means loadBound won't know what times to use." << endl;
@@ -614,7 +614,7 @@ void ElectronRateSolver::loadBound() {
         
         
         // Iterate through and find each time that matches. 
-        int matching_idx;
+        size_t matching_idx;
         for(string elem : saved_occupancies){
             // TIME
             std::stringstream s(elem);

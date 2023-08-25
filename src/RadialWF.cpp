@@ -19,7 +19,14 @@ This file is part of AC4DC.
 #include <algorithm>
 #include <iostream>
 
-RadialWF::RadialWF(const RadialWF& other) : PairFunction(other), l(other.l), Energy(other.Energy), n(other.n), infinity(other.infinity), turn(other.turn), occup_number(other.occup_number),shell_flag(other.shell_flag) // Necessary due to use of push_back. Cursed. - S.P. 
+RadialWF::RadialWF(const RadialWF& other) : 
+	PairFunction(other), 
+	Energy(other.Energy),
+	l(other.l), 
+	 n(other.n),
+	infinity(other.infinity), turn(other.turn),
+	occup_number(other.occup_number),
+	shell_flag(other.shell_flag) // Necessary due to use of push_back. Cursed. - S.P. 
 {}
 
 int RadialWF::check_nodes()
@@ -80,7 +87,7 @@ std::vector<int> RadialWF::get_subshell_occupancies()
     for (int i = shell_orbital_occupancy.size() - 1; i >= 0; i--)
     {
         // If higher subshell has electrons, lower subshells are filled.
-        if(i != shell_orbital_occupancy.size() - 1 && shell_orbital_occupancy[i+1] > 0){
+        if(i != (int)shell_orbital_occupancy.size() - 1 && shell_orbital_occupancy[i+1] > 0){
             continue;
         }
         // Higher subshells empty

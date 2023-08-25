@@ -78,7 +78,7 @@ public:
 	vector<double> PerturbMe(vector<RadialWF> & Virtual, double Dist, double Einit);
 	vector<double> Secular(vector<RadialWF> & Virtual, double Dist, double Einit);
 
-	int NumPath() { return dimension; }
+	unsigned NumPath() { return dimension; }
 	vector<double> generate_G();
 	vector<double> Times() { return T; }
 	vector<double> dTimes() { return dT; }
@@ -101,7 +101,7 @@ protected:
 	bool recalculate; // Flag to determine whether or not to force-recompute everything
 
 	vector<CustomDataType::polarize> MixMe;
-	int dimension;//number of configurations
+	unsigned dimension;//number of configurations
 	vector<vector<double>> charge;
 	vector<double> T;// Time grid points.
 	vector<double> dT;// Accurate differentials.
@@ -120,7 +120,7 @@ protected:
 	int extend_I(vector<double>& Intensity, double new_max_T, double step_T);
     vector<double> generate_I(vector<double>& T, double I_max, double HalfWidth);
 	vector<double> generate_T(vector<double>& dT);
-	vector<double> generate_dT(int num_elem);
+	vector<double> generate_dT(unsigned num_elem);
     double T_avg_RMS(vector<pair<double, int>> conf_RMS);
 	double T_avg_Charge();
 

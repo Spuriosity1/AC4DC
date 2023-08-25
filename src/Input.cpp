@@ -33,9 +33,9 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 
 	cout << "[ Atomic ] Opening atomic file "<< filename << "... ";
 	ifstream infile(filename);
-	if (infile.good())
+	if (infile.good()) {
         std::cout<<"Success!"<<endl;
-    else {
+	} else {
         std::cerr<<"\033[31;1mFailed!\033[0m"<<endl;
 		throw runtime_error("Could not find atomic input file."); // chuck a hissy fit and quit.
         return;
@@ -64,14 +64,14 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 	// Seems like this is old code that hasn't been removed, presumably this part was moved to MolInp.cpp. Though the #OUTPUT section is still present in the files. TODO try turning this off. - S.P.
 	// Update: 
 	/////////////////////////////////////////////////////
-	for (int n = 0; n < FileContent["#PULSE"].size(); n++) {
+	for (unsigned n = 0; n < FileContent["#PULSE"].size(); n++) {
 		stringstream stream(FileContent["#PULSE"][n]);
 		if (n == 0) stream >> omega;
 		if (n == 1) stream >> width;
 		if (n == 2) stream >> fluence;
 	}
 
-	for (int n = 0; n < FileContent["#OUTPUT"].size(); n++) {
+	for (unsigned n = 0; n < FileContent["#OUTPUT"].size(); n++) {
 		stringstream stream(FileContent["#OUTPUT"][n]);
 		if (n == 0) stream >> out_time_steps;
 		if (n == 1) {
@@ -89,11 +89,14 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 
 	// This part almost definitely has old code that hasn't been removed, some of the parameters seems to pertain to plasma hyperparameters that the .mol files already do, so may be redundant
 	/////////////////////////////////////////////////////////
-	int line_indentifier = 0, num_grid_pts, num_orbitals, N, L, current_orbital = 0, occupancy;
+	//int line_indentifier = 0;
+	int num_grid_pts, num_orbitals, N, occupancy;
+	// int current_orbital = 0; 
+	// int L;
 	double r_min, r_box;
 	map<char, int> subshell_to_angular = {{'s', 0}, {'p', 1}, {'d', 2}, {'f', 3},{'N',-10}};   // 'N' flags usage of the shell energy instead of the orbital.
 
-	for (int n = 0; n < FileContent["#NUMERICAL"].size(); n++) {
+	for (unsigned n = 0; n < FileContent["#NUMERICAL"].size(); n++) {
 		stringstream stream(FileContent["#NUMERICAL"][n]);
 		if (n == 0) stream >> num_grid_pts;
 		if (n == 1) stream >> r_min;
@@ -121,7 +124,7 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 
 	// Assign a default value to avoid undefiend comparisons
 	num_orbitals = -10;
-	for (int n = 0; n < FileContent["#ATOM"].size(); n++) {
+	for (int n = 0; n < (int) FileContent["#ATOM"].size(); n++) {
 		stringstream stream(FileContent["#ATOM"][n]);
 		if (n == 0) stream >> Z;
 		if (n == 1) stream >> model;
