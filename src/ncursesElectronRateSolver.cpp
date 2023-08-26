@@ -23,6 +23,7 @@ void ncursesElectronRateSolver::pre_ode_step(ofstream& _log, size_t& n,const int
     }        
     display_time += std::chrono::high_resolution_clock::now() - t_start_disp;  
 
+    #ifdef PYBIND
     ////// live plotting ////// 
     auto t_start_plot = std::chrono::high_resolution_clock::now();
     if ((n-this->order+1)%20 == 0){ // TODO implement minimum time. also shld depend on num ministeps
@@ -34,6 +35,7 @@ void ncursesElectronRateSolver::pre_ode_step(ofstream& _log, size_t& n,const int
         );
     }        
     plot_time += std::chrono::high_resolution_clock::now() - t_start_plot;  
+    #endif PYBIND
 
     ////// Dynamic time updates //////
     auto t_start_dyn_dt = std::chrono::high_resolution_clock::now();

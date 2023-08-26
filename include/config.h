@@ -13,15 +13,16 @@ const int GLOBAL_BSPLINE_ORDER = 3;  // 1 = rectangles, 2=linear, 3=quadratic  A
 // #define OUTPUT_DFDT_TO_CERR
 #endif
 
-/// Disable plasma processes  
+#define NCURSES  // If commented out, disables the text-UI. May or may not provide too little information or chaotic character output.
+// #define PYBIND // If commented out, disables live plotting (live saves of the free-electron energy distribution to _live_plot.png)
+
+//-Disable plasma processes  
 //#define NO_TBR    //Three body recombination
 //#define NO_EE   // Electron-electron scattering. This can break the dynamic grid late in the simulation at low energies.
 //#define NO_EII    // Electron impact ionisation
+//--
 
-
-// Disable features
-//#define NO_PLOTTING // Turns off live saves of the free-electron energy distribution to _live_plot.png. Disables use of python 
-//#define NO_BACKUP_SAVING // Disables the hourly saves of the data to  
+//#define NO_BACKUP_SAVING // Disables the hourly saves of the data to output/backup_data/
 
 
 // Asynchronous solver

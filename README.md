@@ -59,7 +59,7 @@ The free-electron distribution may be plotted `live’ via regular writes to AC4
 - Pybind11
 - Plotly
 - Scipy
-Live plotting may be disabled by uncommenting `#define NO_PLOTTING` in include/config.h 
+This and the use of python may be disabled by commenting out `#define PYBIND` in include/config.h 
 
 
 

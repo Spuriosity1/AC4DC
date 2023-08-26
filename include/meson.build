@@ -12,6 +12,7 @@ project_header_files += files(
 'DynamicRegions.h',
 'EigenSolver.h',
 'ElectronRateSolver.h',
+'ncursesElectronRateSolver.h',
 'FreeDistribution.h',
 'Grid.h',
 'HartreeFock.h',

@@ -280,7 +280,7 @@ void Hybrid<T>::run_steps(ofstream& _log, const double t_resume, const int steps
     }
 #ifdef NCURSES
     Display::close();
-#endif // NCURSES
+#endif //NCURSES
     std::cout<<"\n";
     // std::cout <<"[ sim ] Implicit solver used relative tolerance "<<stiff_rtol<<", max iterations "<<stiff_max_iter<<"\n";
     std::cout<<"[ sim ] final t = "<<this->t.back() * Constant::fs_per_au<<" fs"<< endl;  

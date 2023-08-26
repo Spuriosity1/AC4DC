@@ -28,7 +28,7 @@ This file is part of AC4DC.
 #include "config.h"
 
 Plotting::Plotting(){ 
-    #ifndef NO_PLOTTING
+    #ifdef PYBIND
     //py::object current_path = PySys_GetObject("path");//std::getenv("PYTHONPATH");  // https://stackoverflow.com/questions/7137412/python-c-api-modify-search-path
     //string python_path = string(std::filesystem::current_path()) + "/scripts";    
     //python_path += current_path;   
@@ -50,11 +50,11 @@ Plotting::Plotting(){
         py::print("Python path:",sys.attr("path"));
         throw std::runtime_error("plotting failure1. See above for error message from python.");
     }
-    #endif //NO_PLOTTING
+    #endif //PYBIND
 
 }
 void Plotting::plot_frame(std::vector<double> energies, std::vector<double> density,std::vector<double> knot_to_plot){
-    #ifndef NO_PLOTTING
+    #ifdef PYBIND
     py::list energy_list = py::cast(energies);
     py::list density_list = py::cast(density);    
     py::list knot_to_plot_list = py::cast(knot_to_plot); 
@@ -72,7 +72,7 @@ void Plotting::plot_frame(std::vector<double> energies, std::vector<double> dens
         throw std::runtime_error("plotting failure2. See above for error message from python.");
         //TODO skip plotting if fail 
     }   
-    #endif
+    #endif //PYBIND
     //py_clear_frame();
     //py_plot_frame(knot,density);        
 }
