@@ -21,15 +21,16 @@ This file is part of AC4DC.
 ===========================================================================*/
 #pragma once
 
-#include <curses.h> // key detection linux
 #include <assert.h>
 #include <string>
 #include <sstream>
-//#include <conio.h>   // key detection for windows 
+#include <curses.h> // key detection linux (i.e. TUI).
+#include "config.h"
 
+#if defined(NCURSES)
 /**
- * @brief   // Curses implementation..
- * @details  This is purely to allow for pausing, and ending, the simualation with a key press. QT would be a more long term solution.
+ * @brief   lazy ncurses implementation of text-based UI (TUI)
+ * @details  This is purely to allow for pausing, and ending, the simulation with a key press. QT would be a more long term solution.
  * @note Keep an eye on effect on computational time. Seems fine currently.
  * https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/keys.html
  */
@@ -45,6 +46,7 @@ struct Display{
     static constexpr double WIDTH = 30;
     static constexpr double HEIGHT = 10;
     static WINDOW* win;      
+
     
     static std::string header; // displayed text at start of screen/terminal that doesn't change.
 
@@ -55,4 +57,33 @@ struct Display{
     static void signalHandler( int signum );
 };
 
+#elif defined(CONIO)
 
+//#include <conio.h>   // key detection for windows. 
+struct Display{ 
+    //(Not implemented)
+};
+#else
+// dummy structure, so that we don't need to put IFDEF everywhere.
+struct Display{ 
+    static void create_screen();
+    static void show(const std::stringstream& str);
+    static void show(const std::stringstream& str1,const std::stringstream& str2);
+    static void clean();
+    static void deactivate();
+    static void reactivate();
+    static void close();
+    static constexpr double WIDTH = 30;
+    static constexpr double HEIGHT = 10;
+    static bool win;      
+
+    
+    static std::string header; // displayed text at start of screen/terminal that doesn't change.
+
+    static std::stringstream display_stream;
+    static std::stringstream popup_stream;
+
+    // Could just use this rather than do the screen thing (oops)
+    static void signalHandler( int signum );
+};
+#endif

@@ -18,11 +18,7 @@ This file is part of AC4DC.
 // (C) Alaric Sanders 2020
 
 #include "ComputeRateParam.h"
-#ifdef NCURSES
-#include "ncursesElectronRateSolver.h"
-#else
 #include "ElectronRateSolver.h"
-#endif
 #include "Input.h"
 #include "Constant.h"
 #include "config.h"
@@ -303,11 +299,7 @@ int main(int argc, const char *argv[]) {
     #ifdef PYBIND
     pybind11::initialize_interpreter();  
     #endif //PYBIND
-    #ifdef NCURSES
-    ncursesElectronRateSolver S(const_path, log); // Contains all of the collision parameters.
-    #else
     ElectronRateSolver S(const_path, log); // Contains all of the collision parameters.                                       
-    #endif //NCURSES
     cout << "\033[1;32mComputing cross sections... \033[0m" <<endl;
     S.set_up_grid_and_compute_cross_sections(log, true);
     if (runsettings.solve_rate_eq) {

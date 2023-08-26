@@ -33,6 +33,7 @@ This file is part of AC4DC.
 #include "MolInp.h"
 #include "Input.h"
 #include "Pulse.h"
+#include "Plotting.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -118,7 +119,10 @@ protected:
     size_t load_checkpoint_and_decrease_dt(ofstream& _log, size_t current_n, Checkpoint _checkpoint);
     void increase_dt(ofstream& _log, size_t current_n); // bugged
 
+    // Plots the free-electron distribution
+    Plotting py_plotter;
 
+    // Display stuff
     int steps_per_time_update;    
 
     /////// Overrides virtual system state methods

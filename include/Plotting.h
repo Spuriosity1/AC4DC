@@ -28,18 +28,19 @@ This file is part of AC4DC.
 
 #pragma once
 
-#define PY_SSIZE_T_CLEAN
-//#include <Python.h>
-#include <pybind11/embed.h>
-#include <pybind11/stl.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-//#include <dlfcn.h>
-
-
+#include <vector>
+#ifdef PYBIND
+#define PY_SSIZE_T_CLEAN
+#include <pybind11/embed.h>
+#include <pybind11/stl.h>
 namespace py = pybind11;
+#endif //PYBIND
+
+
 
 
 struct Plotting{    

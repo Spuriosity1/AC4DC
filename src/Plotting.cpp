@@ -27,13 +27,11 @@ This file is part of AC4DC.
 #include <iostream>
 #include "config.h"
 
+
 Plotting::Plotting(){ 
     #ifdef PYBIND
-    //py::object current_path = PySys_GetObject("path");//std::getenv("PYTHONPATH");  // https://stackoverflow.com/questions/7137412/python-c-api-modify-search-path
-    //string python_path = string(std::filesystem::current_path()) + "/scripts";    
-    //python_path += current_path;   
-    //std::wstring wide_py_path = std::wstring(python_path.begin(), python_path.end());
-    //PySys_SetPath(wide_py_path.c_str());  
+
+    // Adds AC4DC/scripts to path (i.e. the program will use python files in here).
     try {
         PyRun_SimpleString(
         "import sys\n"
@@ -51,7 +49,6 @@ Plotting::Plotting(){
         throw std::runtime_error("plotting failure1. See above for error message from python.");
     }
     #endif //PYBIND
-
 }
 void Plotting::plot_frame(std::vector<double> energies, std::vector<double> density,std::vector<double> knot_to_plot){
     #ifdef PYBIND
@@ -72,7 +69,7 @@ void Plotting::plot_frame(std::vector<double> energies, std::vector<double> dens
         throw std::runtime_error("plotting failure2. See above for error message from python.");
         //TODO skip plotting if fail 
     }   
-    #endif //PYBIND
     //py_clear_frame();
     //py_plot_frame(knot,density);        
+    #endif //PYBIND
 }

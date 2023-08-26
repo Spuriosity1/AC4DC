@@ -26,9 +26,7 @@ This file is part of AC4DC.
 #include "Constant.h"
 #include "FreeDistribution.h"
 #include "RateSystem.h"
-#ifdef NCURSES
 #include "Display.h"
-#endif
 #include "GridSpacing.hpp" // for checkpoint
 #include <Eigen/Dense>
 #include <iostream>
@@ -238,16 +236,14 @@ void Hybrid<T>::run_steps(ofstream& _log, const double t_resume, const int steps
         n++;
     initialise_transient_y((int)n);
 
-    // Set up display
+    // Set up display (if ncurses is enabled)
     std::stringstream tol;
     tol << "[ sim ] Implicit solver uses relative tolerance "<<stiff_rtol<<", max iterations "<<stiff_max_iter<<"\n\r";
     std::cout << tol.str();  // Display in regular terminal even after ncurses screen is gone.
-    #ifdef NCURSES
     Display::header += tol.str(); 
     Display::display_stream = std::stringstream(Display::header, ios_base::app | ios_base::out); // text shown that updates with frequency 1/steps_per_time_update.
     Display::popup_stream = std::stringstream(std::string(), ios_base::app | ios_base::out);  // text displayed during step of special events like grid updates
     Display::create_screen(); 
-    #endif
 
     // Run hybrid multistepping (nonstiff -> bound dynamics, stiff -> free dynamics). 
     while (n < this->t.size()-1) {
@@ -278,9 +274,7 @@ void Hybrid<T>::run_steps(ofstream& _log, const double t_resume, const int steps
         #endif   
         n++;     
     }
-#ifdef NCURSES
     Display::close();
-#endif //NCURSES
     std::cout<<"\n";
     // std::cout <<"[ sim ] Implicit solver used relative tolerance "<<stiff_rtol<<", max iterations "<<stiff_max_iter<<"\n";
     std::cout<<"[ sim ] final t = "<<this->t.back() * Constant::fs_per_au<<" fs"<< endl;  

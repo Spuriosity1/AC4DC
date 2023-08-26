@@ -13,7 +13,8 @@ const int GLOBAL_BSPLINE_ORDER = 3;  // 1 = rectangles, 2=linear, 3=quadratic  A
 // #define OUTPUT_DFDT_TO_CERR
 #endif
 
-#define NCURSES  // If commented out, disables the text-UI. May or may not provide too little information or chaotic character output.
+// #define NCURSES // If commented out, disables the TUI. May or may not provide too little information or chaotic character output.
+
 // #define PYBIND // If commented out, disables live plotting (live saves of the free-electron energy distribution to _live_plot.png)
 
 //-Disable plasma processes  
