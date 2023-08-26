@@ -33,14 +33,13 @@ This file is part of AC4DC.
 #include <stdbool.h>
 #include <string.h>
 #include <vector>
+#include "config.h"
 #ifdef PYBIND
 #define PY_SSIZE_T_CLEAN
 #include <pybind11/embed.h>
 #include <pybind11/stl.h>
 namespace py = pybind11;
 #endif //PYBIND
-
-
 
 
 struct Plotting{    
