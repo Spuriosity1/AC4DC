@@ -29,7 +29,7 @@ This file is part of AC4DC.
 
 /**
  * @brief   // Curses implementation..
- * @details  This is purely to allow for ending the simualation with a key press. 
+ * @details  This is purely to allow for pausing, and ending, the simualation with a key press. QT would be a more long term solution.
  * @note Keep an eye on effect on computational time. Seems fine currently.
  * https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/keys.html
  */

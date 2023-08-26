@@ -90,7 +90,7 @@ ElectronRateSolver::ElectronRateSolver(const char* filename, ofstream& log) :
             load_filtration_file();
         }
 
-        this->time_of_last_save = std::chrono::high_resolution_clock::now(); 
+        this->time_of_last_save = std::chrono::high_resolution_clock::now(); // This is currently occurring before calculation of rates but this should be fixed once the atomic code is separated from this code. 
     }
 
 
