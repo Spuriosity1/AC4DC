@@ -292,7 +292,7 @@ void ElectronRateSolver::solve(ofstream & _log, const std::string& tmp_data_fold
     else 
         plasma_header << "[ sim ] Using static grid" << "\n\r";
 
-    plasma_header<<"[ Rate Solver ] Using initial timestep size of "<<this->dt*Constant::fs_per_au<<" fs"<<"\n\r";
+    plasma_header<<"[ Rate Solver ] Using initial time step size of "<<this->dt*Constant::fs_per_au<<" fs"<<"\n\r";
     plasma_header<<banner<<"\n\r";
 
     steps_per_grid_transform =  round(input_params.Num_Time_Steps()*(grid_update_period/timespan_au));
