@@ -4,5 +4,7 @@
 - [] Refactor rate-generation into a separate binary
 - [] Rate-gen unit tests
 - [] Optimisation: FreeDistribution should manage memory manually.
+     In particular, the memory used for copying the result has an unnecessary copy
 - [] Optimisation: $\mathcal{Q}_{tbr}$ should be replaced by an array.
 - [] Optimisation: Number of threads should be chosen at _compile time_ (reduce unnecessary function arguments)
+- [] Refactor: Revert HybridIntegrator to its simpler state, and add the extra decorations using inheritance

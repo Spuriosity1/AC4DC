@@ -1,2 +1,3 @@
 
 option('link_python', type: 'boolean', value:false)
+option('build_tests', type: 'boolean', value:true)

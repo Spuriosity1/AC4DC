@@ -21,7 +21,6 @@ subdir('include')
 # add more include directories here...
 
 subdir('src')
-
 # Dependencies
 
 ac4dc_bin_deps = [
@@ -33,16 +32,22 @@ ac4dc_bin_libdeps = [
   wigner_lib
 ]
 # the main executable
-ac4dc_bin = executable('ac4dc_headless', 
-  main_sources,
+ac4dc_bin = executable('ac4dc', 
+  [main_sources, ac4dc_main_source],
   include_directories: inc,
   dependencies: ac4dc_bin_deps,
   link_with: ac4dc_bin_libdeps,
 )
 
 ### TESTS
+if get_option('build_tests')
+  subdir('tests')
+  ode_solver = executable('ode_solver', ode_solver_src,include_directories: inc)
+  test('Adams-Basforth-Moulton ODE', ode_solver, args: ['abm', 'sho'])
+  test(' ODE', ode_solver, args: ['abm', 'sho'])
 
 
+endif
 
 
 # Python linking (to fix later)
@@ -59,7 +64,7 @@ if get_option('link_python')
   python3 = dependency('python3')
   py3_inst = import('python').find_installation('python3')
 
-  ac4dc_lib = py3_inst.extension_module('ac4dc', 
+  ac4dc_lib = py3_inst.extension_module('ac4dc_py', 
   main_sources,
   include_directories: inc,
   dependencies: [ac4dc_bin_deps, dependency('ncurses'),pybind11, python3],

@@ -69,8 +69,8 @@ public:
     std::chrono::duration<double, std::milli> 
     display_time, plot_time, dyn_dt_time, backup_time, pre_ode_time, // pre_ode
     dyn_grid_time, user_input_time, post_ode_time,  // post_ode
-    pre_tbr_time, transport_time, eii_time, tbr_time,  // sys_bound
-    ee_time, apply_delta_time; //sys_ee 
+    pre_tbr_time, transport_time, eii_time, tbr_time,  // sys_nonstiff
+    ee_time, apply_delta_time; //sys_stiff 
 
     std::chrono::system_clock::time_point time_of_last_save;   
     #ifndef NO_BACKUP_SAVING
@@ -130,9 +130,9 @@ protected:
      */
     void pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update);
     /// general dynamics (uses explicit method)
-    void sys_bound(const state_type& s, state_type& sdot, state_type& s_bg, const double t); 
+    void sys_nonstiff(const state_type& s, state_type& sdot, double t); 
     /// electron-electron (uses implicit method)
-    void sys_ee(const state_type& s, state_type& sdot); 
+    void sys_stiff(const state_type& s, state_type& sdot); 
     /**
      * @brief 
      * @details 1. Handles dynamic grid updates 

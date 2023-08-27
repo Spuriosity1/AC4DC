@@ -406,7 +406,8 @@ void ElectronRateSolver::precompute_gamma_coeffs() {
 
 // Non-stiff part of the system. Bound-electron dynamics.
 //void ElectronRateSolver::sys_bound(const state_type& s, state_type& sdot, state_type& s_bg ,const double t) {
-void ElectronRateSolver::sys_bound(const state_type& s, state_type& sdot, state_type& s_bg ,const double t) {
+void ElectronRateSolver::sys_nonstiff(const state_type& s, 
+        state_type& sdot ,const double t) {
     const int threads = input_params.Plasma_Threads();
     
     sdot=0;
@@ -623,7 +624,7 @@ void ElectronRateSolver::sys_bound(const state_type& s, state_type& sdot, state_
 
 
 // 'badly-behaved' i.e. stiff part of the system. Electron-electron interactions.
-void ElectronRateSolver::sys_ee(const state_type& s, state_type& sdot) {
+void ElectronRateSolver::sys_stiff(const state_type& s, state_type& sdot) {
     sdot=0;
     Eigen::VectorXd vec_dqdt = Eigen::VectorXd::Zero(Distribution::size);
     const int threads = input_params.Plasma_Threads(); 

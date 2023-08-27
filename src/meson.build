@@ -5,7 +5,6 @@ main_sources = files(
 'Constant.cpp',
 'DecayRates.cpp',
 'Dipole.cpp',
-#'Display.cpp',
 'DynamicRegions.cpp',
 'EigenSolver.cpp',
 'ElectronRateSolver.cpp',
@@ -17,15 +16,18 @@ main_sources = files(
 'Input.cpp',
 'MolInp.cpp',
 'Numerics.cpp',
-# 'Plotting.cpp',
 'Potential.cpp',
 'Pulse.cpp',
 'RadialWF.cpp',
 'RateSystem.cpp',
 'SplineBasis.cpp',
-'SplineIntegral.cpp',
-'main.cpp',
+'SplineIntegral.cpp'
 )
+
+# sources requiring linking with Python
+py_sources = files( 'Display.cpp','Plotting.cpp')
+
+ac4dc_main_source = files('main.cpp')
 
 
 project_sources += main_sources

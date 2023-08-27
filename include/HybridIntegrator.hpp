@@ -51,7 +51,7 @@ class Hybrid : public Adams_BM<T>{
     FeatureRegimes regimes;
     double timestep_reached = 0;       
     private:
-    virtual void sys_ee(const T& q, T& qdot) =0;
+    virtual void sys_stiff(const T& q, T& qdot) =0;
     // virtual void Jacobian2(const T& q, T& qdot, double t) =0; 
     protected:
 
@@ -335,7 +335,7 @@ void Hybrid<T>::step_stiff_part(unsigned n){
         // tmp acts as an aggregator
         for (int i = 1; i < this->order; i++){  // work through last N=order-1 ministeps. i.e. Order = 3 corresponds to 2 step method.
             T ydot; // ydot stores the change this loop.
-            this->sys_ee(y_transient[(1-i+mini_n)%(this->order)], ydot); 
+            this->sys_stiff(y_transient[(1-i+mini_n)%(this->order)], ydot); 
             ydot *= this->b_AM[i];
             tmp += ydot;
         }
@@ -355,7 +355,7 @@ void Hybrid<T>::step_stiff_part(unsigned n){
             prev = y_transient[next_rel_idx];
             prev *= -1;
             T dydt;
-            this->sys_ee(y_transient[next_rel_idx], dydt);
+            this->sys_stiff(y_transient[next_rel_idx], dydt);
             dydt *= this->b_AM[0]*(mini_dt);
             y_transient[next_rel_idx] = tmp;
             y_transient[next_rel_idx] += dydt;
@@ -581,7 +581,7 @@ void Hybrid<T>::backward_Euler(unsigned n){
     //old caches the step from the regular part
 
     // Guess. (Naive Euler)
-    sys_ee(this->y[n+1], this->y[n+1]);
+    sys_stiff(this->y[n+1], this->y[n+1]);
     this->y[n+1] *= this->dt;
     this->y[n+1] += this->y[n]; 
 
@@ -589,7 +589,7 @@ void Hybrid<T>::backward_Euler(unsigned n){
     double diff = stiff_rtol*2;
     while (diff > stiff_rtol && idx < stiff_max_iter){ // TODO more efficient mapping to use by considering known form of equation  c.f. ELENDIF
         T tmp = this->y[n+1];
-        sys_ee(tmp, this->y[n+1]);
+        sys_stiff(tmp, this->y[n+1]);
         this->y[n+1] *= this->dt;
         this->y[n+1] += this->y[n];
         
