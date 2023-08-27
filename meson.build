@@ -5,6 +5,21 @@ project('ac4dc','cpp',
   default_options: ['warning_level=3', 'cpp_std=c++17']
   )
 
+main_args = []
+
+if get_option('disable_tbr')
+  main_args += '-DNO_TBR'
+endif
+if get_option('disable_ee')
+  main_args += '-DNO_EE'
+endif
+if get_option('disable_eii')
+  main_args += 'NO_EII'
+endif
+if not get_option('ministep_updating')
+  main_args += '-DNO_MINISTEP_UPDATING'
+endif
+
 library_path = []
 project_sources = []
 project_header_files = []
@@ -35,31 +50,24 @@ python3 = dependency('python3')
 py3_inst = import('python').find_installation('python3')
 
 ac4dc_bin_deps = [
-  dependency('ncurses'),
   dependency('openmp'),
   dependency('eigen3')
   ]
+
+if get_option('interactive')
+  ac4dc_bin_deps += [dependency('ncurses')]
+  main_args += '-DNCURSES'
+endif
 
 
 ac4dc_bin_libdeps = [
   wigner_lib
 ]
 
-
-ac4dc_lib = py3_inst.extension_module('ac4dc', 
-main_sources,
-include_directories: inc,
-dependencies: [ac4dc_bin_deps, pybind11, python3],
-link_with: [ac4dc_bin_libdeps],
-link_language: 'cpp',
-override_options: [
-        'cpp_rtti=true',
-    ],
-cpp_args: '-DNCURSES'
-)
-ac4dc_bin = executable('ac4dc_headless', 
+ac4dc_bin = executable('ac4dc', 
   main_sources,
   include_directories: inc,
   dependencies: ac4dc_bin_deps,
   link_with: ac4dc_bin_libdeps,
+  cpp_args: main_args
 )

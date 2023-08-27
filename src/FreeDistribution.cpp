@@ -95,16 +95,20 @@ void Distribution::get_Q_eii (Eigen::VectorXd& v, size_t a, const bound_t& P, co
     assert(basis.has_Qeii());
     assert(P.size() == basis.Q_EII[a].size());
     assert((unsigned) v.size() == size);
-    for (size_t xi=0; xi<P.size(); xi++) {
+    
+    //double v_copy [size] = {0};
+    
+    for (size_t J=0; J<size; J++) {
+        double vj=0;
+        #pragma omp parallel for num_threads(threads) reduction(+ : vj) // Do NOT use collapse(2), it's about twice as slow.
+        for (size_t xi=0; xi<P.size(); xi++) {
         // Loop over configurations that P refers to
-        double v_copy [size] = {0};
-        #pragma omp parallel for num_threads(threads) reduction(+ : v_copy) // Do NOT use collapse(2), it's about twice as slow.
-        for (size_t J=0; J<size; J++) {
             for (size_t K=0; K<size; K++) {
-                v_copy[J] += P[xi]*f[K]*basis.Q_EII[a][xi][J][K];
+                vj += P[xi]*f[K]*basis.Q_EII[a][xi][J][K];
             }
         }
-        v += Eigen::Map<Eigen::VectorXd>(v_copy,size);
+        v[J] += vj;
+        //v += Eigen::Map<Eigen::VectorXd>(v_copy,size);
     }
 }
 

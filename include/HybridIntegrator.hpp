@@ -60,7 +60,7 @@ class Hybrid : public Adams_BM<T>{
     // stiff ode intermediate steps (i.e. steps it does without the nonstiff part)
     int mini_n;
     int old_mini_n;
-    #if defined NO_EE || defined NO_MINISTEPS
+    #if defined NO_EE 
     int num_stiff_ministeps = 1;
     #elif defined NO_MINISTEP_UPDATING
     int num_stiff_ministeps = 500;

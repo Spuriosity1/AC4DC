@@ -909,7 +909,7 @@ void ElectronRateSolver::initialise_rates(){
     precompute_gamma_coeffs();
     Distribution::precompute_Q_coeffs(input_params.Store);    
 }
-
+#ifdef INTERACTIVE
 //IOFunctions found in IOFunctions.cpp
 void ElectronRateSolver::pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update){
     auto t_start = std::chrono::high_resolution_clock::now();
@@ -1091,4 +1091,4 @@ int ElectronRateSolver::post_ode_step(ofstream& _log, size_t& n){
     post_ode_time += std::chrono::high_resolution_clock::now() - t_start;    
     return 0;
 }
-
+#endif

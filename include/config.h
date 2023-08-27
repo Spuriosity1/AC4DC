@@ -8,13 +8,11 @@
 const int GLOBAL_BSPLINE_ORDER = 3;  // 1 = rectangles, 2=linear, 3=quadratic  ATTENTION I have not yet gone through and ensured that there are no local redefinitions of the order.
 
 #ifdef DEBUG
-// #define OUTPUT_TBR_TO_CERR
-// #define OUTPUT_DQDT_TO_CERR
-// #define OUTPUT_DFDT_TO_CERR
+#define OUTPUT_TBR_TO_CERR
+#define OUTPUT_DQDT_TO_CERR
+#define OUTPUT_DFDT_TO_CERR
 #endif
 
-
-// #define PYBIND // If commented out, disables live plotting (live saves of the free-electron energy distribution to _live_plot.png)
 
 //-Disable plasma processes  
 //#define NO_TBR    //Three body recombination
@@ -26,7 +24,6 @@ const int GLOBAL_BSPLINE_ORDER = 3;  // 1 = rectangles, 2=linear, 3=quadratic  A
 
 
 // Asynchronous solver
-//#define NO_MINISTEPS   // Disables the asynchronous implementation of the solver, stepping the free (E-E) and bound (everything else) solvers together.
 #define NO_MINISTEP_UPDATING  // ministep updates not working atm, possibly as lagrange polynomial is a bad thing to use here and I should just use linear interpolation.
 
 

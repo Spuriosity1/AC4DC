@@ -681,9 +681,9 @@ void ElectronRateSolver::log_config_settings(ofstream& _log){
     #ifdef BOUND_GD_HACK
     _log << "[ Config ] hacky bound transport enabled" << endl;
     #endif
-    #ifdef NO_MINISTEPS
-    _log << "[ Config ] Stiff solver intermediate steps disabled in config.h" << endl;
-    #elif defined NO_MINISTEP_UPDATING
-    _log << "[ Config ] Stiff solver's (experimental) intermediate step size updating disabled" << endl;
-    #endif
+//    #ifdef NO_MINISTEPS
+//    _log << "[ Config ] Stiff solver intermediate steps disabled in config.h" << endl;
+//    #elif defined NO_MINISTEP_UPDATING
+//    _log << "[ Config ] Stiff solver's (experimental) intermediate step size updating disabled" << endl;
+//    #endif
 }

@@ -144,10 +144,10 @@ EII parameters are stored in "sort-of-json" format - please note that the progra
 13. Add methods to `Input.cpp` to enable reading/writing salient parameters to file, e.g. `output/C/run_2021-04-11/input.txt`
 14. Add linear search implementation to input logic
 16. Incorporate minimum and maximum energy into GridSpacing (perhaps rename it to GridParams)
-17. Cmake build system
 18. Restructure parameter input and rate output files to use JSON format
-19. GUI (Curent candidate framework: Qt)
+19. GUI (Current candidate framework: Qt)
 20. Optimise with static arrays - promote state_type to a N_FREE-dimensioned template for faster reads.
+21. ODE integration routines: borrow from [rodent](https://www.github.com/jeanluct/rodent)'s ideas, make the function a template parameter rather than a virtual member. (Probably not limiting, but it's a fairly glaring misuse of virtual functions)
 
 ### Bibliography:
 
