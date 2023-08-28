@@ -7,7 +7,8 @@ plasma_sources = files([
     'struct/SplineBasis.cpp',
     'struct/FreeDistribution.cpp',
     'struct/Pulse.cpp',
-    'struct/RateSystem.cpp'
+    'struct/RateSystem.cpp',
+    'struct/MolInp.cpp'
 ])
 
 plasma_lib = static_library('plasma', plasma_sources, 
