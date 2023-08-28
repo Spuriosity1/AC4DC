@@ -1,0 +1,2 @@
+- [] Rewrite gaussian quadrature at a template library
+- [] 

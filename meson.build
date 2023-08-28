@@ -1,8 +1,8 @@
 project('ac4dc','cpp',
   version:'0.2.0',
   license: ['GPLv3'],
-  meson_version: '>=0.63.0',
-  default_options: ['warning_level=3', 'cpp_std=c++17']
+  meson_version: '>=1.1.0',
+  default_options: ['warning_level=2', 'cpp_std=c++17']
   )
 
 main_args = []
@@ -26,33 +26,37 @@ project_header_files = []
 project_test_sources = []
 project_benchmark_sources = []
 
-inc = [include_directories('include', 'include/Wigner')]
 
-# check if we are on homebrew
-#OSX_ADHOC =  (run_command('brew','-v', check:true).returncode() == 0)I
-  
-subdir('include')
-# add more include directories here...
+# get the includes
+subdir('_include')
+project_include = [
+  include_directories('_include'),
+  atomic_include, plasma_include, display_include, wigner_include, 
+  common_include] 
 
-subdir('src')
 
-# Dependencies
-# pybind11
-py3_inst = import('python').find_installation('python3')
+if get_option('interactive')
+  # pybind11
+  py3_inst = import('python').find_installation('python3')
 
-pybind11_config = find_program('pybind11-config')
-pybind11_config_ret = run_command(pybind11_config, ['--includes'],check: true)
-pybind11 = declare_dependency(
-    include_directories: [pybind11_config_ret.stdout().split('-I')[-1].strip()],
-)
+  pybind11_config = find_program('pybind11-config')
+  pybind11_config_ret = run_command(pybind11_config, ['--includes'],check: true)
+  pybind11 = declare_dependency(
+      include_directories: [pybind11_config_ret.stdout().split('-I')[-1].strip()],
+  )
 
-python3 = dependency('python3')
-py3_inst = import('python').find_installation('python3')
+  python3 = dependency('python3')
+  py3_inst = import('python').find_installation('python3')
+endif
 
-ac4dc_bin_deps = [
+
+# Dependency management
+global_deps = [
   dependency('openmp'),
   dependency('eigen3')
   ]
+
+ac4dc_bin_deps = global_deps
 
 if get_option('interactive')
   ac4dc_bin_deps += [dependency('ncurses')]
@@ -60,13 +64,19 @@ if get_option('interactive')
 endif
 
 
+subdir('_src')
+
 ac4dc_bin_libdeps = [
-  wigner_lib
+  atomic_lib,
+  plasma_lib,
+  display_lib,
+  wigner_lib,
+  common_lib
 ]
 
 ac4dc_bin = executable('ac4dc', 
   main_sources,
-  include_directories: inc,
+  include_directories: project_include,
   dependencies: ac4dc_bin_deps,
   link_with: ac4dc_bin_libdeps,
   cpp_args: main_args

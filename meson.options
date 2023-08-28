@@ -1,0 +1,8 @@
+
+option('interactive', type: 'boolean', value: false,
+  description: 'If true, we link with ncurses for live updating. Otherwise, we use a pure CLI?')
+option('disable_tbr', type: 'boolean', value: false)
+option('disable_ee', type: 'boolean', value: false)
+option('disable_eii', type: 'boolean', value: false)
+option('ministep_updating', type: 'boolean', value: false)
+

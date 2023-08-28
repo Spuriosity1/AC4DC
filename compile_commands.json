@@ -1,146 +1,152 @@
 [
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Isrc/Wigner/libWigner.a.p -Isrc/Wigner -I../src/Wigner -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -MD -MQ src/Wigner/libWigner.a.p/wignerSymbols.cpp.o -MF src/Wigner/libWigner.a.p/wignerSymbols.cpp.o.d -o src/Wigner/libWigner.a.p/wignerSymbols.cpp.o -c ../src/Wigner/wignerSymbols.cpp",
-    "file": "../src/Wigner/wignerSymbols.cpp",
-    "output": "src/Wigner/libWigner.a.p/wignerSymbols.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/common/libcommon.a.p -I_src/common -I../_src/common -I../_include/common -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -DNO_MINISTEP_UPDATING -MD -MQ _src/common/libcommon.a.p/Dipole.cpp.o -MF _src/common/libcommon.a.p/Dipole.cpp.o.d -o _src/common/libcommon.a.p/Dipole.cpp.o -c ../_src/common/Dipole.cpp",
+    "file": "../_src/common/Dipole.cpp",
+    "output": "_src/common/libcommon.a.p/Dipole.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_BoundTransport.cpp.o -MF ac4dc_headless.p/src_BoundTransport.cpp.o.d -o ac4dc_headless.p/src_BoundTransport.cpp.o -c ../src/BoundTransport.cpp",
-    "file": "../src/BoundTransport.cpp",
-    "output": "ac4dc_headless.p/src_BoundTransport.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/wignerSymbols/libwignerSymbols.a.p -I_src/atomic/wignerSymbols -I../_src/atomic/wignerSymbols -I../_include/atomic/wignerSymbols -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -MD -MQ _src/atomic/wignerSymbols/libwignerSymbols.a.p/wignerSymbols-cpp.cpp.o -MF _src/atomic/wignerSymbols/libwignerSymbols.a.p/wignerSymbols-cpp.cpp.o.d -o _src/atomic/wignerSymbols/libwignerSymbols.a.p/wignerSymbols-cpp.cpp.o -c ../_src/atomic/wignerSymbols/wignerSymbols-cpp.cpp",
+    "file": "../_src/atomic/wignerSymbols/wignerSymbols-cpp.cpp",
+    "output": "_src/atomic/wignerSymbols/libwignerSymbols.a.p/wignerSymbols-cpp.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_ComputeRateParam.cpp.o -MF ac4dc_headless.p/src_ComputeRateParam.cpp.o.d -o ac4dc_headless.p/src_ComputeRateParam.cpp.o -c ../src/ComputeRateParam.cpp",
-    "file": "../src/ComputeRateParam.cpp",
-    "output": "ac4dc_headless.p/src_ComputeRateParam.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/BoundTransport.cpp.o -MF _src/atomic/libatomic.a.p/BoundTransport.cpp.o.d -o _src/atomic/libatomic.a.p/BoundTransport.cpp.o -c ../_src/atomic/BoundTransport.cpp",
+    "file": "../_src/atomic/BoundTransport.cpp",
+    "output": "_src/atomic/libatomic.a.p/BoundTransport.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_Constant.cpp.o -MF ac4dc_headless.p/src_Constant.cpp.o.d -o ac4dc_headless.p/src_Constant.cpp.o -c ../src/Constant.cpp",
-    "file": "../src/Constant.cpp",
-    "output": "ac4dc_headless.p/src_Constant.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/ComputeRateParam.cpp.o -MF _src/atomic/libatomic.a.p/ComputeRateParam.cpp.o.d -o _src/atomic/libatomic.a.p/ComputeRateParam.cpp.o -c ../_src/atomic/ComputeRateParam.cpp",
+    "file": "../_src/atomic/ComputeRateParam.cpp",
+    "output": "_src/atomic/libatomic.a.p/ComputeRateParam.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_DecayRates.cpp.o -MF ac4dc_headless.p/src_DecayRates.cpp.o.d -o ac4dc_headless.p/src_DecayRates.cpp.o -c ../src/DecayRates.cpp",
-    "file": "../src/DecayRates.cpp",
-    "output": "ac4dc_headless.p/src_DecayRates.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/DecayRates.cpp.o -MF _src/atomic/libatomic.a.p/DecayRates.cpp.o.d -o _src/atomic/libatomic.a.p/DecayRates.cpp.o -c ../_src/atomic/DecayRates.cpp",
+    "file": "../_src/atomic/DecayRates.cpp",
+    "output": "_src/atomic/libatomic.a.p/DecayRates.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_Dipole.cpp.o -MF ac4dc_headless.p/src_Dipole.cpp.o.d -o ac4dc_headless.p/src_Dipole.cpp.o -c ../src/Dipole.cpp",
-    "file": "../src/Dipole.cpp",
-    "output": "ac4dc_headless.p/src_Dipole.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/HartreeFock.cpp.o -MF _src/atomic/libatomic.a.p/HartreeFock.cpp.o.d -o _src/atomic/libatomic.a.p/HartreeFock.cpp.o -c ../_src/atomic/HartreeFock.cpp",
+    "file": "../_src/atomic/HartreeFock.cpp",
+    "output": "_src/atomic/libatomic.a.p/HartreeFock.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_DynamicRegions.cpp.o -MF ac4dc_headless.p/src_DynamicRegions.cpp.o.d -o ac4dc_headless.p/src_DynamicRegions.cpp.o -c ../src/DynamicRegions.cpp",
-    "file": "../src/DynamicRegions.cpp",
-    "output": "ac4dc_headless.p/src_DynamicRegions.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/Potential.cpp.o -MF _src/atomic/libatomic.a.p/Potential.cpp.o.d -o _src/atomic/libatomic.a.p/Potential.cpp.o -c ../_src/atomic/Potential.cpp",
+    "file": "../_src/atomic/Potential.cpp",
+    "output": "_src/atomic/libatomic.a.p/Potential.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_EigenSolver.cpp.o -MF ac4dc_headless.p/src_EigenSolver.cpp.o.d -o ac4dc_headless.p/src_EigenSolver.cpp.o -c ../src/EigenSolver.cpp",
-    "file": "../src/EigenSolver.cpp",
-    "output": "ac4dc_headless.p/src_EigenSolver.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/numerics_EigenSolver.cpp.o -MF _src/atomic/libatomic.a.p/numerics_EigenSolver.cpp.o.d -o _src/atomic/libatomic.a.p/numerics_EigenSolver.cpp.o -c ../_src/atomic/numerics/EigenSolver.cpp",
+    "file": "../_src/atomic/numerics/EigenSolver.cpp",
+    "output": "_src/atomic/libatomic.a.p/numerics_EigenSolver.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_ElectronRateSolver.cpp.o -MF ac4dc_headless.p/src_ElectronRateSolver.cpp.o.d -o ac4dc_headless.p/src_ElectronRateSolver.cpp.o -c ../src/ElectronRateSolver.cpp",
-    "file": "../src/ElectronRateSolver.cpp",
-    "output": "ac4dc_headless.p/src_ElectronRateSolver.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/numerics_NumericalIntegral.cpp.o -MF _src/atomic/libatomic.a.p/numerics_NumericalIntegral.cpp.o.d -o _src/atomic/libatomic.a.p/numerics_NumericalIntegral.cpp.o -c ../_src/atomic/numerics/NumericalIntegral.cpp",
+    "file": "../_src/atomic/numerics/NumericalIntegral.cpp",
+    "output": "_src/atomic/libatomic.a.p/numerics_NumericalIntegral.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_ElectronSolverGridDynamics.cpp.o -MF ac4dc_headless.p/src_ElectronSolverGridDynamics.cpp.o.d -o ac4dc_headless.p/src_ElectronSolverGridDynamics.cpp.o -c ../src/ElectronSolverGridDynamics.cpp",
-    "file": "../src/ElectronSolverGridDynamics.cpp",
-    "output": "ac4dc_headless.p/src_ElectronSolverGridDynamics.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/struct_Grid.cpp.o -MF _src/atomic/libatomic.a.p/struct_Grid.cpp.o.d -o _src/atomic/libatomic.a.p/struct_Grid.cpp.o -c ../_src/atomic/struct/Grid.cpp",
+    "file": "../_src/atomic/struct/Grid.cpp",
+    "output": "_src/atomic/libatomic.a.p/struct_Grid.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_ElectronSolverIO.cpp.o -MF ac4dc_headless.p/src_ElectronSolverIO.cpp.o.d -o ac4dc_headless.p/src_ElectronSolverIO.cpp.o -c ../src/ElectronSolverIO.cpp",
-    "file": "../src/ElectronSolverIO.cpp",
-    "output": "ac4dc_headless.p/src_ElectronSolverIO.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/struct_RadialWF.cpp.o -MF _src/atomic/libatomic.a.p/struct_RadialWF.cpp.o.d -o _src/atomic/libatomic.a.p/struct_RadialWF.cpp.o -c ../_src/atomic/struct/RadialWF.cpp",
+    "file": "../_src/atomic/struct/RadialWF.cpp",
+    "output": "_src/atomic/libatomic.a.p/struct_RadialWF.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_FreeDistribution.cpp.o -MF ac4dc_headless.p/src_FreeDistribution.cpp.o.d -o ac4dc_headless.p/src_FreeDistribution.cpp.o -c ../src/FreeDistribution.cpp",
-    "file": "../src/FreeDistribution.cpp",
-    "output": "ac4dc_headless.p/src_FreeDistribution.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/struct_RateData.cpp.o -MF _src/atomic/libatomic.a.p/struct_RateData.cpp.o.d -o _src/atomic/libatomic.a.p/struct_RateData.cpp.o -c ../_src/atomic/struct/RateData.cpp",
+    "file": "../_src/atomic/struct/RateData.cpp",
+    "output": "_src/atomic/libatomic.a.p/struct_RateData.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_Grid.cpp.o -MF ac4dc_headless.p/src_Grid.cpp.o.d -o ac4dc_headless.p/src_Grid.cpp.o -c ../src/Grid.cpp",
-    "file": "../src/Grid.cpp",
-    "output": "ac4dc_headless.p/src_Grid.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/atomic/libatomic.a.p -I_src/atomic -I../_src/atomic -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/atomic/libatomic.a.p/struct_HFInputParam.cpp.o -MF _src/atomic/libatomic.a.p/struct_HFInputParam.cpp.o.d -o _src/atomic/libatomic.a.p/struct_HFInputParam.cpp.o -c ../_src/atomic/struct/HFInputParam.cpp",
+    "file": "../_src/atomic/struct/HFInputParam.cpp",
+    "output": "_src/atomic/libatomic.a.p/struct_HFInputParam.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_HartreeFock.cpp.o -MF ac4dc_headless.p/src_HartreeFock.cpp.o.d -o ac4dc_headless.p/src_HartreeFock.cpp.o -c ../src/HartreeFock.cpp",
-    "file": "../src/HartreeFock.cpp",
-    "output": "ac4dc_headless.p/src_HartreeFock.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/DynamicRegions.cpp.o -MF _src/plasma/libplasma.a.p/DynamicRegions.cpp.o.d -o _src/plasma/libplasma.a.p/DynamicRegions.cpp.o -c ../_src/plasma/DynamicRegions.cpp",
+    "file": "../_src/plasma/DynamicRegions.cpp",
+    "output": "_src/plasma/libplasma.a.p/DynamicRegions.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_Input.cpp.o -MF ac4dc_headless.p/src_Input.cpp.o.d -o ac4dc_headless.p/src_Input.cpp.o -c ../src/Input.cpp",
-    "file": "../src/Input.cpp",
-    "output": "ac4dc_headless.p/src_Input.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/ElectronRateSolver.cpp.o -MF _src/plasma/libplasma.a.p/ElectronRateSolver.cpp.o.d -o _src/plasma/libplasma.a.p/ElectronRateSolver.cpp.o -c ../_src/plasma/ElectronRateSolver.cpp",
+    "file": "../_src/plasma/ElectronRateSolver.cpp",
+    "output": "_src/plasma/libplasma.a.p/ElectronRateSolver.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_MolInp.cpp.o -MF ac4dc_headless.p/src_MolInp.cpp.o.d -o ac4dc_headless.p/src_MolInp.cpp.o -c ../src/MolInp.cpp",
-    "file": "../src/MolInp.cpp",
-    "output": "ac4dc_headless.p/src_MolInp.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/ElectronSolverGridDynamics.cpp.o -MF _src/plasma/libplasma.a.p/ElectronSolverGridDynamics.cpp.o.d -o _src/plasma/libplasma.a.p/ElectronSolverGridDynamics.cpp.o -c ../_src/plasma/ElectronSolverGridDynamics.cpp",
+    "file": "../_src/plasma/ElectronSolverGridDynamics.cpp",
+    "output": "_src/plasma/libplasma.a.p/ElectronSolverGridDynamics.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_Numerics.cpp.o -MF ac4dc_headless.p/src_Numerics.cpp.o.d -o ac4dc_headless.p/src_Numerics.cpp.o -c ../src/Numerics.cpp",
-    "file": "../src/Numerics.cpp",
-    "output": "ac4dc_headless.p/src_Numerics.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/ElectronSolverIO.cpp.o -MF _src/plasma/libplasma.a.p/ElectronSolverIO.cpp.o.d -o _src/plasma/libplasma.a.p/ElectronSolverIO.cpp.o -c ../_src/plasma/ElectronSolverIO.cpp",
+    "file": "../_src/plasma/ElectronSolverIO.cpp",
+    "output": "_src/plasma/libplasma.a.p/ElectronSolverIO.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_Potential.cpp.o -MF ac4dc_headless.p/src_Potential.cpp.o.d -o ac4dc_headless.p/src_Potential.cpp.o -c ../src/Potential.cpp",
-    "file": "../src/Potential.cpp",
-    "output": "ac4dc_headless.p/src_Potential.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/SplineIntegral.cpp.o -MF _src/plasma/libplasma.a.p/SplineIntegral.cpp.o.d -o _src/plasma/libplasma.a.p/SplineIntegral.cpp.o -c ../_src/plasma/SplineIntegral.cpp",
+    "file": "../_src/plasma/SplineIntegral.cpp",
+    "output": "_src/plasma/libplasma.a.p/SplineIntegral.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_Pulse.cpp.o -MF ac4dc_headless.p/src_Pulse.cpp.o.d -o ac4dc_headless.p/src_Pulse.cpp.o -c ../src/Pulse.cpp",
-    "file": "../src/Pulse.cpp",
-    "output": "ac4dc_headless.p/src_Pulse.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/struct_SplineBasis.cpp.o -MF _src/plasma/libplasma.a.p/struct_SplineBasis.cpp.o.d -o _src/plasma/libplasma.a.p/struct_SplineBasis.cpp.o -c ../_src/plasma/struct/SplineBasis.cpp",
+    "file": "../_src/plasma/struct/SplineBasis.cpp",
+    "output": "_src/plasma/libplasma.a.p/struct_SplineBasis.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_RadialWF.cpp.o -MF ac4dc_headless.p/src_RadialWF.cpp.o.d -o ac4dc_headless.p/src_RadialWF.cpp.o -c ../src/RadialWF.cpp",
-    "file": "../src/RadialWF.cpp",
-    "output": "ac4dc_headless.p/src_RadialWF.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/struct_FreeDistribution.cpp.o -MF _src/plasma/libplasma.a.p/struct_FreeDistribution.cpp.o.d -o _src/plasma/libplasma.a.p/struct_FreeDistribution.cpp.o -c ../_src/plasma/struct/FreeDistribution.cpp",
+    "file": "../_src/plasma/struct/FreeDistribution.cpp",
+    "output": "_src/plasma/libplasma.a.p/struct_FreeDistribution.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_RateSystem.cpp.o -MF ac4dc_headless.p/src_RateSystem.cpp.o.d -o ac4dc_headless.p/src_RateSystem.cpp.o -c ../src/RateSystem.cpp",
-    "file": "../src/RateSystem.cpp",
-    "output": "ac4dc_headless.p/src_RateSystem.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/struct_Pulse.cpp.o -MF _src/plasma/libplasma.a.p/struct_Pulse.cpp.o.d -o _src/plasma/libplasma.a.p/struct_Pulse.cpp.o -c ../_src/plasma/struct/Pulse.cpp",
+    "file": "../_src/plasma/struct/Pulse.cpp",
+    "output": "_src/plasma/libplasma.a.p/struct_Pulse.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_SplineBasis.cpp.o -MF ac4dc_headless.p/src_SplineBasis.cpp.o.d -o ac4dc_headless.p/src_SplineBasis.cpp.o -c ../src/SplineBasis.cpp",
-    "file": "../src/SplineBasis.cpp",
-    "output": "ac4dc_headless.p/src_SplineBasis.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/plasma/libplasma.a.p -I_src/plasma -I../_src/plasma -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/common -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ _src/plasma/libplasma.a.p/struct_RateSystem.cpp.o -MF _src/plasma/libplasma.a.p/struct_RateSystem.cpp.o.d -o _src/plasma/libplasma.a.p/struct_RateSystem.cpp.o -c ../_src/plasma/struct/RateSystem.cpp",
+    "file": "../_src/plasma/struct/RateSystem.cpp",
+    "output": "_src/plasma/libplasma.a.p/struct_RateSystem.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_SplineIntegral.cpp.o -MF ac4dc_headless.p/src_SplineIntegral.cpp.o.d -o ac4dc_headless.p/src_SplineIntegral.cpp.o -c ../src/SplineIntegral.cpp",
-    "file": "../src/SplineIntegral.cpp",
-    "output": "ac4dc_headless.p/src_SplineIntegral.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/display/libdisplay.a.p -I_src/display -I../_src/display -I../_include/display -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -MD -MQ _src/display/libdisplay.a.p/Display.cpp.o -MF _src/display/libdisplay.a.p/Display.cpp.o.d -o _src/display/libdisplay.a.p/Display.cpp.o -c ../_src/display/Display.cpp",
+    "file": "../_src/display/Display.cpp",
+    "output": "_src/display/libdisplay.a.p/Display.cpp.o"
   },
   {
-    "directory": "/Users/alaricsanders/gh/AC4DC/build",
-    "command": "g++-13 -Iac4dc_headless.p -I. -I.. -Iinclude -I../include -Iinclude/Wigner -I../include/Wigner -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -Wpedantic -std=c++17 -O0 -g -fopenmp -g -MD -MQ ac4dc_headless.p/src_main.cpp.o -MF ac4dc_headless.p/src_main.cpp.o.d -o ac4dc_headless.p/src_main.cpp.o -c ../src/main.cpp",
-    "file": "../src/main.cpp",
-    "output": "ac4dc_headless.p/src_main.cpp.o"
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -I_src/display/libdisplay.a.p -I_src/display -I../_src/display -I../_include/display -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -MD -MQ _src/display/libdisplay.a.p/Plotting.cpp.o -MF _src/display/libdisplay.a.p/Plotting.cpp.o.d -o _src/display/libdisplay.a.p/Plotting.cpp.o -c ../_src/display/Plotting.cpp",
+    "file": "../_src/display/Plotting.cpp",
+    "output": "_src/display/libdisplay.a.p/Plotting.cpp.o"
+  },
+  {
+    "directory": "/Users/alaricsanders/gh/AC4DC/builddir",
+    "command": "g++-13 -Iac4dc.p -I. -I.. -I_include -I../_include -I../_include/atomic -I../_include/atomic/numerics -I../_include/atomic/struct -I../_include/common -I../_include/plasma -I../_include/plasma/numerics -I../_include/plasma/struct -I../_include/display -I../_include/atomic/wignerSymbols -I/opt/homebrew/Cellar/eigen/3.4.0_1/include/eigen3 -fdiagnostics-color=always -Wall -Winvalid-pch -Wextra -std=c++17 -O0 -g -fopenmp -DNO_MINISTEP_UPDATING -MD -MQ ac4dc.p/_src_main.cpp.o -MF ac4dc.p/_src_main.cpp.o.d -o ac4dc.p/_src_main.cpp.o -c ../_src/main.cpp",
+    "file": "../_src/main.cpp",
+    "output": "ac4dc.p/_src_main.cpp.o"
   }
 ]
