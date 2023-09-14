@@ -144,7 +144,6 @@ protected:
     /// electron-electron (uses implicit method)
     void sys_ee(const state_type& s, state_type& sdot); 
 
-#ifdef INTERACTIVE
     void pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update);
     /**
      * @brief 
@@ -154,7 +153,6 @@ protected:
      */
     int post_ode_step(ofstream& _log, size_t& n);
     /////// 
-#endif
 
     bool hasRates = false; // flags whether Store has been populated yet.
     void copyInput(const std::string& src,const std::string& dir);

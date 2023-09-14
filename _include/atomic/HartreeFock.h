@@ -29,7 +29,7 @@ This file is part of AC4DC.
 #include "RateData.h"
 #include <vector>
 #include <fstream>
-#include "NumericalIntegral.h"
+#include "numerics/NumericalIntegral.h"
 #include "Constant.h"
 
 
@@ -40,11 +40,11 @@ class HartreeFock
 {
 public:
 //	HamMod = 0 - Hartree-Fock; 1 - LDA.
-	HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, Input & Inp, ofstream &log);
+	HartreeFock(const Grid &Lattice, vector<RadialWF> &Orbitals, Potential &Potential, HFInputParam & Inp, ofstream & log);
 
 	int Get_Virtual(vector<RadialWF> &Virtual, vector<RadialWF> &Orbitals, Potential &U, ofstream &log);
 	int LDA_Get_Virtual(vector<RadialWF> &Virtual, vector<RadialWF> &Orbitals, Potential &U, ofstream &log);
-	int Master(Grid * Lattice, RadialWF * Current, Potential * U, double Energy_tolerance, ofstream &log);
+	int Master(const Grid& Lattice, RadialWF& Current, const Potential& U, double Energy_tolerance, ofstream &log);
 	// Total configuration energy.
 	double Conf_En(vector<RadialWF> &Orbitals, Potential &U);
 	// Some electrons occupy virtual orbitals.
@@ -55,26 +55,27 @@ public:
 
 	~HartreeFock();
 private:
+	// TODO just keep a reference to Input object
 
 	double Master_tolerance = pow(10, -10);
 	double No_exchange_tolerance = pow(10, -3);
 	double HF_tolerance = pow(10, -6);
 	int max_HF_iterations = 2500;
 	int max_Virt_iterations = 70;
-	Grid * lattice;
+	const Grid& lattice;
 	double OrthogonalityTest(vector<RadialWF> &Orbitals);
-	void MixOldNew(RadialWF * New_Orbital, RadialWF * Old_Orbital);
+	void MixOldNew(RadialWF& New_Orbital, RadialWF& Old_Orbital);
 };
 
 class GreensMethod : Adams
 {
 public:
-	GreensMethod(Grid * Lattice, RadialWF * Current, Potential * U);
+	GreensMethod(const Grid& Lattice, RadialWF& Current, const Potential& U);
 
-	vector<double> GreenOrigin(RadialWF * Psi_O);
-	vector<double> GreenInfinity(RadialWF * Psi_Inf);
+	vector<double> GreenOrigin(RadialWF& Psi_O);
+	vector<double> GreenInfinity(const RadialWF& Psi_Inf) const;
 private:
-	Grid * lattice;
-	RadialWF * psi;
-	Potential * u;
+	const Grid& lattice;
+	RadialWF& psi;
+	const Potential& u;
 };

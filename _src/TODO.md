@@ -1,2 +1,3 @@
 - [] Rewrite gaussian quadrature at a template library
-- [] 
+- [] Refactor Grid: remove all the overloaded constructors, make it obvious what each does
+- [] Refactor RateData::Atom - remove inessential details (like density)

@@ -38,13 +38,13 @@ Also ordinary integration can be performed using overloaded Integrate function
 class Adams
 {
 public:
-	Adams(Grid &Lattice, int AdamsOrder);
+	Adams(const Grid &Lattice, int AdamsOrder);
 	~Adams(void);
 
 	vector<double> A, B, C, D, X, Y;
 
 	// you can start from 0 and calculare 9 subsequent points if forward=true, or start from the end and calculate 9 previous points if forward=false
-	void StartAdams(RadialWF* Psi, int start_pt, bool forward);
+	void StartAdams(RadialWF& Psi, int start_pt, bool forward);
 
 	//finds maximum of Psi.F before classical turning point
 	int FindMaximum(int Turn)
@@ -55,12 +55,12 @@ public:
 
 	//finds maximum closest to R_box
 
-	void Integrate(RadialWF* Psi, int start_pt, int end_pt);
+	void Integrate(RadialWF& Psi, int start_pt, int end_pt);
 	void Integrate(vector<double> &Func, vector<double> &Result, int start_pt, int end_pt);
 	double Integrate(vector<double> * Func, int start_pt, int end_pt);
 	int Nodes() { return NumNodes;  }
-	vector<double> GreenOrigin(RadialWF* Psi);
-	vector<double> GreenInfinity(RadialWF* Psi);
+	vector<double> GreenOrigin(const RadialWF& Psi);
+	vector<double> GreenInfinity(const RadialWF& Psi);
 
 	void Integrate_ODE(vector<double> &f, int start_pt, int end_pt);
 
@@ -72,7 +72,7 @@ protected:
 	int FirstMaxima = 0;
 	int NumNodes = 0;
 
-	Grid& Lattice;
+	const Grid& Lattice;
 
 	vector<double> Adams_Coeff;
 };

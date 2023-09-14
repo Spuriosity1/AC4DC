@@ -23,21 +23,23 @@ This file is part of AC4DC.
 
 using namespace std;
 
-Potential::Potential(Grid * Lattice, int Z, std::string mod, double Rad_well) : lattice(Lattice)//Nuclear
+Potential::Potential(Grid& Lattice, int Z, 
+	charge_model_t mod, double Rad_well) :
+	lattice(Lattice)//Nuclear lattice choice
 {
 	V.clear();
-	V.resize(Lattice->size());
+	V.resize(lattice.size());
 	nuclear.clear();
-	nuclear.resize(Lattice->size());
+	nuclear.resize(lattice.size());
 	Exchange.clear();
-	Exchange.resize(Lattice->size());
+	Exchange.resize(lattice.size());
 	Trial.clear();
-	Trial.resize(Lattice->size());
+	Trial.resize(lattice.size());
 	LocExc.clear();
-	LocExc.resize(Lattice->size());
+	LocExc.resize(lattice.size());
 	v0_N1.clear();
-	v0_N1.resize(Lattice->size());
-	model = mod;
+	v0_N1.resize(lattice.size());
+	charge_model = mod;
 	n_charge = Z;
 
 	r_well = Rad_well;
@@ -47,27 +49,34 @@ Potential::Potential(Grid * Lattice, int Z, std::string mod, double Rad_well) : 
 
 void Potential::GenerateNuclear(void)
 {
-	if (model == "coulomb") {
-		for (int i = 0; i < lattice->size(); i++) {
-			nuclear[i] = -n_charge / lattice->R(i);
+	switch (this->charge_model)
+	{
+	case charge_model_t::coulomb:
+		for (int i = 0; i < lattice.size(); i++) {
+			nuclear[i] = -n_charge / lattice.R(i);
 		}
-	} else {
-		for (int i = 0; i < lattice->size(); i++) {
-			if (lattice->R(i) <= r_well) {
-				nuclear[i] = -n_charge*(3.0 - pow((lattice->R(i) / r_well), 2)) / 2 / r_well;
+		break;
+	case charge_model_t::sphericalWell:
+		for (int i = 0; i < lattice.size(); i++) {
+			if (lattice.R(i) <= r_well) {
+				nuclear[i] = -n_charge*(3.0 - pow((lattice.R(i) / r_well), 2)) / 2 / r_well;
 			} else {
-				nuclear[i] = -n_charge / lattice->R(i);
+				nuclear[i] = -n_charge / lattice.R(i);
 			}
 		}
+		break;
+	default:
+		throw std::runtime_error("Unknown potential type encountered.");
+		break;
 	}
 }
 
 void Potential::GenerateTrial(vector<RadialWF> & Orbitals)
 {
 	Trial.clear();
-	Trial.resize(lattice->size());
+	Trial.resize(lattice.size());
 	Asympt.clear();
-	Asympt.resize(lattice->size());
+	Asympt.resize(lattice.size());
 
 	int n_elec = 0;
 	for (auto& v : Orbitals)
@@ -84,25 +93,25 @@ void Potential::GenerateTrial(vector<RadialWF> & Orbitals)
 		POT = POT * pow(n_charge / 55., 1. / 3.);
 		if (KOP == 0.) { KOP = 1.; }
 
-		for (int i = 0; i < lattice->size(); i++)
+		for (int i = 0; i < lattice.size(); i++)
 		{
-			double UR = lattice->R(i) / DD;
+			double UR = lattice.R(i) / DD;
 			double ZR;
 
 			if (UR <= 20.)
 			{
-				ZR = (n_charge - KOP) / ((1. + POT*(lattice->R(i))) * (1. + POT*(lattice->R(i))) * (HH + 1.));
+				ZR = (n_charge - KOP) / ((1. + POT*(lattice.R(i))) * (1. + POT*(lattice.R(i))) * (HH + 1.));
 				ZR = ZR / (HH * exp(UR) + 1.) + KOP;
 			}
 			else { ZR = KOP; }
 
-			V[i] = -ZR / lattice->R(i);
+			V[i] = -ZR / lattice.R(i);
 			Trial[i] = V[i];
 		}
 	}
 	else
 	{
-		for (int i = 0; i < lattice->size(); i++) V[i] = nuclear[i];
+		for (int i = 0; i < lattice.size(); i++) V[i] = nuclear[i];
 	}
 }
 
@@ -114,25 +123,25 @@ void Potential::Reset()//clear the Direct potential V and sets and equates it to
 void Potential::ScaleNucl(double Scl_dir)
 {
 	double Scaling = Scl_dir / n_charge;
-	for (int i = 0; i < lattice->size(); i++) {
+	for (int i = 0; i < lattice.size(); i++) {
 		V[i] += Scaling * nuclear[i];
 	}
 }
 
-std::string Potential::Type()
+charge_model_t Potential::Type()
 {
-	return model;
+	return charge_model;
 }
 
-int Potential::HF_upd_dir(RadialWF* Current, std::vector<RadialWF> &Orbitals)
+int Potential::HF_upd_dir(const RadialWF& Current, const std::vector<RadialWF> &Orbitals)
 {
 	// Hartree-Fock Direct + Orbital self-interaction exchange. If Current is that orbital, than both
 	// exchange and direct are included. If Current is some other orbital, only the direct part of
 	// the potential is evaluated.
-	vector<double> y_0(lattice->size(), 0.);
-	vector<double> y(lattice->size(), 0.);
-	vector<double> density(lattice->size(), 0.);
-	vector<double> density_current(lattice->size(), 0.);
+	vector<double> y_0(lattice.size(), 0.);
+	vector<double> y(lattice.size(), 0.);
+	vector<double> density(lattice.size(), 0.);
+	vector<double> density_current(lattice.size(), 0.);
 	int infinity = 0;
 	double Q = 1; // electron-electron interaction weight.
 	int L_min = Orbitals[0].L();
@@ -152,25 +161,25 @@ int Potential::HF_upd_dir(RadialWF* Current, std::vector<RadialWF> &Orbitals)
 		else Q = Orbitals[i].occupancy();
 
 		// Line is giving 'uninitialised value' when run under valgrind when called by upd_HF_dir.
-		if (Current->L() == Orbitals[i].L() && Current->N() == Orbitals[i].N())	{
-			if (Current->occupancy() > 1) {
+		if (Current.L() == Orbitals[i].L() && Current.N() == Orbitals[i].N())	{
+			if (Current.occupancy() > 1) {
 				Q = Orbitals[i].occupancy() - 1;
 				for (int j = 0; j < Orbitals[i].pract_infinity(); j++) {
 					density_current[j] = Q * Orbitals[i].F[j] * Orbitals[i].F[j];
 				}
 
-				y = Y_k(0, density_current, Orbitals[i].pract_infinity(), 2 * Current->L());
+				y = Y_k(0, density_current, Orbitals[i].pract_infinity(), 2 * Current.L());
 
 				//for (vector<double>::iterator Y = y.begin(); Y != y.end(); ++Y) *Y /= Q;
 
-				if (Current->L() > 0) {
+				if (Current.L() > 0) {
 					for (int k = 2; k <= 2 * Orbitals[i].L(); k += 2) {
 						// angular = Constant::Wigner3j(Orbitals[i].L(), k, Orbitals[i].L(), 0, 0, 0);
 						angular = WignerSymbols::wigner3j(Orbitals[i].L(), k, Orbitals[i].L(), 0, 0, 0);
-						angular = 0.5*angular*angular*(4*Current->L() + 2)/(4*Current->L() + 1);
+						angular = 0.5*angular*angular*(4*Current.L() + 2)/(4*Current.L() + 1);
 
-						y_0 = Y_k(k, density_current, Orbitals[i].pract_infinity(), 2 * Current->L());
-					 	for (int j = 0; j < lattice->size(); j++)	{
+						y_0 = Y_k(k, density_current, Orbitals[i].pract_infinity(), 2 * Current.L());
+					 	for (int j = 0; j < lattice.size(); j++)	{
 							y[j] -= angular*y_0[j];
 						}
 					}
@@ -195,9 +204,9 @@ int Potential::HF_upd_dir(RadialWF* Current, std::vector<RadialWF> &Orbitals)
 
 	if (infinity != 0)	y_0 = Y_k(0, density, infinity, 2 * L_min);
 
-	for (int i = 0; i < lattice->size(); i++) {
-		V[i] = nuclear[i] + (y_0[i] + y[i]) / lattice->R(i);
-		if (density[i] != 0) LocExc[i] = -0.635348143*pow((density[i] / lattice->R(i) / lattice->R(i)), 1. / 3.);
+	for (int i = 0; i < lattice.size(); i++) {
+		V[i] = nuclear[i] + (y_0[i] + y[i]) / lattice.R(i);
+		if (density[i] != 0) LocExc[i] = -0.635348143*pow((density[i] / lattice.R(i) / lattice.R(i)), 1. / 3.);
 	}
 
 	if (std::isnan(V[0])){
@@ -207,21 +216,21 @@ int Potential::HF_upd_dir(RadialWF* Current, std::vector<RadialWF> &Orbitals)
 	return 0;
 }
 
-int Potential::LDA_upd_dir(std::vector<RadialWF> &Orbitals)
+int Potential::LDA_upd_dir(const std::vector<RadialWF> &Orbitals)
 {
 	//updates Hartree-Fock self-consistent field at every iteration. Function recalculates direct and exchange potential.
 	//Local exchange is also updated here.
-	std::vector<double> y_0(lattice->size(), 0.);
-	std::vector<double> density(lattice->size(), 0.);
+	std::vector<double> y_0(lattice.size(), 0.);
+	std::vector<double> density(lattice.size(), 0.);
 	int infinity = 0;
 	int L_min = Orbitals[0].L(); 
 	int N_elec = 0;
 	double Q = 1;
 
 	LocExc.clear();
-	LocExc.resize(lattice->size());
+	LocExc.resize(lattice.size());
 	Asympt.clear();
-	Asympt.resize(lattice->size());
+	Asympt.resize(lattice.size());
 
 	for (int i = 0; i < Orbitals.size(); i++)
 	{
@@ -239,7 +248,7 @@ int Potential::LDA_upd_dir(std::vector<RadialWF> &Orbitals)
 
 	if (N_elec == 1) {
 		V = nuclear;		
-		for (int i = 0; i < lattice->size(); i++) {
+		for (int i = 0; i < lattice.size(); i++) {
 			LocExc[i] = 0;
 			Asympt[i] = 0;
 		}
@@ -249,42 +258,52 @@ int Potential::LDA_upd_dir(std::vector<RadialWF> &Orbitals)
 	int Z_eff = N_elec - n_charge - 1;
 
 	double V_tmp = 0;
-	if (model == "coulomb") {
-		for (int i = 0; i < lattice->size(); i++) {
-			Asympt[i] = Z_eff / lattice->R(i);
-			LocExc[i] = -0.635348143*pow((density[i] / lattice->R(i) / lattice->R(i)), 1. / 3.);
-			V[i] = nuclear[i] + y_0[i] / lattice->R(i) + LocExc[i];// Nuclear + Direct potential.
+
+	switch (this->charge_model)
+	{
+	case charge_model_t::coulomb:
+		for (int i = 0; i < lattice.size(); i++) {
+			Asympt[i] = Z_eff / lattice.R(i);
+			LocExc[i] = -0.635348143*pow((density[i] / lattice.R(i) / lattice.R(i)), 1. / 3.);
+			V[i] = nuclear[i] + y_0[i] / lattice.R(i) + LocExc[i];// Nuclear + Direct potential.
 			if (V[i] > Asympt[i]) V[i] = Asympt[i];// HFS/LDA tail correction.
 		}
-	}
-	else {
-		for (int i = 0; i < lattice->size(); i++) {
-			if (lattice->R(i) <= r_well) {
-				Asympt[i] = -Z_eff*(3.0 - pow((lattice->R(i) / r_well), 2)) / 2 / r_well;
+		break;
+
+	case charge_model_t::sphericalWell:
+		for (int i = 0; i < lattice.size(); i++) {
+			if (lattice.R(i) <= r_well) {
+				Asympt[i] = -Z_eff*(3.0 - pow((lattice.R(i) / r_well), 2)) / 2 / r_well;
 			} else {
-				Asympt[i] = -Z_eff / lattice->R(i);
+				Asympt[i] = -Z_eff / lattice.R(i);
 			}
-			LocExc[i] = -0.635348143*pow((density[i] / lattice->R(i) / lattice->R(i)), 1. / 3.);
-			V[i] = nuclear[i] + y_0[i] / lattice->R(i) + LocExc[i];// Nuclear + Direct potential.
+			LocExc[i] = -0.635348143*pow((density[i] / lattice.R(i) / lattice.R(i)), 1. / 3.);
+			V[i] = nuclear[i] + y_0[i] / lattice.R(i) + LocExc[i];// Nuclear + Direct potential.
 			if (V[i] > Asympt[i]) V[i] = Asympt[i];// HFS/LDA tail correction.
 		}
+		break;
+	
+	default:
+		throw std::runtime_error("Unknown potential type encountered.");
+		break;
 	}
+	
 	if (std::isnan(V[0])){
 		throw std::runtime_error("Potential is invalid (end of func: LDA_upd_dir).");
 	}	
 	return 0;
 }
 
-int Potential::HF_upd_exc(RadialWF * Current, std::vector<RadialWF> &Orbitals)
+int Potential::HF_upd_exc(const RadialWF& Current, const std::vector<RadialWF> &Orbitals)
 {
 	// Function recalculates Exchange potential for Current wavefunction in the field of Orbitals.
-	std::vector<double> y_k(lattice->size(), 0.);
-	std::vector<double> density_exchange(lattice->size(), 0.);
-	int infinity = lattice->size()-1;
+	std::vector<double> y_k(lattice.size(), 0.);
+	std::vector<double> density_exchange(lattice.size(), 0.);
+	int infinity = lattice.size()-1;
 	double angular, Q = 1;
 	int N_elec = 0;
 
-	for (int i = 0; i < lattice->size(); i++) {
+	for (int i = 0; i < lattice.size(); i++) {
 		Exchange[i] = 0;
 	}
 	for (auto& Orb: Orbitals) N_elec += Orb.occupancy();
@@ -294,30 +313,30 @@ int Potential::HF_upd_exc(RadialWF * Current, std::vector<RadialWF> &Orbitals)
 	for (int i = 0; i < Orbitals.size(); i++)
 	{
 		if (Orbitals[i].occupancy() == 0) { continue; }
-		if (Current->L() == Orbitals[i].L() && Current->N() == Orbitals[i].N())	continue;
+		if (Current.L() == Orbitals[i].L() && Current.N() == Orbitals[i].N())	continue;
 		Q = Orbitals[i].occupancy();
 
-		if (Current->pract_infinity() < Orbitals[i].pract_infinity()) infinity = Current->pract_infinity();
+		if (Current.pract_infinity() < Orbitals[i].pract_infinity()) infinity = Current.pract_infinity();
 		else infinity = Orbitals[i].pract_infinity();
 
-		for (int j = 0; j <= infinity; j++)	density_exchange[j] = Q * Current->F[j] * Orbitals[i].F[j];
+		for (int j = 0; j <= infinity; j++)	density_exchange[j] = Q * Current.F[j] * Orbitals[i].F[j];
 
-		for (int k = abs(Current->L() - Orbitals[i].L()); k <= (Current->L() + Orbitals[i].L()); k++)
+		for (int k = abs(Current.L() - Orbitals[i].L()); k <= (Current.L() + Orbitals[i].L()); k++)
 		{
-			if ((Current->L() + k + Orbitals[i].L()) % 2 != 0) continue;
-			// angular = Constant::Wigner3j(Current->L(), k, Orbitals[i].L(), 0, 0, 0);
-			angular = WignerSymbols::wigner3j(Current->L(), k, Orbitals[i].L(), 0, 0, 0);
+			if ((Current.L() + k + Orbitals[i].L()) % 2 != 0) continue;
+			// angular = Constant::Wigner3j(Current.L(), k, Orbitals[i].L(), 0, 0, 0);
+			angular = WignerSymbols::wigner3j(Current.L(), k, Orbitals[i].L(), 0, 0, 0);
 			angular = 0.5*angular*angular;
 
-			y_k = Y_k(k, density_exchange, infinity, Current->L() + Orbitals[i].L());
+			y_k = Y_k(k, density_exchange, infinity, Current.L() + Orbitals[i].L());
 
-			for (int j = 0; j < lattice->size(); j++) Exchange[j] -= angular * y_k[j] * Orbitals[i].F[j] / lattice->R(j);
+			for (int j = 0; j < lattice.size(); j++) Exchange[j] -= angular * y_k[j] * Orbitals[i].F[j] / lattice.R(j);
 		}
 	}
 	return 0;
 }
 
-int Potential::HF_V_N1(RadialWF * Current, vector<RadialWF> & Orbitals, int c, bool UpdDir, bool UpdExc)
+int Potential::HF_V_N1(const RadialWF& Current, const vector<RadialWF>& Orbitals, int c, bool UpdDir, bool UpdExc)
 {
 	// Check if both switches are false. If so no action is taken.
 	// Required to insure no multiple subtraction from V & Exchange.
@@ -326,7 +345,7 @@ int Potential::HF_V_N1(RadialWF * Current, vector<RadialWF> & Orbitals, int c, b
 	int N_elec = 0;
 	for (auto& Orb: Orbitals) N_elec += Orb.occupancy();
 
-	vector<double> density(lattice->size(), 0);
+	vector<double> density(lattice.size(), 0);
 	// V_(N-1) approximation for accurate virtual states. Has no effect on core and shouldn't be calculated for core orbitals.
 	// Follows W. Johnson p. 127
 	if (v0_N1[0] == 0 && N_elec > 1) {
@@ -336,25 +355,25 @@ int Potential::HF_V_N1(RadialWF * Current, vector<RadialWF> & Orbitals, int c, b
 			density[i] = Orbitals[c].F[i] * Orbitals[c].F[i];
 		}
 		v0_N1 = Y_k(0, density, Orbitals[c].pract_infinity(), 2*Orbitals[c].L());
-		for (int i = 0; i < lattice->size(); i++) v0_N1[i] /= lattice->R(i);
+		for (int i = 0; i < lattice.size(); i++) v0_N1[i] /= lattice.R(i);
 	}
 
 	if (UpdDir) {
-		for (int i = 0; i < lattice->size(); i++) V[i] -= v0_N1[i];
+		for (int i = 0; i < lattice.size(); i++) V[i] -= v0_N1[i];
 	}
 
 	if (UpdExc) {
-		Adams I(*lattice, 10);
+		Adams I(lattice, 10);
 		double MatrElem = 0;
-		int infty = Current->pract_infinity();
+		int infty = Current.pract_infinity();
 		for (auto& Orb: Orbitals) {
-			if (Orb.L() != Current->L()) continue; // Sperically symmetric potential in MatrElem.
+			if (Orb.L() != Current.L()) continue; // Sperically symmetric potential in MatrElem.
 
-			infty = Current->pract_infinity();
+			infty = Current.pract_infinity();
 			if (Orb.pract_infinity() < infty) infty = Orb.pract_infinity();
 
-			for (int i = 0; i < lattice->size(); i++) {
-				if (i <= infty) density[i] = Current->F[i] * v0_N1[i] * Orb.F[i];
+			for (int i = 0; i < lattice.size(); i++) {
+				if (i <= infty) density[i] = Current.F[i] * v0_N1[i] * Orb.F[i];
 				else density[i] = 0;
 			}
 			MatrElem = I.Integrate(&density, 0, infty);
@@ -371,56 +390,56 @@ double Potential::R_k(int k, RadialWF &A, RadialWF &B, RadialWF &C, RadialWF &D)
 	//Radial Coulomb integral dr1 dr2 P_a(1) P_b(2) (r<)^k/(r>)^{k+1} P_c(1) P_d(2)
 	double Result = 0;
 	int infinity = min(B.pract_infinity(), D.pract_infinity());
-	std::vector<double> density(lattice->size());
+	std::vector<double> density(lattice.size());
 
 	for (int i = 0; i <= infinity; i++) { density[i] = B.F[i] * D.F[i]; }
 
 	density = Y_k(k, density, infinity, B.L() + D.L());
 	infinity = min(A.pract_infinity(), C.pract_infinity());
-	for (int i = 0; i <= infinity; i++) { density[i] *= A.F[i] * C.F[i] / lattice->R(i); }
+	for (int i = 0; i <= infinity; i++) { density[i] *= A.F[i] * C.F[i] / lattice.R(i); }
 
-	Adams I(*lattice, 10);
+	Adams I(lattice, 10);
 	Result = I.Integrate(&density, 0, infinity);
 
 	return Result;
 }
 
-std::vector<double> Potential::Y_k(int k, std::vector<double> density, int infinity, int L)
+std::vector<double> Potential::Y_k(int k, const std::vector<double>& density, int infinity, int L)
 {
-	//density.size() = lattice->size(); start_pt=0, end_pt=lattice->size()
+	//density.size() = lattice.size(); start_pt=0, end_pt=lattice.size()
 	std::vector<double> Result;
 	std::vector<double> Y_less(infinity+1, 0.);
 	std::vector<double> Y_gtr(infinity+1, 0.);
 	int adams_order = 10;
 
-	Y_less[0] = density[0] * lattice->R(0)/(L+3);
-	Y_gtr[infinity] = density[infinity] * lattice->dR(infinity);
+	Y_less[0] = density[0] * lattice.R(0)/(L+3);
+	Y_gtr[infinity] = density[infinity] * lattice.dR(infinity);
 
-	Adams W(*lattice, adams_order);
+	Adams W(lattice, adams_order);
 	for (int i = 0; i < density.size(); i++) {
-		W.A[i] = - k / lattice->R(i);
+		W.A[i] = - k / lattice.R(i);
 		W.X[i] = density[i];
 	}
 	// Rough integration.
 	for (int i = 0; i < adams_order; i++) {
-		Y_less[i + 1] = (W.A[i] * Y_less[i] + W.X[i])*lattice->dR(i) + Y_less[i];
-		Y_less[i + 1] = 0.5*((W.A[i+1] * Y_less[i+1] + W.X[i+1])*lattice->dR(i+1) + Y_less[i+1]);
+		Y_less[i + 1] = (W.A[i] * Y_less[i] + W.X[i])*lattice.dR(i) + Y_less[i];
+		Y_less[i + 1] = 0.5*((W.A[i+1] * Y_less[i+1] + W.X[i+1])*lattice.dR(i+1) + Y_less[i+1]);
 	}
 
 	W.Integrate_ODE(Y_less, 0, infinity);
 
-	for (int i = 0; i < lattice->size(); i++) {
-		W.A[i] = (k+1) / lattice->R(i);
+	for (int i = 0; i < lattice.size(); i++) {
+		W.A[i] = (k+1) / lattice.R(i);
 		W.X[i] = -density[i];			
 	}
 	// Rough integration.
 	for (int i = infinity; i > infinity - adams_order; i--) {
-		Y_gtr[i - 1] = -(W.A[i] * Y_gtr[i] + W.X[i])*lattice->dR(i) + Y_gtr[i];
-		Y_gtr[i - 1] = -0.5*((W.A[i-1] * Y_gtr[i-1] + W.X[i-1])*lattice->dR(i-1) - Y_gtr[i-1]);
+		Y_gtr[i - 1] = -(W.A[i] * Y_gtr[i] + W.X[i])*lattice.dR(i) + Y_gtr[i];
+		Y_gtr[i - 1] = -0.5*((W.A[i-1] * Y_gtr[i-1] + W.X[i-1])*lattice.dR(i-1) - Y_gtr[i-1]);
 	}
 
 	W.Integrate_ODE(Y_gtr, infinity, 0);
-	Result.resize(lattice->size());
+	Result.resize(lattice.size());
 
 	for (int i = 0; i < density.size(); i++)
 	{
@@ -436,7 +455,7 @@ std::vector<double> Potential::Y_k(int k, std::vector<double> density, int infin
 
 vector<double> Potential::make_density(vector<RadialWF> & Orbitals)
 {
-	vector<double> Result(lattice->size(), 0.);
+	vector<double> Result(lattice.size(), 0.);
 	int infty = 0;
 	double occ = 0;
 	for (int i = 0 ; i < Orbitals.size(); i++) {
@@ -455,7 +474,7 @@ vector<double> Potential::make_density(vector<RadialWF> & Orbitals)
 double Potential::Overlap(std::vector<double> density, int infinity)
 {
 	double Result;
-	Adams W(*lattice, 10);
+	Adams W(lattice, 10);
 
 	Result = W.Integrate(&density, 0, infinity);
 
@@ -471,9 +490,9 @@ vector<float> Potential::Get_Kinetic(vector<RadialWF> & Orbitals, int start_with
 
 	vector<float> Result(size, 0);
 	// Get Kinetic energies.
-	vector<double> density(lattice->size(), 0.);
+	vector<double> density(lattice.size(), 0.);
 	int infinity = 0;
-	Adams I(*lattice, 5);
+	Adams I(lattice, 5);
 
 	size = 0;
 	for (int i = start_with; i < Orbitals.size(); i++) {
@@ -489,11 +508,11 @@ vector<float> Potential::Get_Kinetic(vector<RadialWF> & Orbitals, int start_with
 	return Result;
 }
 
-MatrixElems::MatrixElems(Grid * Lattice) : lattice(Lattice)
+MatrixElems::MatrixElems(const Grid& Lattice) : lattice(Lattice)
 {
 }
 
-double MatrixElems::Dipole(RadialWF &A, RadialWF &B, string gauge)
+double MatrixElems::Dipole(RadialWF &A, RadialWF &B, gauge_t gauge)
 {
 	double Result = 0;
 
@@ -502,25 +521,27 @@ double MatrixElems::Dipole(RadialWF &A, RadialWF &B, string gauge)
 
     vector<double> density(infty+1, 0);
 
-    if (gauge == "length") {
-		for (int i = 0; i < density.size(); i++) {
-			density[i] = lattice->R(i)*A.F[i]*B.F[i];
+    if (gauge == gauge_t::length) {
+		for (unsigned i = 0; i < density.size(); i++) {
+			density[i] = lattice.R(i)*A.F[i]*B.F[i];
 		}
     }
-    else {
+    else if (gauge == gauge_t::velocity){
 		double ang_coeff =  0.5*(A.L() - B.L())*(A.L() + B.L() + 1);
-			for (int i = 0; i < density.size(); i++)	{
-			density[i] = B.F[i] *(A.G[i] + ang_coeff * A.F[i]/lattice->R(i)) ;
+			for (unsigned i = 0; i < density.size(); i++)	{
+			density[i] = B.F[i] *(A.G[i] + ang_coeff * A.F[i]/lattice.R(i)) ;
 		}
-    }
+    } else {
+		throw runtime_error("Unknown gauge");
+	}
 
-	Adams I(*lattice, 10);
+	Adams I(lattice, 10);
 	Result = I.Integrate(&density, 0, density.size()-1);
 
 	return Result;
 }
 
-double MatrixElems::DipoleAvg(RadialWF & A, RadialWF & B, string gauge)
+double MatrixElems::DipoleAvg(RadialWF & A, RadialWF & B, gauge_t gauge)
 {
 	double Result = 0;
 	if (A.L() > B.L()) Result = sqrt((double)A.L());
@@ -535,9 +556,10 @@ double MatrixElems::DipoleAvg(RadialWF & A, RadialWF & B, string gauge)
 
 double MatrixElems::Msum(int La, int Lb, int k)
 {
-	// Calculates Sum_m (-1)^m / La Lb k \
+	/* Calculates Sum_m (-1)^m / La Lb k \
 	//                         \ -m m 0 /
 	// Used for average over configuration calculations of matrix elements g(abcd) - g(abdc).
+	*/
     double Result = 0, tmp = 0;
     // Check selection rules.
     if ((La + Lb + k) % 2 != 0) return 0;
@@ -567,10 +589,10 @@ double MatrixElems::R_pow_k(vector<RadialWF> & Orbitals, int k)
 
   for (int i = 0; i < density.size(); i++) {
     for (auto & orb : Orbitals) density[i] += orb.occupancy()*orb.F[i]*orb.F[i];
-    density[i] *= pow(lattice->R(i), k);
+    density[i] *= pow(lattice.R(i), k);
   }
 
-	Adams I(*lattice, 10);
+	Adams I(lattice, 10);
 	Result = I.Integrate(&density, 0, density.size()-1);
 
   return Result;

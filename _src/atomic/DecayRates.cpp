@@ -27,13 +27,14 @@ This file is part of AC4DC.
 using namespace RateData;
 using namespace Constant;
 
-int IntegrateContinuum(Grid&, Potential&, vector<RadialWF>&, RadialWF*, bool);
+int IntegrateContinuum(Grid&, Potential&, vector<RadialWF>&, RadialWF&, bool);
 double A_k(int k, int L, int l_h, int l_f, int l_e, int l_c);
 bool Triad(int l_a, int l_b, int l_c);
 //int IntegrateContinuumOnce(Grid&, Potential&, RadialWF*);
 
-DecayRates::DecayRates(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, Input & Inp) : lattice(Lattice), orbitals(Orbitals),
-u(U), input(Inp)
+DecayRates::DecayRates(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U,
+		HFInputParam & Inp) : 
+	lattice(Lattice), orbitals(Orbitals), u(U), input(Inp)
 {
 }
 
@@ -69,14 +70,15 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	if (k_max <= 0) return Result;
 	if (Infinity < 5*6.28/k_min) Infinity = 5*6.28/k_min;
 //	Usually a finer grid is required.
-	Grid Lattice(lattice.R(0), Infinity, 0.03/k_max);
+	Grid Lattice;
+	Lattice.logspace_from_dR(lattice.R(0), Infinity, 0.03/k_max);
 //	Grid Lattice(50000, 0.001, 50, "linear");
 
 //	Interpolate orbitals on the new grid
 	Interpolation W(6);
 
 	for (int i = 0; i < Orbitals.size(); i++) {
-		if (input.Exited_Pot_Model() != "V_N-1" && orbitals[i].occupancy() == 0) continue;
+		if (input.potential != excited_potential_model::V_Nm1 && orbitals[i].occupancy() == 0) continue;
 		if (orbitals[i].F[0] != 0) W.RecalcWF(orbitals[i], lattice, Orbitals[i], Lattice);
 		Infinity = lattice.R(orbitals[i].pract_infinity());
 		j = 0;
@@ -85,7 +87,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	}
 
 //	Potential on the new grid.
-	Potential U(&Lattice, u.NuclCharge());
+	Potential U(Lattice, u.NuclCharge());
 	U.GenerateTrial(Orbitals);
 
 	RadialWF Continuum(Lattice.size());
@@ -117,24 +119,33 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 			j = Orbitals[i].occupancy();
 			PhotoTmp.hole = i;
 			PhotoTmp.val = 0;
-			if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[i].set_occupancy(j - 1);//excite one electron...
+			if (input.potential == excited_potential_model::V_Nm1_no) Orbitals[i].set_occupancy(j - 1);//excite one electron...
 			Continuum.Energy = omega + Orbitals[i].Energy;//... into continuum
 			if (Continuum.Energy > 0)
 			{
-				// Update here if Input.Hamiltonian == "LDA".
-				if (input.Hamiltonian() == 1) {
+				switch (input.hamiltonian)
+				{
+				case hamiltonian_method::LDA:
 					U.LDA_upd_dir(Orbitals);
-				} else {
-					U.HF_upd_dir(&Continuum, Orbitals); // This line seems to give 'conditional jump or move depends on uninitialised values'
+					break;
+				case hamiltonian_method::HartreeFock:
+					U.HF_upd_dir(Continuum, Orbitals); 
+					// This line seems to give 'conditional jump or move depends on uninitialised values'
+					break;
+				default:
+					break;
 				}
-				if (input.Exited_Pot_Model() == "V_N-1") U.HF_V_N1(&Continuum, Orbitals, i, true, false);
+				
+				if (input.potential == excited_potential_model::V_Nm1){
+					U.HF_V_N1(Continuum, Orbitals, i, true, false);
+				}
 
 				for (int l = Orbitals[i].L() - 1; l <= Orbitals[i].L() + 1; l += 2)
 				{
 					if (l >= 0)
 					{
 						Continuum.set_L(l);   //TODO make sure this is fine - S.P.
-						if (IntegrateContinuum(Lattice, U, Orbitals, &Continuum, i) < 0) {
+						if (IntegrateContinuum(Lattice, U, Orbitals, Continuum, i) < 0) {
 						log << "====================================================================" << endl;
 							log << "Continuum didn't converge: " << endl;
 							for (int i = 0; i < orbitals.size(); i++)
@@ -147,19 +158,22 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 
 						density.clear();
 						density.resize(infinity + 1);
-						if (input.Gauge() == "length") {
-								for (int s = 0; s < density.size(); s++)	{
+
+						if (input.me_gauge == gauge_t::length) {
+							for (int s = 0; s < density.size(); s++)	{
 								density[s] = Lattice.R(s)*Continuum.F[s] * Orbitals[i].F[s];
 							}
 							ME = I.Integrate(&density, 0, infinity);
-						}
-						else {
+							break;
+						} else if (input.me_gauge == gauge_t::velocity){
 						// Velocity gauge.
 							double ang_coeff =  0.5*(Orbitals[i].L() - Continuum.L())*(Orbitals[i].L() + Continuum.L() + 1);
 								for (int s = 0; s < density.size(); s++)	{
 								density[s] = Continuum.F[s] *(Orbitals[i].G[s] + ang_coeff * Orbitals[i].F[s]/Lattice.R(s)) ;
 							}
 							ME = I.Integrate(&density, 0, infinity)/omega;
+						} else {
+							throw std::runtime_error("Unrecognised gauge");
 						}
 
 						if (Orbitals[i].L() > l) { L = Orbitals[i].L();	}
@@ -168,7 +182,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 					}
 				}
 			}
-			if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[i].set_occupancy(j);
+			if (input.potential == excited_potential_model::V_Nm1_no) Orbitals[i].set_occupancy(j);
 			Result.push_back(PhotoTmp);
 		}
 	}
@@ -208,13 +222,13 @@ vector<fluor> DecayRates::Fluor()
 						density.clear();
 						density.resize(L_max);
 
-						if (input.Gauge() == "length") {
+						
+						if (input.me_gauge ==  gauge_t::length){
 							for (int s = 0; s < density.size(); s++)	{
 								density[s] = lattice.R(s) * orbitals[i].F[s] * orbitals[j].F[s];
 							}
 							ME = I.Integrate(&density, 0, density.size()-1);// Electric dipole matrix element
-						}
-						else {
+						} else if (input.me_gauge ==  gauge_t::velocity) {
 						// Velocity gauge.
 							double ang_coeff =  0.5*(orbitals[i].L() - orbitals[j].L())*(orbitals[i].L() + orbitals[j].L() + 1);
 								for (int s = 0; s < density.size(); s++)	{
@@ -278,7 +292,8 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 		N_elec += orbitals[i].occupancy();
 	}
 	//	Usually a finer grid is required.
-	Grid Lattice(lattice.R(0), 50., 0.03 / k);
+	Grid Lattice;
+	Lattice.logspace_from_dR(lattice.R(0), 50., 0.03 / k);
 
 	//	Interpolate orbitals on the new grid
 	Interpolation W(6);
@@ -286,15 +301,15 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 	//check if there are electrons above current orbital that can fill
 	//empty orbital. If above > 1 auger is possible and even hollow orbital should be interpolated
 	for (int i = 0; i < orbitals.size(); i++) {
-		//if (input.Exited_Pot_Model() != "V_N-1" && orbitals[i].occupancy() == 0) continue;
-		if (input.Exited_Pot_Model() == "V_N-1" || i <= allowed) W.RecalcWF(orbitals[i], lattice, Orbitals[i], Lattice);
+		//if (input.potential != excited_potential_model::V_Nm1 && orbitals[i].occupancy() == 0) continue;
+		if (input.potential == excited_potential_model::V_Nm1 || i <= allowed) W.RecalcWF(orbitals[i], lattice, Orbitals[i], Lattice);
 		Infinity = lattice.R(orbitals[i].pract_infinity());
 		int j = 0;
 		while (Lattice.R(j) < Infinity && j < Lattice.size() - 1) j++;
 		Orbitals[i].set_infinity(j);
 	}
 	//	potential on the new grid
-	Potential U(&Lattice, u.NuclCharge(), u.Type());
+	Potential U(Lattice, u.NuclCharge(), u.Type());
 	//U.GenerateTrial(Orbitals);
 
 	bool select;
@@ -307,20 +322,20 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 			N_h = Max_occ[h] - Orbitals[h].occupancy();
 			Tmp.hole = h;
 			h_occ = Orbitals[h].occupancy();
-			if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[h].set_occupancy(h_occ + 1);
+			if (input.potential == excited_potential_model::V_Nm1_no) Orbitals[h].set_occupancy(h_occ + 1);
 			for (int f = h + 1; f <= allowed; f++)//fill the hole
 			{
 				Tmp.fill = f;
 				f_occ = Orbitals[f].occupancy();
 				if (f_occ == 0) continue;
-				if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[f].set_occupancy(f_occ - 1);
+				if (input.potential == excited_potential_model::V_Nm1_no) Orbitals[f].set_occupancy(f_occ - 1);
 				for (int e = f; e <= allowed; e++)//eject
 				{
 					e_occ = Orbitals[e].occupancy();
 					if (e_occ == 0) continue;
-					if (e == f && input.Exited_Pot_Model() == "V_N-1no" && e_occ < 1) continue;
-					if (e == f && input.Exited_Pot_Model() != "V_N-1no" && e_occ < 2) continue;
-					if (e == f && input.Exited_Pot_Model() != "V_N-1no") e_occ--;
+					if (e == f && input.potential == excited_potential_model::V_Nm1_no && e_occ < 1) continue;
+					if (e == f && input.potential != excited_potential_model::V_Nm1_no && e_occ < 2) continue;
+					if (e == f && input.potential != excited_potential_model::V_Nm1_no) e_occ--;
 					double T = 0;
 					Tmp.eject = e;
 					Tmp.val = 0;
@@ -331,7 +346,7 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 					if (E_cont < 5 * (u.NuclCharge() - N_elec + 1) /Lattice.R(Lattice.size()-1)) {
 						E_cont = 5 * (u.NuclCharge() - N_elec + 1) /Lattice.R(Lattice.size()-1);
 					}*/
-					if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[e].set_occupancy(e_occ - 1);
+					if (input.potential == excited_potential_model::V_Nm1_no) Orbitals[e].set_occupancy(e_occ - 1);
 					Tmp.energy = E_cont;
 
 					if (e == f)	{
@@ -353,14 +368,16 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 					Continuum.set_N(-1);
 					Continuum.set_infinity(Lattice.size() - 1);
 					Continuum.set_L(0);
-					if (input.Hamiltonian() == 1) U.LDA_upd_dir(Orbitals);
-					else U.HF_upd_dir(&Continuum, Orbitals);
-					if (input.Exited_Pot_Model() == "V_N-1") U.HF_V_N1(&Continuum, Orbitals, f, true, false);
+					if (input.hamiltonian == hamiltonian_method::LDA) U.LDA_upd_dir(Orbitals);
+					else if (input.hamiltonian==hamiltonian_method::HartreeFock) U.HF_upd_dir(Continuum, Orbitals);
+
+					if (input.potential == excited_potential_model::V_Nm1) U.HF_V_N1(Continuum, Orbitals, f, true, false);
+
 					for (int l_E = min_L_cont; l_E <= Orbitals[e].L() + Orbitals[f].L() + Orbitals[h].L(); l_E++)
 					{
 						//sum over all posible Continuum states
 						Continuum.set_L(l_E); //TODO make sure this is fine -S.P.
-						if (IntegrateContinuum(Lattice, U, Orbitals, &Continuum, f) < 0) {
+						if (IntegrateContinuum(Lattice, U, Orbitals, Continuum, f) < 0) {
 							log << "Continuum didn't converge: " << endl;
 							for (int i = 0; i < orbitals.size(); i++)
 							{
@@ -417,11 +434,11 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 
 					}
 					if (Tmp.val != 0) Result.push_back(Tmp);
-					if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[e].set_occupancy(e_occ);
+					if (input.potential == excited_potential_model::V_Nm1_no) Orbitals[e].set_occupancy(e_occ);
 				}
-				if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[f].set_occupancy(f_occ);
+				if (input.potential == excited_potential_model::V_Nm1_no) Orbitals[f].set_occupancy(f_occ);
 			}
-			if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[h].set_occupancy(h_occ);
+			if (input.potential == excited_potential_model::V_Nm1_no) Orbitals[h].set_occupancy(h_occ);
 		}
 	}
 
@@ -456,7 +473,8 @@ vector<double> DecayRates::FT_density(double Q_min, double Q_max, int Q_size)
 		if (2*M_PI*Inp_lattice.dR(infty)*Q > 0.05) {
 			// Create a new lattice and do interpolation.
 			double dR_max = 0.05/(2*M_PI*Q_max);
-			Inp_lattice = Grid(lattice.R(0), lattice.R(infty), dR_max);
+			// Inp_lattice = Grid(lattice.R(0), lattice.R(infty), dR_max);
+			Inp_lattice = lattice.refine(dR_max);
 
 			Interpolation IN(6);
 			vector<double> density = Inp_density;
@@ -494,20 +512,20 @@ DecayRates::~DecayRates()
 
 // Correct continuum integrator. Check if potential accounts for tail correction.
 
-int DecayRates::IntegrateContinuum(Grid &Lattice, Potential &U, vector<RadialWF> &Core, RadialWF* Current, int c)
+int DecayRates::IntegrateContinuum(const Grid &Lattice, Potential &U, const vector<RadialWF> &Core, RadialWF& Current, int c)
 {
 	// This function does outwards integration to find Continuum Wavefunction. It integrates the Hartree-Fock potential U, which is unchanged
-	// till point "infinity" where semiclassical momentum P = sqrt(2 * Current->Energy) is withing one percent of the
-	// current momentum given by P_new = sqrt(2*Current->Energy - 2*U.V[i] - L()*(L() + 1) / R(i)^2)
+	// till point "infinity" where semiclassical momentum P = sqrt(2 * Current.Energy) is withing one percent of the
+	// current momentum given by P_new = sqrt(2*Current.Energy - 2*U.V[i] - L()*(L() + 1) / R(i)^2)
 	// after that semiclassical approack used. At that point the following equations are solved:
 	//
-	//  N*sin(P*R(infinity) + phase) = Current->F[infinity]
-	//  N*cos(P*R(infinity) + phase) = Current->G[infinity] / P
+	//  N*sin(P*R(infinity) + phase) = Current.F[infinity]
+	//  N*cos(P*R(infinity) + phase) = Current.G[infinity] / P
 	//
 	// to find Norm (N) and Phase (phase) and continue solution analytically to the end of coordinate grid and normalize it.
 	// The functions are Energy normalized.
 
-	double correction, P = sqrt(2 * Current->Energy);
+	double correction, P = sqrt(2 * Current.Energy);
 	double accuracy = pow(10, -2), Norm = 10, new_Norm = 5, Phase = 5, new_Phase = 10;
 	int infinity = Lattice.size() - 1;// Infinity for continuum wave is defined when it reaches it's asymptotic.
 	int Core_infinity = 0;
@@ -518,21 +536,21 @@ int DecayRates::IntegrateContinuum(Grid &Lattice, Potential &U, vector<RadialWF>
 	}
 
 	for (int i = 0; i < Lattice.size(); i++) {
-		if (Current->Energy > -5 * U.V[i]) {
+		if (Current.Energy > -5 * U.V[i]) {
 			infinity = i;
 			break;
 		}
 	}
 
-	if (Core_infinity > infinity) Current->set_infinity(Core_infinity);
-	else Current->set_infinity(infinity);
+	if (Core_infinity > infinity) Current.set_infinity(Core_infinity);
+	else Current.set_infinity(infinity);
 
 	Adams NumIntgr(Lattice, 10);
 
 	for (int i = 0; i < Lattice.size(); i++)
 	{
 		NumIntgr.B[i] = 1.;
-		NumIntgr.C[i] = -2 * (Current->Energy - U.V[i] - 0.5*Current->L()*(Current->L() + 1) / Lattice.R(i) / Lattice.R(i));
+		NumIntgr.C[i] = -2 * (Current.Energy - U.V[i] - 0.5*Current.L()*(Current.L() + 1) / Lattice.R(i) / Lattice.R(i));
 		U.Exchange[i] = 0;
 	}
 
@@ -545,35 +563,35 @@ int DecayRates::IntegrateContinuum(Grid &Lattice, Potential &U, vector<RadialWF>
 		Phase = new_Phase;
 		Norm = new_Norm;
 
-		correction = Current->F[0];
+		correction = Current.F[0];
 		if (correction)	{
-			Current->F[0] = correction;
-			Current->G[0] = Current->F[0] * (Current->L() + 1 + U.V[0] * Lattice.R(0)*Lattice.R(0) / (Current->L() + 1)) / Lattice.R(0);
+			Current.F[0] = correction;
+			Current.G[0] = Current.F[0] * (Current.L() + 1 + U.V[0] * Lattice.R(0)*Lattice.R(0) / (Current.L() + 1)) / Lattice.R(0);
 		} else {
-			Current->F[0] = pow(Lattice.R(0), (Current->L() + 1));
-			Current->G[0] = pow(Lattice.R(0), Current->L())*(Current->L() + 1 + U.V[0] * Lattice.R(0)*Lattice.R(0) / (Current->L() + 1));
+			Current.F[0] = pow(Lattice.R(0), (Current.L() + 1));
+			Current.G[0] = pow(Lattice.R(0), Current.L())*(Current.L() + 1 + U.V[0] * Lattice.R(0)*Lattice.R(0) / (Current.L() + 1));
 		}
 
-		for (int i = 0; i <= Current->pract_infinity(); i++) {
+		for (int i = 0; i <= Current.pract_infinity(); i++) {
 			NumIntgr.Y[i] = 2 * U.Exchange[i];
 		}
 
 		NumIntgr.StartAdams(Current, 0, true);
-		NumIntgr.Integrate(Current, 0, Current->pract_infinity());
-		infinity = Current->pract_infinity();
-		while (Current->G[infinity - 1] * Current->G[infinity] > 0) { infinity--; }
+		NumIntgr.Integrate(Current, 0, Current.pract_infinity());
+		infinity = Current.pract_infinity();
+		while (Current.G[infinity - 1] * Current.G[infinity] > 0) { infinity--; }
 
-		new_Phase = atan(P*Current->F[infinity] / Current->G[infinity]);
-		new_Norm = 0.5 * fabs(Current->F[infinity])*sqrt(2*Pi*P);
+		new_Phase = atan(P*Current.F[infinity] / Current.G[infinity]);
+		new_Norm = 0.5 * fabs(Current.F[infinity])*sqrt(2*Pi*P);
 
-		Current->scale(1 / new_Norm);
-		if (input.Hamiltonian() == 0) U.HF_upd_exc(Current, Core);
-		if (input.Exited_Pot_Model() == "V_N-1") U.HF_V_N1(Current, Core, c, false, true);
+		Current.scale(1 / new_Norm);
+		if (input.hamiltonian == hamiltonian_method::HartreeFock) U.HF_upd_exc(Current, Core);
+		if (input.potential == excited_potential_model::V_Nm1) U.HF_V_N1(Current, Core, c, false, true);
 		if (U.Exchange[0] == 0) break;
 	}
 	if (m > 20) return -1;
 
-	//Current->set_infinity(Lattice.size() - 1);
+	//Current.set_infinity(Lattice.size() - 1);
 	return infinity;
 }
 

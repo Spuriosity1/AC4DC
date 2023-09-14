@@ -114,7 +114,7 @@ state_type ElectronRateSolver::get_ground_state() {
     state_type initial_condition;
     assert(initial_condition.atomP.size() == input_params.Store.size());
     for (size_t a=0; a<input_params.Store.size(); a++) {
-        initial_condition.atomP[a][0] = input_params.Store[a].nAtoms;
+        initial_condition.atomP[a][0] = input_params.Store[a].atomic_density;
         for(size_t i=1; i<initial_condition.atomP.size(); i++) {
             initial_condition.atomP[a][i] = 0.;
         }
@@ -909,7 +909,7 @@ void ElectronRateSolver::initialise_rates(){
     precompute_gamma_coeffs();
     Distribution::precompute_Q_coeffs(input_params.Store);    
 }
-#ifdef INTERACTIVE
+
 //IOFunctions found in IOFunctions.cpp
 void ElectronRateSolver::pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update){
     auto t_start = std::chrono::high_resolution_clock::now();
@@ -1091,4 +1091,3 @@ int ElectronRateSolver::post_ode_step(ofstream& _log, size_t& n){
     post_ode_time += std::chrono::high_resolution_clock::now() - t_start;    
     return 0;
 }
-#endif

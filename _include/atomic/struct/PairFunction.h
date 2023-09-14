@@ -33,6 +33,11 @@ public:
 		}
 	}
 
+	PairFunction(const PairFunction& other){
+		F = other.F;
+		G = other.G;
+	}
+
 	std::vector<double> F, G;  // Large and small components of radial wavefunction and it's derivatives
 
 	void clear()

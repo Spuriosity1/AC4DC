@@ -7,7 +7,7 @@
 
 
 
-BoundTransport::BoundTransport(vector<RadialWF> &light_orbitals, vector<RadialWF>&heavy_orbitals, Input & Input){
+BoundTransport::BoundTransport(vector<RadialWF> &light_orbitals, vector<RadialWF>&heavy_orbitals, HFInputParam & Input){
 
     // // Find the lowest energy state for configuration combinations.
 	// for (int i = 0; i < light_orbitals.size(); i++){

@@ -25,13 +25,10 @@ This file is part of AC4DC.
 #include "Potential.h"
 #include <vector>
 #include "Constant.h"
-// #include "IntegrateRateEquation.h"
 #include "HFInputParam.h"
-// #include "MolInp.h"
 #include "RateData.h"
 #include "HartreeFock.h"
 #include "DecayRates.h"
-#include "NumericalIntegral.h"
 #include <fstream>
 #include <iostream>
 #include <sys/stat.h>
@@ -40,7 +37,7 @@ This file is part of AC4DC.
 #include <string>
 #include <omp.h>
 #include <algorithm>
-#include "EigenSolver.h"
+#include "numerics/EigenSolver.h"
 // #include "Plasma.h"
 #include <utility>
 
@@ -58,7 +55,7 @@ class ComputeRateParam
 public:
 	//Orbitals are HF wavefunctions. This configuration is an initial state.
 	//Assuming there are no unoccupied states in initial configuration!!!
-	ComputeRateParam(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, Input & Inp, bool recalc=true) :
+	ComputeRateParam(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, HFInputParam & Inp, bool recalc=true) :
 	 	lattice(Lattice), input(Inp), orbitals(Orbitals), u(U), recalculate(recalc) {
 		};
 	~ComputeRateParam();
@@ -76,18 +73,18 @@ public:
 
 	int Symbolic(const string & input, const string & output);//convertes configuration indexes in human readable format
 	int Charge(int Iconf);
-	vector<double> PerturbMe(vector<RadialWF> & Virtual, double Dist, double Einit);
-	vector<double> Secular(vector<RadialWF> & Virtual, double Dist, double Einit);
+	// vector<double> PerturbMe(vector<RadialWF> & Virtual, double Dist, double Einit);
+	// vector<double> Secular(vector<RadialWF> & Virtual, double Dist, double Einit);
 
 	int NumPath() { return dimension; }
-	vector<double> generate_G();
+	// vector<double> generate_G();
 	vector<double> Times() { return T; }
 	vector<double> dTimes() { return dT; }
 	vector<double> Probs(int i) { return P[i]; }
 	vector<vector<double>> AllProbs() {return P;}
 
 	bool SetupIndex(vector<int> Max_occ, vector<int> Final_occ, ofstream & log);
-	vector<vector<int>> Get_Indexes() { return Index; }
+	vector<vector<unsigned>> Get_Indexes() { return Index; }
 
   // Atomic data containers.
 	vector<vector<double>> density = vector<vector<double>>(0);
@@ -96,7 +93,7 @@ public:
 
 protected:
 	Grid & lattice;
-	Input & input;
+	HFInputParam & input;
 	vector<RadialWF> & orbitals;
 	Potential& u;
 	bool recalculate; // Flag to determine whether or not to force-recompute everything
@@ -107,7 +104,7 @@ protected:
 	vector<double> T;// Time grid points.
 	vector<double> dT;// Accurate differentials.
 	vector<vector<double>> P;// P[i][m] is the probabilities of having configurations "i" at time T[m].
-	vector<vector<int> > Index;
+	vector<vector<unsigned> > Index;
 	int mapOccInd(vector<RadialWF> & Orbitals);// Inverse of what Index returns.
 
 	// Returns LaTeX formatted electron config referred to by index i
@@ -118,12 +115,12 @@ protected:
 	vector<RateData::ffactor> FF;
 	vector<int> hole_posit;
 
-	int extend_I(vector<double>& Intensity, double new_max_T, double step_T);
-    vector<double> generate_I(vector<double>& T, double I_max, double HalfWidth);
-	vector<double> generate_T(vector<double>& dT);
-	vector<double> generate_dT(int num_elem);
-    double T_avg_RMS(vector<pair<double, int>> conf_RMS);
-	double T_avg_Charge();
+	// int extend_I(vector<double>& Intensity, double new_max_T, double step_T);
+    // vector<double> generate_I(vector<double>& T, double I_max, double HalfWidth);
+	// vector<double> generate_T(vector<double>& dT);
+	// vector<double> generate_dT(int num_elem);
+    // double T_avg_RMS(vector<pair<double, int>> conf_RMS);
+	// double T_avg_Charge();
 
 	static bool sortEIIbyInd(RateData::EIIdata A, RateData::EIIdata B) { return (A.init < B.init); }
 	static bool sortRatesFrom(RateData::Rate A, RateData::Rate B) { return (A.from < B.from); }

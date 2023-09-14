@@ -42,35 +42,40 @@ private:
 	double beta;
 	int NumPts;
 public:
-	Grid(int num_grid_pts, double r_min, double r_max, double Beta = 4);
-	Grid(double r_min, double r_max, double dR_max);//same linear logarithm, but with maximum dR_max. 
 	// Defines number of points on its own. Great for integrals with oscillating functions.
-	Grid(int X) { NumPts = X; }//empty lattice to be defined elsewhere
-	Grid(vector<double> & X, vector<double> & dX);
-
-	// Exponential grid for integrals over Gaussian basis set and uniform for continuum states
-	Grid(int num_grid_pts, double r_min, double r_max, std::string mode);
-	//		Grid(const std::string& filename);
-	~Grid(void);
-
-	void Extend(double new_max_R);
-	double R(int i);
-	double dR(int i);
-	double dR_dS(int i);
-	double dS();
-
-	const Grid& operator=(const Grid& lattice)
-	{
-		r = lattice.r;
-		dr = lattice.dr;
-		ds = lattice.ds;
-		NumPts = lattice.NumPts;
-		beta = lattice.beta;
-
-		return *this;
+	// Grid() { }//empty lattice to be defined elsewhere
+	// Grid(vector<double> & X, vector<double> & dX);
+	void logspace_from_nsteps(double r_min, double r_max, unsigned num_grid_pts, double Beta = 4);
+	void logspace_from_dR(double r_min, double r_max, double dR_max);//same linear logarithm, but with maximum dR_max. 
+	Grid refine(double dr_max){
+		Grid retval;
+		retval.logspace_from_dR(this->r[0], this->r.back(), dr_max);
+		return retval;
 	}
 
-	int size() {
+	// Exponential grid for integrals over Gaussian basis set and uniform for continuum states
+	// Grid(int num_grid_pts, double r_min, double r_max, std::string mode);
+	//		Grid(cr_minonst std::string& filename);
+	// ~Grid(void);
+
+	void Extend(double new_max_R);
+	double R(int i) const;
+	double dR(int i) const;
+	double dR_dS(int i) const;
+	double dS() const;
+
+	// const Grid& operator=(const Grid& lattice)
+	// {
+	// 	r = lattice.r;
+	// 	dr = lattice.dr;
+	// 	ds = lattice.ds;
+	// 	NumPts = lattice.NumPts;
+	// 	beta = lattice.beta;
+
+	// 	return *this;
+	// }
+
+	int size() const {
 		return NumPts;
 	}
 

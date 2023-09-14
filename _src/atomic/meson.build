@@ -8,7 +8,6 @@ atomic_sources = files( [
     'numerics/NumericalIntegral.cpp',
     'struct/Grid.cpp',
     'struct/RadialWF.cpp',
-    'struct/RateData.cpp',
     'struct/HFInputParam.cpp'
     ])
 

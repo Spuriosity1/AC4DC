@@ -322,13 +322,13 @@ MolInp::MolInp(const char* filename, ofstream & _log)
 		stringstream stream(FileContent["#ATOMS"][i]);
 		stream >> at_name >> at_num;
 
-		Store[i].nAtoms = at_num/unit_V;
+		Store[i].atomic_density = at_num/unit_V;
 		Store[i].name = at_name;
 		// Store[i].R = radius;
 
 		at_name = "input/atoms/" + at_name + ".inp";
 
-		Atomic.push_back(Input((char*)at_name.c_str(), Orbits[i], Latts[i], _log));
+		Atomic.push_back(HFInputParam((char*)at_name.c_str(), Orbits[i], Latts[i], _log));
 		// Overrides pulses found in .inp files
 		Atomic.back().Set_Pulse(omega, fluence, width);
 		Atomic.back().Set_Num_Threads(omp_threads);
@@ -403,12 +403,12 @@ void MolInp::calc_rates(ofstream &_log, bool recalc) {
 		}
 
 		string name = Store[a].name;
-		double nAtoms = Store[a].nAtoms;
+		double nAtoms = Store[a].atomic_density;
 
 
 		Store[a] = Dynamics.SolvePlasmaBEB(max_occ, final_occ, shell_check,_log);
 		Store[a].name = name;
-		Store[a].nAtoms = nAtoms;
+		Store[a].atomic_density = nAtoms;
 		// Store[a].R = dropl_R();
 		Index[a] = Dynamics.Get_Indexes();
 	}

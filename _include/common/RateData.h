@@ -3,6 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <nlohmann/json.hpp>
+
+using json= nlohmann::json;
 
 namespace RateData
 {
@@ -29,8 +32,15 @@ namespace RateData
 		double energy = 0;
 	};
 
-	struct ffactor//form factor for Q_mesh values in FormFactor class
-	{
+	//form factor for Q_mesh values in FormFactor class
+	struct ffactor
+	{	
+		inline static ffactor make_ffactor(int idx, const std::vector<double>& val){
+			ffactor r;
+			r.index = idx;
+			r.val = val;
+			return r;
+		}
 		int index;
 		std::vector<double> val;
 	};
@@ -55,8 +65,14 @@ namespace RateData
 		int from_light; // Index of configuration of light atom.
 		int to_heavy; // Index of configuration for heavy atom corresponding to allowed configuration with lowest energy for the complex
 		int to_light; // Index of configuration for light atom corresponding to allowed configuration with lowest energy for the complex
-	};	
-	// Idea: If donate electron, go to donator_index. If receive electron, go to receiver index. 
+	};
+
+
+	/**
+	 * @brief Represents a valence electron process for bound transport
+	 * 
+	 *  Idea: If donate electron, go to donator_index. If receive electron, go to receiver index. 
+	 */
 	struct energy_config
 	{
 		int index;
@@ -120,7 +136,7 @@ namespace RateData
 	{
 		std::vector<std::string> index_names = std::vector<std::string>(0);
 		std::string name = "";
-		double nAtoms = 1.;// atomic number density
+		double atomic_density = 1.;// atomic number density
 		// double R = 189.; // 100nm focal spot radius.
 		unsigned int num_conf = 1;
 		std::vector<Rate> Photo = std::vector<Rate>(0);
@@ -131,6 +147,22 @@ namespace RateData
 		std::vector<energy_config> EnergyConfig = std::vector<energy_config>(0);
 	};
 
+	void from_json(const json& j, energy_config& ec);
+	void from_json(const json& j, Rate& rate);
+	void from_json(const json& j, EIIdata& rate);
+	void from_json(const json& j, Atom& atom);
+
+	void to_json(json& dest, const energy_config& ec);
+	void to_json(json& dest, const Rate& r);
+	void to_json(json& dest, const EIIdata& eii);
+	void to_json(json& dest, const Atom& a);
+
+	
+	// TODO
+	// void save_atom_hdf5(const std::string& ofile, const Atom& );
+	// void load_atom_hdf5(const std::string& ofile, const Atom& );
+
+	// deprecated (maybe just altogether broken?)
 	bool ReadRates(const std::string & input, std::vector<Rate> & PutHere);
 	bool ReadEIIParams(const std::string & input, std::vector<EIIdata> & PutHere);
 	void WriteRates(const std::string& fname, const std::vector<Rate>& ratevector);

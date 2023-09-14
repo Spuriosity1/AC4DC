@@ -21,7 +21,7 @@ public:
     * @param Input 
     * @return 
     */
-    BoundTransport(vector<RadialWF> &light_orbitals, vector<RadialWF>&heavy_orbitals, Input & Input);
+    BoundTransport(vector<RadialWF> &light_orbitals, vector<RadialWF>&heavy_orbitals, HFInputParam & Input);
     
     bound_transport bbe_transport;
 

@@ -16,8 +16,9 @@ This file is part of AC4DC.
 ===========================================================================*/
 #include "Grid.h"
 #include "stdafx.h"
+#include <cassert>
 
-Grid::Grid(int num_grid_pts, double r_min, double r_max, double Beta)
+void Grid::logspace_from_nsteps(double r_min, double r_max, unsigned num_grid_pts, double Beta)
 {
 	double r_tmp = r_min;
 	double s_tmp = 0.0;
@@ -28,39 +29,37 @@ Grid::Grid(int num_grid_pts, double r_min, double r_max, double Beta)
 	r.clear();
 	dr.clear();
 
-	if (num_grid_pts <= 0) { std::cout << "number of radial lattice points is 0 or negative"; }
-	else
+
+	r.resize(num_grid_pts);
+	dr.resize(num_grid_pts);
+
+	NumPts = num_grid_pts;
+
+	r[0] = r_min;
+	dr[0] = r_min;
+	s_tmp = r_min + beta*log(r_min);
+	ds = (r_max + beta*log(r_max) - s_tmp) / (num_grid_pts - 1);
+
+	for (unsigned int i = 1; i < num_grid_pts; i++)
 	{
-		r.resize(num_grid_pts);
-		dr.resize(num_grid_pts);
-
-		NumPts = num_grid_pts;
-
-		r[0] = r_min;
-		dr[0] = r_min;
-		s_tmp = r_min + beta*log(r_min);
-		ds = (r_max + beta*log(r_max) - s_tmp) / (num_grid_pts - 1);
-
-		for (unsigned int i = 1; i < num_grid_pts; i++)
+		s_i = s_tmp + ds;
+		alert = 1;
+		do
 		{
-			s_i = s_tmp + ds;
-			alert = 1;
-			do
-			{
-				r_tmp += r_tmp*(s_i - s_tmp) / (r_tmp + beta);
-				s_tmp = r_tmp + beta*log(r_tmp);
-				alert++;
-				if (alert > 100) { break; printf("grid is not created! \n"); }
-			} while (fabs(s_i - s_tmp) / ds > 1.0*pow(10.0, -15.0));
+			r_tmp += r_tmp*(s_i - s_tmp) / (r_tmp + beta);
+			s_tmp = r_tmp + beta*log(r_tmp);
+			alert++;
+			if (alert > 100) { break; printf("grid is not created! \n"); }
+		} while (fabs(s_i - s_tmp) / ds > 1.0*pow(10.0, -15.0));
 
-			r[i] = r_tmp;
-			dr[i] = r_tmp / (r_tmp + beta)*ds;//dr[i] = (dr/ds)_i*ds_i
-		}
-		r[num_grid_pts - 1] = r_max;
+		r[i] = r_tmp;
+		dr[i] = r_tmp / (r_tmp + beta)*ds;//dr[i] = (dr/ds)_i*ds_i
 	}
+	r[num_grid_pts - 1] = r_max;
+	
 }
 
-Grid::Grid(double r_min, double r_max, double dR_max)
+void Grid::logspace_from_dR(double r_min, double r_max, double dR_max)
 {
 	// self-adjustable Grid.
 	// Box size r_max.
@@ -69,6 +68,9 @@ Grid::Grid(double r_min, double r_max, double dR_max)
 	double exp_h = exp(h);
 	double r_tmp = r_min, dr_tmp = r_min*(1+h);
 	int n = 0;
+
+	assert(r_min < r_max);
+	assert(dR_max > 0);
 
 	// First part of the grid is fine to account for nuclear potential.
 	//      r_n = r_min*exp(h*n) + r_min*n [= r_tmp + r_min*n];
@@ -92,65 +94,65 @@ Grid::Grid(double r_min, double r_max, double dR_max)
 	NumPts = r.size();
 }
 
-Grid::Grid(int num_grid_pts, double r_min, double r_max, std::string mode)
-{
-	double s = 0;
-	double h = 0;
-	double tmp = 0;
+// Grid::Grid(double r_min, double r_max, int num_grid_pts, std::string mode)
+// {
+// 	double s = 0;
+// 	double h = 0;
+// 	double tmp = 0;
 
-	r.clear();
-	dr.clear();
+// 	r.clear();
+// 	dr.clear();
 
-	if (num_grid_pts <= 0) { std::cout << "number of radial lattice points is 0 or negative"; }
-	else
-	{
-		r.resize(num_grid_pts);
-		dr.resize(num_grid_pts);
-		r[0] = r_min;
-		NumPts = num_grid_pts;
+// 	if (num_grid_pts <= 0) { std::cout << "number of radial lattice points is 0 or negative"; }
+// 	else
+// 	{
+// 		r.resize(num_grid_pts);
+// 		dr.resize(num_grid_pts);
+// 		r[0] = r_min;
+// 		NumPts = num_grid_pts;
 
-		if (mode == "exponential+")
-		{
-			if (r_max/r_min > num_grid_pts) {
-				s = pow(r_max / r_min - num_grid_pts + 1, 1. / (num_grid_pts - 1));
-				h = log(s);
-				tmp = s;
-				for (int i = 1; i < r.size(); i++)
-				{
-					r[i] = (tmp + i)*r_min;
-					dr[i] = r[i] * h + r_min*(1 - h*i);
-					tmp *= s;
-				}
-			} else mode = "exponential";
-		}
-		if (mode == "exponential") {
-				s = pow(r_max / r_min, 1. / (num_grid_pts - 1));
-				h = log(s);
-				for (int i = 1; i < r.size(); i++)
-				{
-					r[i] = r[i - 1] * s;
-					dr[i] = r[i] * h;
-				}
-		}
-		if (mode == "linear")
-		{
-			h = (r_max - r_min) / (num_grid_pts - 1);
-			for (int i = 1; i < r.size(); i++)
-			{
-				r[i] = r[i - 1] + h;
-				dr[i] = h;
-			}
-		}
-	}
-}
+// 		if (mode == "exponential+")
+// 		{
+// 			if (r_max/r_min > num_grid_pts) {
+// 				s = pow(r_max / r_min - num_grid_pts + 1, 1. / (num_grid_pts - 1));
+// 				h = log(s);
+// 				tmp = s;
+// 				for (int i = 1; i < r.size(); i++)
+// 				{
+// 					r[i] = (tmp + i)*r_min;
+// 					dr[i] = r[i] * h + r_min*(1 - h*i);
+// 					tmp *= s;
+// 				}
+// 			} else mode = "exponential";
+// 		}
+// 		if (mode == "exponential") {
+// 				s = pow(r_max / r_min, 1. / (num_grid_pts - 1));
+// 				h = log(s);
+// 				for (int i = 1; i < r.size(); i++)
+// 				{
+// 					r[i] = r[i - 1] * s;
+// 					dr[i] = r[i] * h;
+// 				}
+// 		}
+// 		if (mode == "linear")
+// 		{
+// 			h = (r_max - r_min) / (num_grid_pts - 1);
+// 			for (int i = 1; i < r.size(); i++)
+// 			{
+// 				r[i] = r[i - 1] + h;
+// 				dr[i] = h;
+// 			}
+// 		}
+// 	}
+// }
 
-Grid::Grid(vector<double> & X, vector<double> & dX) : r(X), dr(dX)
-{
-	if (r.size() != dr.size()) NumPts = -1;
-	else NumPts = r.size();
-	beta = 0;
-	ds = 0;
-}
+// Grid::Grid(vector<double> & X, vector<double> & dX) : r(X), dr(dX)
+// {
+// 	if (r.size() != dr.size()) NumPts = -1;
+// 	else NumPts = r.size();
+// 	beta = 0;
+// 	ds = 0;
+// }
 
 void Grid::Extend(double new_max_R)
 {
@@ -175,25 +177,22 @@ void Grid::Extend(double new_max_R)
 	NumPts = r.size();
 }
 
-double Grid::R(int i)
+double Grid::R(int i) const
 {
 	return r[i];
 }
 
-double Grid::dR(int i)
+double Grid::dR(int i) const
 {
 	return dr[i];
 }
 
-double Grid::dS()
+double Grid::dS() const
 {
 	return ds;
 }
 
-double Grid::dR_dS(int i)
+double Grid::dR_dS(int i) const
 {
 	return (r[i] / (beta + r[i]));
 }
-
-Grid::~Grid(void)
-{}

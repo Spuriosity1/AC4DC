@@ -45,7 +45,7 @@ static const double Lagrange_4[2][4] =
 
 #include "GaussQuadrature.h"
 
-Adams::Adams(Grid &Latt, int AdamsOrder) : Lattice(Latt)
+Adams::Adams(const Grid &Latt, int AdamsOrder) : Lattice(Latt)
 {
 	Adams_Coeff.clear();
 
@@ -88,7 +88,7 @@ Adams::Adams(Grid &Latt, int AdamsOrder) : Lattice(Latt)
 Adams::~Adams()
 {}
 
-void Adams::Integrate(RadialWF* Psi, int start_pt, int end_pt)
+void Adams::Integrate(RadialWF& Psi, int start_pt, int end_pt)
 {
 	int incr, start, end;
 	double Det, F_tmp, G_tmp;
@@ -111,8 +111,8 @@ void Adams::Integrate(RadialWF* Psi, int start_pt, int end_pt)
 
 	for (int j = start; incr*j >= start - incr*Adams_N; j-=incr)
 	{
-		dF_dR[j] = A[j] * Psi->F[j] + B[j] * Psi->G[j] + X[j];
-		dG_dR[j] = C[j] * Psi->F[j] + D[j] * Psi->G[j] + Y[j];
+		dF_dR[j] = A[j] * Psi.F[j] + B[j] * Psi.G[j] + X[j];
+		dG_dR[j] = C[j] * Psi.F[j] + D[j] * Psi.G[j] + Y[j];
 	}
 
 	for (int i = start; incr*i <= incr*end; i+=incr)
@@ -120,23 +120,23 @@ void Adams::Integrate(RadialWF* Psi, int start_pt, int end_pt)
 		Det = (1.0 - incr * Adams_Coeff[0] * Lattice.dR(i) * A[i])*(1.0 - incr * Adams_Coeff[0] * Lattice.dR(i) * D[i])
 			- Adams_Coeff[0] * Lattice.dR(i) * C[i] * Adams_Coeff[0] * Lattice.dR(i) * B[i];
 
-		F_tmp = Psi->F[i - incr] + incr*Adams_Coeff[0] * Lattice.dR(i) * X[i] ;
-		G_tmp = Psi->G[i - incr] + incr*Adams_Coeff[0] * Lattice.dR(i) * Y[i] ;
+		F_tmp = Psi.F[i - incr] + incr*Adams_Coeff[0] * Lattice.dR(i) * X[i] ;
+		G_tmp = Psi.G[i - incr] + incr*Adams_Coeff[0] * Lattice.dR(i) * Y[i] ;
 		if (std::isnan(F_tmp) || std::isnan(G_tmp)){throw std::runtime_error("F_tmp or G_tmp is nan!");}
 		for (int j = 1; j < Adams_N; j++)
 		{
 			F_tmp += incr * Adams_Coeff[j] * dF_dR[i - incr*j] * Lattice.dR(i - incr*j);
 			G_tmp += incr * Adams_Coeff[j] * dG_dR[i - incr*j] * Lattice.dR(i - incr*j);
 		}
-		if (std::isnan(Psi->F[i])){throw std::runtime_error("Psi->F[i] is nan!");}
+		if (std::isnan(Psi.F[i])){throw std::runtime_error("Psi.F[i] is nan!");}
 		
-		Psi->F[i] = (F_tmp * (1.0 - incr * Lattice.dR(i) * Adams_Coeff[0] * D[i]) + G_tmp * incr * Lattice.dR(i) * Adams_Coeff[0] * B[i]) / Det;
-		Psi->G[i] = (F_tmp * incr * Lattice.dR(i) * Adams_Coeff[0] * C[i] + G_tmp * (1.0 - incr * Lattice.dR(i) * Adams_Coeff[0] * A[i])) / Det;
-		if (std::isnan(Psi->F[i])){throw std::runtime_error("Psi->F[i] is nan!1");}
+		Psi.F[i] = (F_tmp * (1.0 - incr * Lattice.dR(i) * Adams_Coeff[0] * D[i]) + G_tmp * incr * Lattice.dR(i) * Adams_Coeff[0] * B[i]) / Det;
+		Psi.G[i] = (F_tmp * incr * Lattice.dR(i) * Adams_Coeff[0] * C[i] + G_tmp * (1.0 - incr * Lattice.dR(i) * Adams_Coeff[0] * A[i])) / Det;
+		if (std::isnan(Psi.F[i])){throw std::runtime_error("Psi.F[i] is nan!1");}
 		
-		dF_dR[i] = A[i] * Psi->F[i] + B[i] * Psi->G[i] + X[i];
-		dG_dR[i] = C[i] * Psi->F[i] + D[i] * Psi->G[i] + Y[i];
-		if (std::isnan(Psi->F[i])){throw std::runtime_error("Psi->F[i] is nan!2");}
+		dF_dR[i] = A[i] * Psi.F[i] + B[i] * Psi.G[i] + X[i];
+		dG_dR[i] = C[i] * Psi.F[i] + D[i] * Psi.G[i] + Y[i];
+		if (std::isnan(Psi.F[i])){throw std::runtime_error("Psi.F[i] is nan!2");}
 		
 		if (dF_dR[i-incr] * dF_dR[i] < 0)
 		{
@@ -147,10 +147,10 @@ void Adams::Integrate(RadialWF* Psi, int start_pt, int end_pt)
 			else
 			{
 				NumNodes++;
-				if (fabs(Psi->F[FirstMaxima]) < fabs(Psi->F[i])) { FirstMaxima = abs(i); }
+				if (fabs(Psi.F[FirstMaxima]) < fabs(Psi.F[i])) { FirstMaxima = abs(i); }
 			}
 		}
-		if (std::isnan(Psi->F[i])){throw std::runtime_error("Psi->F[i] is nan!3 End of func: Adams::Integrate()");}
+		if (std::isnan(Psi.F[i])){throw std::runtime_error("Psi.F[i] is nan!3 End of func: Adams::Integrate()");}
 	}
 }
 
@@ -331,7 +331,7 @@ double Adams::Integrate(std::vector<double>* Func, int start_pt, int end_pt)
 	return Result[Adams_N - 1];
 }
 
-void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
+void Adams::StartAdams(RadialWF& Psi, int start_pt, bool forward)
 {
 	std::vector< std::vector<double>> LeftMatr;
 	std::vector<double> RightVect;
@@ -411,13 +411,13 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 	{
 		if (i < Lagrange_N / 2)
 		{
-			RightVect[i] = -Lagrange[i + 1][0] * Psi->F[start_pt] + incr*X[start_pt + incr*(i+1)] * Lattice.dR(start_pt + incr*(i+1));
-			RightVect[i + Lagrange_N] = -Lagrange[i + 1][0] * Psi->G[start_pt] + incr*Y[start_pt + incr*(i+1)] * Lattice.dR(start_pt + incr*(i+1));
+			RightVect[i] = -Lagrange[i + 1][0] * Psi.F[start_pt] + incr*X[start_pt + incr*(i+1)] * Lattice.dR(start_pt + incr*(i+1));
+			RightVect[i + Lagrange_N] = -Lagrange[i + 1][0] * Psi.G[start_pt] + incr*Y[start_pt + incr*(i+1)] * Lattice.dR(start_pt + incr*(i+1));
 		}
 		else
 		{
-			RightVect[i] = Lagrange[Lagrange_N - i - 1][Lagrange_N] * Psi->F[start_pt] + incr*X[start_pt + incr*(i + 1)] * Lattice.dR(start_pt + incr*(i + 1));
-			RightVect[i + Lagrange_N] = Lagrange[Lagrange_N - i - 1][Lagrange_N] * Psi->G[start_pt] + incr*Y[start_pt + incr*(i + 1)] * Lattice.dR(start_pt + incr*(i + 1));
+			RightVect[i] = Lagrange[Lagrange_N - i - 1][Lagrange_N] * Psi.F[start_pt] + incr*X[start_pt + incr*(i + 1)] * Lattice.dR(start_pt + incr*(i + 1));
+			RightVect[i + Lagrange_N] = Lagrange[Lagrange_N - i - 1][Lagrange_N] * Psi.G[start_pt] + incr*Y[start_pt + incr*(i + 1)] * Lattice.dR(start_pt + incr*(i + 1));
 		}
 		if (std::isinf(RightVect[i])){throw std::runtime_error("RightVect element is inf!");}
 		if (std::isnan(RightVect[i])){throw std::runtime_error("RightVect element is nan!");}
@@ -433,16 +433,16 @@ void Adams::StartAdams(RadialWF* Psi, int start_pt, bool forward)
 
 	for (int i = 0; i < Lagrange_N; i++)
 	{		
-		Psi->F[start_pt + incr*(i + 1)] = RightVect[i];
-		Psi->G[start_pt + incr*(i + 1)] = RightVect[Lagrange_N + i];
-		if (std::isinf(Psi->F[start_pt + incr*(i + 1)])){throw std::runtime_error("Psi->F[] is inf!");}
-		if (std::isnan(Psi->F[start_pt + incr*(i + 1)])){throw std::runtime_error("Psi->F[] is nan!");}
-		if (std::isnan(Psi->G[start_pt + incr*(i + 1)])){throw std::runtime_error("Psi->G[] is nan!");}
-		if (std::isinf(Psi->G[start_pt + incr*(i + 1)])){throw std::runtime_error("Psi->G[] is inf!");}
+		Psi.F[start_pt + incr*(i + 1)] = RightVect[i];
+		Psi.G[start_pt + incr*(i + 1)] = RightVect[Lagrange_N + i];
+		if (std::isinf(Psi.F[start_pt + incr*(i + 1)])){throw std::runtime_error("Psi.F[] is inf!");}
+		if (std::isnan(Psi.F[start_pt + incr*(i + 1)])){throw std::runtime_error("Psi.F[] is nan!");}
+		if (std::isnan(Psi.G[start_pt + incr*(i + 1)])){throw std::runtime_error("Psi.G[] is nan!");}
+		if (std::isinf(Psi.G[start_pt + incr*(i + 1)])){throw std::runtime_error("Psi.G[] is inf!");}
 	}
 }
 
-std::vector<double> Adams::GreenOrigin(RadialWF* Psi)
+std::vector<double> Adams::GreenOrigin(const RadialWF& Psi)
 {
 	//this function returns the following integral
 	//int_(0)^(Lattice.R(end_pt)) Psi.F*Y*Lattice.dR,
@@ -454,21 +454,21 @@ std::vector<double> Adams::GreenOrigin(RadialWF* Psi)
 	Result.clear();
 	Result.resize( Lattice.size() );
 
-	Result[0] = 0.5*Lattice.dR(0) * Psi->F[0] * Y[0];//trapezoid rule for first interval [0...Lattice.dR(0)]
+	Result[0] = 0.5*Lattice.dR(0) * Psi.F[0] * Y[0];//trapezoid rule for first interval [0...Lattice.dR(0)]
 
 	for (int i = 1; i < Adams_N; i++)
 	{
-		Result[i] = Result[i - 1] + 0.5*Lattice.dR(i) * Psi->F[i] * Y[i] +
-					0.5*Lattice.dR(i - 1) * Psi->F[i - 1] * Y[i - 1];
+		Result[i] = Result[i - 1] + 0.5*Lattice.dR(i) * Psi.F[i] * Y[i] +
+					0.5*Lattice.dR(i - 1) * Psi.F[i - 1] * Y[i - 1];
 	}
 
-	for (int i = Adams_N; i <= Psi->pract_infinity(); i++)
+	for (int i = Adams_N; i <= Psi.pract_infinity(); i++)
 	{
-		Func_tmp = Result[i - 1] + Adams_Coeff[0] * Lattice.dR(i) * Psi->F[i]*Y[i];
+		Func_tmp = Result[i - 1] + Adams_Coeff[0] * Lattice.dR(i) * Psi.F[i]*Y[i];
 
 		for (int j = 1; j < Adams_N; j++)
 		{
-			Func_tmp += Adams_Coeff[j] * Psi->F[i - j]*Y[i - j] * Lattice.dR(i - j);
+			Func_tmp += Adams_Coeff[j] * Psi.F[i - j]*Y[i - j] * Lattice.dR(i - j);
 		}
 
 		Result[i] = Func_tmp;
@@ -477,7 +477,7 @@ std::vector<double> Adams::GreenOrigin(RadialWF* Psi)
 	return Result;
 }
 
-std::vector<double> Adams::GreenInfinity(RadialWF* Psi)
+std::vector<double> Adams::GreenInfinity(const RadialWF& Psi)
 {
 	//this function returns the following integral
 	//int_(Lattice.R(start_pt))^(Lattice.R(end_pt)) Psi.F*Y*Lattice.dR,
@@ -485,23 +485,23 @@ std::vector<double> Adams::GreenInfinity(RadialWF* Psi)
 
 	std::vector<double> Result(Lattice.size(), 0.);
 	double Func_tmp;
-	int Infty = Psi->pract_infinity();
+	int Infty = Psi.pract_infinity();
 
-	Result[Infty] = 0.5*Lattice.dR(Infty) * Psi->F[Infty] * Y[Infty];
+	Result[Infty] = 0.5*Lattice.dR(Infty) * Psi.F[Infty] * Y[Infty];
 
 	for (int i = Infty - 1; i > (Infty - Adams_N); i--)
 	{
-		Result[i] = Result[i + 1] + 0.5*Lattice.dR(i) * Psi->F[i] * Y[i] +
-			0.5*Lattice.dR(i + 1) * Psi->F[i + 1] * Y[i + 1];
+		Result[i] = Result[i + 1] + 0.5*Lattice.dR(i) * Psi.F[i] * Y[i] +
+			0.5*Lattice.dR(i + 1) * Psi.F[i + 1] * Y[i + 1];
 	}
 
 	for (int i = (Infty - Adams_N); i >= 0; i--)
 	{
-		Func_tmp = Result[i + 1] + Adams_Coeff[0] * Lattice.dR(i) * Psi->F[i] * Y[i];
+		Func_tmp = Result[i + 1] + Adams_Coeff[0] * Lattice.dR(i) * Psi.F[i] * Y[i];
 
 		for (int j = 1; j < Adams_N; j++)
 		{
-			Func_tmp += Adams_Coeff[j] * Psi->F[i + j] * Y[i + j] * Lattice.dR(i + j);
+			Func_tmp += Adams_Coeff[j] * Psi.F[i + j] * Y[i + j] * Lattice.dR(i + j);
 		}
 
 		Result[i] = Func_tmp;

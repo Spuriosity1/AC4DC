@@ -1,8 +1,8 @@
-project('ac4dc','cpp',
+project('ac3dc','cpp',
   version:'0.2.0',
   license: ['GPLv3'],
   meson_version: '>=1.1.0',
-  default_options: ['warning_level=2', 'cpp_std=c++17']
+  default_options: ['warning_level=0', 'cpp_std=c++17']
   )
 
 main_args = []
@@ -51,9 +51,16 @@ endif
 
 
 # Dependency management
+json_dep = dependency('nlohmann_json')
+# json_schema_dep = dependency('nlohmann_json_schema_validator')
+omp_dep = dependency('openmp')
+eigen3_dep = dependency('eigen3')
+
 global_deps = [
-  dependency('openmp'),
-  dependency('eigen3')
+  json_dep,
+  # json_schema_dep,
+  omp_dep,
+  eigen3_dep
   ]
 
 ac4dc_bin_deps = global_deps
@@ -65,19 +72,30 @@ endif
 
 
 subdir('_src')
+subdir('_tests')
 
 ac4dc_bin_libdeps = [
   atomic_lib,
-  plasma_lib,
-  display_lib,
+  # plasma_lib,
+  # display_lib,
   wigner_lib,
   common_lib
 ]
 
-ac4dc_bin = executable('ac4dc', 
-  main_sources,
-  include_directories: project_include,
-  dependencies: ac4dc_bin_deps,
-  link_with: ac4dc_bin_libdeps,
+# ac4dc_bin = executable('ac4dc', 
+#   main_sources,
+#   include_directories: project_include,
+#   dependencies: ac4dc_bin_deps,
+#   link_with: ac4dc_bin_libdeps,
+#   cpp_args: main_args
+# )
+
+ratecalc_bin = executable('ratecalc', 
+  ratecalc_sources,
+  include_directories: [common_include, atomic_include],
+  dependencies: global_deps,
+  link_with: [common_lib, atomic_lib],
   cpp_args: main_args
 )
+
+

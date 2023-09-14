@@ -33,7 +33,7 @@ This file is part of AC4DC.
 class DecayRates
 {
 public:
-	DecayRates(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, Input & Input);
+	DecayRates(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, HFInputParam & Input);
 
 	static void set_Max_occ(vector<int> & Max_occ, vector<RadialWF> orbitals);
 
@@ -46,14 +46,14 @@ public:
 	~DecayRates();
 
 private:
-	int IntegrateContinuum(Grid &Lattice, Potential &U, vector<RadialWF> &Core, RadialWF* Current, int c = 0);
+	int IntegrateContinuum(const Grid &Lattice,  Potential &U, const vector<RadialWF> &Core, RadialWF& Current, int c = 0);
 	Grid& lattice;
 	vector<RadialWF>& orbitals;
 	Potential& u;
-	Input & input;
+	HFInputParam & input;
 
 	// EII internal intepolated data.
-	Grid CntLattice = Grid(0);// Grid for continuum wave calculations.
-	Potential CntU;
-	vector<RadialWF> CntOrbitals;// Interpolated onto continuum grid "orbitals".
+	// Grid CntLattice = Grid(0);// Grid for continuum wave calculations.
+	//Potential CntU;
+	// vector<RadialWF> CntOrbitals;// Interpolated onto continuum grid "orbitals".
 };

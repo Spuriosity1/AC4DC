@@ -29,6 +29,8 @@ This file is part of AC4DC.
 #include "GridSpacing.hpp"
 #include "LossGeometry.hpp"
 #include "Pulse.h"
+#include "Potential.h"
+// #include 
 
 class MolInp
 {
@@ -38,7 +40,7 @@ public:
 	~MolInp() {}
 
 	/// Vector of atomic input objects
-	vector<Input> Atomic; 
+	vector<HFInputParam> Atomic; 
 	/// Stores all atomic parameters: EII, photoionisation, fluorescence, 
 	vector<RateData::Atom> Store; 
 
