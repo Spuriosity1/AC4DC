@@ -1,0 +1,19 @@
+{
+    "name": "H",
+    "nuclear_Z": 1,
+    "orbitals": [
+        {"n": 1, "l": 0, "occ": 1}
+    ],
+    "charge_model": "coulomb",
+    "hamiltonian": "HF",
+    "potential": "V_N",
+    "me_gauge": "length",
+    "num_grid_points": 2000,
+    "grid_min": 0.001,
+    "grid_max": 100,
+    "omp_threads": 7,
+    "Master_tollerance": 1e-10,
+	"No_exchange_tollerance": 1e-3,
+	"HF_tollerance": 1e-6,
+    "max_HF_iterations": 500
+}
