@@ -20,6 +20,7 @@ This file is part of AC4DC.
 
 void Grid::logspace_from_nsteps(double r_min, double r_max, unsigned num_grid_pts, double Beta)
 {
+	assert(r_max > r_min);
 	double r_tmp = r_min;
 	double s_tmp = 0.0;
 	double s_i = 0.0;

@@ -34,10 +34,11 @@ class Potential
 {
 public:
 	Potential(Grid& Lattice, int Z, 
-		charge_model_t mod = charge_model_t::coulomb, 
+		InputData::charge_model_t mod = InputData::charge_model_t::coulomb, 
 		double Rad_well = 0);
 
-	Potential(const Potential& Other) : lattice(Other.lattice){
+	Potential(const Potential& Other) : 
+		lattice(Other.lattice){
 		V = Other.V;
 		Exchange = Other.Exchange;
 		Trial = Other.Trial;
@@ -71,7 +72,7 @@ public:
 	double Overlap(std::vector<double> density, int infinity);
 	vector<double> make_density(vector<RadialWF> & Orbitals);
 
-	charge_model_t Type();
+	InputData::charge_model_t Type();
 	int NuclCharge() const { return n_charge; }
 	double R_well() const { return r_well; }
 	vector<double> V;//Nuclear + Direct
@@ -92,7 +93,7 @@ public:
 protected:
 	void GenerateNuclear(void);
 	// string charge_model = "coulomb";
-	charge_model_t charge_model;
+	InputData::charge_model_t charge_model;
 
 	int n_charge = 1;
 	double r_well = 0.0000001;
@@ -111,10 +112,10 @@ public:
 //	double R_k(int k, RadialWF & A, RadialWF & B, RadialWF & C, RadialWF & D);
 	// Reduced dipole dr P_a(r)P_b(r) r . Gauge can be either "length" or "velocity".
 	// double Dipole(RadialWF & A, RadialWF & B, string gauge);
-	double Dipole(RadialWF & A, RadialWF & B, gauge_t gauge);
+	double Dipole(RadialWF & A, RadialWF & B, InputData::gauge_t gauge);
 	// Average over configuration dipole matrix element.
 	// double DipoleAvg(RadialWF & A, RadialWF & B, string gauge);
-	double DipoleAvg(RadialWF & A, RadialWF & B, gauge_t gauge);
+	double DipoleAvg(RadialWF & A, RadialWF & B, InputData::gauge_t gauge);
   // RMS radius of a slater determinant.
   double R_pow_k(vector<RadialWF> & Orbitals, int k);
 

@@ -190,31 +190,55 @@
 //
 //
 #include "HFInputParam.h"
-const json HFInputParam::schema = R"(
-		{
-			"$schema": "http://json-schema.org/draft-07/schema#",
-			"title": "HFInputParam",
-			"properties": 
-			{
-				"name": {"type": "string"},
-				"nuclear_Z": {"type": "integer", "minimum": 1},
-				"orbitals": {"type": "string", "uniqueValues": "true"},
-				"charge_model": {"type": "string", "oneOf": ["coulomb", "sphericalWell"]},
-				"hamiltonian": {"type": "string", "oneOf": ["HF", "LDA"]},
-				"potential": {"type": "string", "oneOf": ["V_N","V_Nm1","V_Nm1_no"] },
-				"me_gauge": {"type":"string", "oneOf": ["length", "velocity"] },
-				"num_grid_points": {"type": "integer", "minimum": 1},
-				"grid_min": {"type": "number", "minimum": 0},
-				"grid_max": {"type": "number", "minimum": 0},
-				"omp_threads": {"type": "integer", "minimum": 1},
-				"Master_tollerance": {"type": "number", "minimum": 0},
-				"No_exchange_tollerance": {"type": "number", "minimum": 0},
-				"HF_tollerance": {"type": "number", "minimum": 0},
-				"max_HF_iterations": {"type": "integer", "minimum": 1},
-			},
-			"additionalProperties": false,
-			"minProperties": 15
-		}
+namespace InputData {
 
-	)"_json;
 
+
+
+void to_json(json& j, const HFInputParam& hfi){
+	j = json{
+		{"name", hfi.name},
+		{"nuclear_Z", hfi.nuclear_Z},
+		{"orbitals", hfi.orbitals},
+		{"omega_ev", hfi.omega},
+		{"omp_threads", hfi.omp_threads},
+		{"Master_tollerance", hfi.Master_tollerance},
+		{"No_exchange_tollerance", hfi.No_exchange_tollerance},
+		{"HF_tollerance", hfi.HF_tollerance},
+		{"max_HF_iterations", hfi.max_HF_iterations},
+		{"num_grid_points", hfi.num_grid_points},
+		{"grid_min", hfi.grid_min},
+		{"grid_max", hfi.grid_max},
+
+		{"charge_model", hfi.charge_model},
+		{"potential", hfi.potential},
+		{"me_gauge", hfi.me_gauge},
+		{"hamiltonian", hfi.hamiltonian}
+	};
+}
+
+void from_json(const json& j, HFInputParam& hfi){
+	
+	j.at("name").get_to(hfi.name);
+	j.at("nuclear_Z").get_to(hfi.nuclear_Z);
+	j.at("orbitals").get_to(hfi.orbitals);
+	
+	j.at("omega_ev").get_to(hfi.omega);
+	j.at("omp_threads").get_to(hfi.omp_threads);
+	
+	j.at("Master_tollerance").get_to(hfi.Master_tollerance);
+	j.at("No_exchange_tollerance").get_to(hfi.No_exchange_tollerance);
+	j.at("HF_tollerance").get_to(hfi.HF_tollerance);
+	j.at("max_HF_iterations").get_to(hfi.max_HF_iterations);
+	j.at("num_grid_points").get_to(hfi.num_grid_points);
+	j.at("grid_min").get_to(hfi.grid_min);
+	j.at("grid_max").get_to(hfi.grid_max);
+
+
+	j.at("charge_model").get_to(hfi.charge_model);
+	j.at("potential").get_to(hfi.potential);
+	j.at("me_gauge").get_to(hfi.me_gauge);
+	j.at("hamiltonian").get_to(hfi.hamiltonian);
+
+}
+};

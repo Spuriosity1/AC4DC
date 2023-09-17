@@ -27,6 +27,7 @@ This file is part of AC4DC.
 #include <wignerSymbols.h>
 
 using namespace std;
+using namespace InputData;
 
 int SetBoundaryValues(Grid*, RadialWF*, Potential*);
 int SetBoundaryValuesApprox(Grid*, RadialWF*, Potential*);

@@ -55,14 +55,31 @@ class ComputeRateParam
 public:
 	//Orbitals are HF wavefunctions. This configuration is an initial state.
 	//Assuming there are no unoccupied states in initial configuration!!!
-	ComputeRateParam(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, HFInputParam & Inp, bool recalc=true) :
-	 	lattice(Lattice), input(Inp), orbitals(Orbitals), u(U), recalculate(recalc) {
+	ComputeRateParam(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &U, InputData::HFInputParam & Inp, ofstream& _log) :
+	 	lattice(Lattice), input(Inp), orbitals(Orbitals), u(U), log(_log) {
 		};
 	~ComputeRateParam();
 
+	void configure_calc(bool _calc_auger, bool _calc_fluor, bool _calc_photo, bool _calc_eii, bool _calc_FT, bool _calc_bound){
+		this->calc_auger = _calc_auger;
+		this->calc_fluor = _calc_fluor;
+		this->calc_photo = _calc_photo;
+		this->calc_eii = _calc_eii;
+		this->calc_FT = _calc_FT;
+		this->calc_bound_transport = _calc_bound;
+	}
+
 	// Halfwidth = 5/Constant::Time -> 5 fs half width.
-	int SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, ofstream & log);
-	RateData::Atom SolvePlasmaBEB(vector<int> Max_occ, vector<int> Final_occ, vector<bool> shell_check, ofstream & log);
+	// int SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, ofstream & log);
+	RateData::Atom SolvePlasmaBEB(vector<int> Max_occ, vector<int> Final_occ, vector<bool> shell_check);
+
+	// std::vector<RateData::photo> calc_photo(const std::vector<int>& Max_occ, const std::vector<int> Final_occ, vector<bool> shell_check);
+	// std::vector<RateData::fluor> calc_fluor(const std::vector<int>& Max_occ, const std::vector<int> Final_occ, vector<bool> shell_check);
+	// std::vector<RateData::auger> calc_auger(const std::vector<int>& Max_occ, const std::vector<int> Final_occ, vector<bool> shell_check);
+	// std::vector<RateData::EIIdata> calc_eii(const std::vector<int>& Max_occ, const std::vector<int> Final_occ, vector<bool> shell_check);
+	
+
+
 	// // Atomic.
 	// int SetupAndSolve(ofstream & log);
 	// // Molecular.
@@ -71,7 +88,7 @@ public:
 	//string CompareRates(string RateFile1, string RateFile2, ofstream & log);// Find the difference in rate equation using two different rates.
 
 
-	int Symbolic(const string & input, const string & output);//convertes configuration indexes in human readable format
+	// int Symbolic(const string & input, const string & output);//convertes configuration indexes in human readable format
 	int Charge(int Iconf);
 	// vector<double> PerturbMe(vector<RadialWF> & Virtual, double Dist, double Einit);
 	// vector<double> Secular(vector<RadialWF> & Virtual, double Dist, double Einit);
@@ -83,7 +100,7 @@ public:
 	vector<double> Probs(int i) { return P[i]; }
 	vector<vector<double>> AllProbs() {return P;}
 
-	bool SetupIndex(vector<int> Max_occ, vector<int> Final_occ, ofstream & log);
+	bool SetupIndex(vector<int> Max_occ, vector<int> Final_occ);
 	vector<vector<unsigned>> Get_Indexes() { return Index; }
 
   // Atomic data containers.
@@ -92,11 +109,14 @@ public:
   	Grid & Atom_Mesh() { return lattice; }
 
 protected:
+	ofstream& log;
+
+	bool calc_auger, calc_fluor, calc_photo, calc_eii, calc_FT, calc_bound_transport;
+
 	Grid & lattice;
-	HFInputParam & input;
+	InputData::HFInputParam & input;
 	vector<RadialWF> & orbitals;
 	Potential& u;
-	bool recalculate; // Flag to determine whether or not to force-recompute everything
 
 	vector<RateData::polarize> MixMe;
 	int dimension;//number of configurations

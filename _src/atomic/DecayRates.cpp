@@ -25,6 +25,7 @@ This file is part of AC4DC.
 #include <fstream>
 
 using namespace RateData;
+using namespace InputData;
 using namespace Constant;
 
 int IntegrateContinuum(Grid&, Potential&, vector<RadialWF>&, RadialWF&, bool);

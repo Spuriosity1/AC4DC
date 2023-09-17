@@ -22,6 +22,7 @@ This file is part of AC4DC.
 #include <wignerSymbols.h>
 
 using namespace std;
+using namespace InputData;
 
 Potential::Potential(Grid& Lattice, int Z, 
 	charge_model_t mod, double Rad_well) :

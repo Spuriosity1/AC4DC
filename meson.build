@@ -2,7 +2,7 @@ project('ac3dc','cpp',
   version:'0.2.0',
   license: ['GPLv3'],
   meson_version: '>=1.1.0',
-  default_options: ['warning_level=0', 'cpp_std=c++17']
+  default_options: ['cpp_std=c++17', 'warning_level=1']
   )
 
 main_args = []

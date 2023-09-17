@@ -40,7 +40,7 @@ class HartreeFock
 {
 public:
 //	HamMod = 0 - Hartree-Fock; 1 - LDA.
-	HartreeFock(const Grid &Lattice, vector<RadialWF> &Orbitals, Potential &Potential, HFInputParam & Inp, ofstream & log);
+	HartreeFock(const Grid &Lattice, vector<RadialWF> &Orbitals, Potential &Potential, InputData::HFInputParam & Inp, ofstream & log);
 
 	int Get_Virtual(vector<RadialWF> &Virtual, vector<RadialWF> &Orbitals, Potential &U, ofstream &log);
 	int LDA_Get_Virtual(vector<RadialWF> &Virtual, vector<RadialWF> &Orbitals, Potential &U, ofstream &log);

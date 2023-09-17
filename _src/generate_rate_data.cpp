@@ -19,7 +19,7 @@ This file is part of AC4DC.
 
 #include "ComputeRateParam.h"
 // #include "ElectronRateSolver.h"
-#include "radialWF.h"
+#include "RadialWF.h"
 #include "HFInputParam.h"
 #include "Constant.h"
 #include <nlohmann/json.hpp>
@@ -29,14 +29,10 @@ This file is part of AC4DC.
 
 using namespace std;
 using json = nlohmann::json;
+using namespace InputData;
 
 int main(int argc, const char *argv[]) {
-
-    if (argc < 3){
-        std::cout << "Usage: ac4dc /path/to/infile.toml /path/to/outdir/ [overrides...]" <<std::endl;
-        return 1;
-    }
-    
+if (argc < 3){ std::cout << "Usage: ac4dc /path/to/infile.toml /path/to/outdir/ [overrides...]" <<std::endl; return 1; }
     ifstream ifs(argv[1]);
 
     // ifs >> input_data;
@@ -49,10 +45,9 @@ int main(int argc, const char *argv[]) {
 //    nlohmann::json_schema::json_validator validator;
 //    validator.set_root_schema(HFInputParam::schema);
  //   validator.validate(input_data);
+    std::cout << input_data.dump() << '\n'; 
 
-
-    HFInputParam in = input_data.template get<HFInputParam>();
-
+    HFInputParam in = input_data.get<HFInputParam>();
 
     filesystem::path outdir(argv[2]);
 
@@ -78,7 +73,7 @@ int main(int argc, const char *argv[]) {
         orbitals.back().set_N(orb.n);
         orbitals.back().set_L(orb.l);
         orbitals.back().set_occupancy(orb.occ);
-        orbitals.back().flag_shell(); // Remeber that this is a shell (what does this mean>)
+        orbitals.back().flag_shell(); // Remeber that this is a shell (what does this mean?)
         
 	    if (orb.n == 0 || orb.n > 10){
 		    cerr << "[ Atomic ] \033[31;1m Incorrect number of orbital types specified in input file \033[0m" << endl;
@@ -90,7 +85,14 @@ int main(int argc, const char *argv[]) {
 
     HartreeFock HF(lattice, orbitals, potential, in, _log);
 
-    ComputeRateParam Dynamics(lattice, orbitals, potential, in, true);
+    ComputeRateParam Dynamics(lattice, orbitals, potential, in, _log);
+    Dynamics.configure_calc(
+            /* Auger */ true,
+            /* Fluorescence */ true,
+            /* Photo */ true,
+            /* EII */ true,
+            /* Fourier t'form */true,
+            /* bound */ false);
 
     vector<int> final_occ(orbitals.size(), 0);
     vector<int> max_occ(orbitals.size(), 0);
@@ -102,7 +104,7 @@ int main(int argc, const char *argv[]) {
         shell_check[i] = orbitals[i].is_shell();
     }
 
-    RateData::Atom atomic_data = Dynamics.SolvePlasmaBEB(max_occ, final_occ, shell_check, _log);
+    RateData::Atom atomic_data = Dynamics.SolvePlasmaBEB(max_occ, final_occ, shell_check);
     
     vector<vector<unsigned>> index = Dynamics.Get_Indexes();
     

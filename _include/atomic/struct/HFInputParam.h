@@ -104,6 +104,7 @@ using namespace std;
 // };
 
 
+namespace InputData{
 
 enum class charge_model_t : int {
 	coulomb,
@@ -164,11 +165,11 @@ struct HFInputParam {
 	gauge_t me_gauge;
 	hamiltonian_method hamiltonian;
 
-	double omega = 5000;// XFEL field frequency.
+	double omega;// XFEL field frequency.
 	// double width = 5; // XFEL pulse width. Gaussian profile hardcoded.
 	// double fluence = 0; // XFEL pulse fluence.
 	// int num_time_steps = 0; // Guess number of time steps for time dynamics.
-	int omp_threads = 1;
+	int omp_threads;
 	int nuclear_Z;
 
 	std::vector<orbital_label> orbitals; 
@@ -179,12 +180,13 @@ struct HFInputParam {
     double grid_max;
 
 
-	double Master_tollerance = pow(10, -10);
-	double No_exchange_tollerance = pow(10, -3);
-	double HF_tollerance = pow(10, -6);
-	int max_HF_iterations = 500;
+	double Master_tollerance;// = pow(10, -10);
+	double No_exchange_tollerance;// = pow(10, -3);
+	double HF_tollerance;// = pow(10, -6);
+	int max_HF_iterations;// = 500;
 
-	NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(HFInputParam, 
+	/*
+	NLOHMANN_DEFINE_TYPE_INTRUSIVE(HFInputParam, 
 		name, nuclear_Z,
 		orbitals,
 		charge_model, potential, me_gauge, hamiltonian, 
@@ -192,10 +194,17 @@ struct HFInputParam {
 		omp_threads, 
 		Master_tollerance, No_exchange_tollerance, HF_tollerance, max_HF_iterations, 
 		num_grid_points, grid_min, grid_max)
-
-	const static json schema;
+		*
+	*/
+//
 };
 
 
+void to_json(json& j, const HFInputParam& hfi);
+
+void from_json(const json& j, HFInputParam& hfi);
+
+
+}; // endd of namespace InputData
 
 #endif /* end of include guard: AC4DC_INPUT_CXX_H */

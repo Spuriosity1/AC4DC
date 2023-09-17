@@ -5,7 +5,7 @@
 #include <fstream>
 #include "ComputeRateParam.h"
 
-
+using namespace InputData;
 
 BoundTransport::BoundTransport(vector<RadialWF> &light_orbitals, vector<RadialWF>&heavy_orbitals, HFInputParam & Input){
 

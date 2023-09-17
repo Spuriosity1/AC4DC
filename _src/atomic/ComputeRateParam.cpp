@@ -20,6 +20,8 @@ This file is part of AC4DC.
 ===========================================================================*/
 #include "ComputeRateParam.h"
 
+
+
 inline bool exists_test(const std::string&);
 // vector<double> generate_dT(int);
 // vector<double> generate_T(vector<double>&);
@@ -35,6 +37,7 @@ inline bool exists_test(const std::string& name)
 
 
 using namespace RateData;
+using namespace InputData;
 
 /*
 // Called when atomic input is relevant.
@@ -205,17 +208,18 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 }
 */
 
+
 // Called for molecular inputs.
 // Computes molecular collision parameters.
 // TODO split into four functions: calc_photo, calc_fluor, calc_auger, calc_EII
-RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int> Final_occ, vector<bool> shell_check, ofstream & runlog)
+RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int> Final_occ, vector<bool> shell_check)
 {
 	// Uses BEB model to compute fundamental
 	// EII, Auger, Photoionisation and Fluorescence rates
 	// Final_occ defines the lowest possible occupancies for the initial orbital.
 	// Intermediate orbitals are recalculated to obtain the corresponding rates.
 
-	if (!SetupIndex(Max_occ, Final_occ, runlog)) return Store;
+	if (!SetupIndex(Max_occ, Final_occ)) return Store;
 
 	Store.num_conf = dimension;
 
@@ -253,7 +257,7 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 	density.clear();
 
   	// #pragma omp parallel default(none) num_threads(input.omp_threads)\
-	// shared(cout, runlog, shell_check, MaxBindInd, have_Aug, have_Flr, have_Pht, saveFF) \
+	// shared(cout, log, shell_check, MaxBindInd, have_Aug, have_Flr, have_Pht, saveFF) \
 	// private(Tmp, LocalPhoto, LocalAuger, LocalFluor, LocalEnergyConfig, LocalEIIparams, tmpEIIparams, LocalFF) \
 	// firstprivate(Max_occ)  // I believe this should be shared, but it was in private() before (which I believe is a mistake, since this meant the value of max_occ was lost) so I'm putting it here to be safe. -S.P.
 	{
@@ -261,7 +265,8 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 		for (size_t i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
 		{
 			vector<RadialWF> Orbitals = orbitals;
-			cout << "[HF BEB] configuration " << i << " thread " << omp_get_thread_num() << endl;
+			cout << "[HF BEB] configuration " << i << " thread " <<endl; // << omp_get_thread_num() << endl;
+			// Set up and perform the Hartree-Fock calculation for the specified shell configuration
 			int N_elec = 0;
 			for (size_t j = 0;j < Orbitals.size(); j++) {
 				Orbitals[j].set_occupancy(orbitals[j].occupancy() - Index[i][j]);
@@ -270,37 +275,37 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 				if(shell_check[j]) Orbitals[j].flag_shell(true);
 			}
 			// Grid Lattice(lattice.size(), lattice.R(0), lattice.R(lattice.size() - 1) / (0.3*(u.NuclCharge() - N_elec) + 1), 4);
-			// Change Lattice to lattice for electron density evaluation.
 			Potential U(lattice, u.NuclCharge(), u.Type());
-			HartreeFock HF(lattice, Orbitals, U, input, runlog);
+			HartreeFock HF(lattice, Orbitals, U, input, log);
 
+			if (this->calc_eii) {
 			// EII parameters to store for Later BEB model calculation.
 			tmpEIIparams.init = i;
-			int size = 0;
-			for (int n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) size++;
+			int nfinal = 0;
+			for (int n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) nfinal++;
 			tmpEIIparams.kin = U.Get_Kinetic(Orbitals, MaxBindInd);
-			tmpEIIparams.ionB = vector<float>(size, 0);
-			tmpEIIparams.fin = vector<int>(size, 0);
-			tmpEIIparams.occ = vector<int>(size, 0);
-			size = 0;
+			tmpEIIparams.ionB = vector<float>(nfinal, 0);
+			tmpEIIparams.fin = vector<int>(nfinal, 0);
+			tmpEIIparams.occ = vector<int>(nfinal, 0);
+			nfinal = 0;
 			//tmpEIIparams.inds.resize(tmpEIIparams.vec2.size(), 0);
 			for (int j = MaxBindInd; j < Orbitals.size(); j++) {
 				if (Orbitals[j].occupancy() == 0) continue;
 				int old_occ = Orbitals[j].occupancy();
 				Orbitals[j].set_occupancy(old_occ - 1);
-				tmpEIIparams.fin[size] = mapOccInd(Orbitals);
-				tmpEIIparams.occ[size] = old_occ;
+				tmpEIIparams.fin[nfinal] = mapOccInd(Orbitals);
+				tmpEIIparams.occ[nfinal] = old_occ;
 				Orbitals[j].set_occupancy(old_occ);
-				tmpEIIparams.ionB[size] = float(-1*Orbitals[j].Energy);
-				tmpEIIparams.kin[size] /= tmpEIIparams.ionB[size];
-				size++;
+				tmpEIIparams.ionB[nfinal] = float(-1*Orbitals[j].Energy);
+				tmpEIIparams.kin[nfinal] /= tmpEIIparams.ionB[nfinal];
+				nfinal++;
 			}
 			LocalEIIparams.push_back(tmpEIIparams);
+			}
 
-			bool calc_bound_transport = true;
-			if (calc_bound_transport){
+			if (this->calc_bound_transport){
 				assert(Max_occ.size() == Orbitals.size());
-				size = 0;
+				int size = 0;
 				double valence_energy = 0;
 				for (int j = MaxBindInd; j < Orbitals.size(); j++) {
 					if (Orbitals[j].occupancy() == 0) continue;
@@ -344,16 +349,21 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 				assert(valence_energy < 0);
 				LocalEnergyConfig.push_back(energy_config{(int)i,valence_energy,receiver_idx,donator_idx});  // if valence energy of atom 1 at receiver_idx + valence energy of atom 2 at donator_idx  << current valence energies, transport occurs.
 			}
-			DecayRates Transit(lattice, Orbitals, u, input);
 
-			RateData::ffactor f;
-			f.index = i;
-			f.val = Transit.FT_density();
-			if (saveFF) LocalFF.push_back(f);
+			// Decay rate calculations
+			DecayRates Transit(lattice, Orbitals, u, input);
 			Tmp.from = i;
 
-			if (!have_Pht) {
-				vector<photo> PhotoIon = Transit.Photo_Ion(input.omega, runlog);
+			if (this->calc_FT){
+				RateData::ffactor f;
+				f.index = i;
+				f.val = Transit.FT_density();
+				if (saveFF) LocalFF.push_back(f);
+			}
+
+			
+			if (this->calc_photo) {
+				vector<photo> PhotoIon = Transit.Photo_Ion(input.omega, log);
 				for (size_t k = 0;k < PhotoIon.size(); k++)
 				{
 					if (PhotoIon[k].val <= 0) continue;
@@ -366,7 +376,7 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 
 			if (i != 0)
 			{
-				if (!have_Flr) {
+				if (calc_fluor) {
 					vector<fluor> Fluor = Transit.Fluor();
 					for (size_t k = 0;k < Fluor.size(); k++)
 					{
@@ -378,8 +388,8 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 					}
 				}
 
-				if (!have_Aug) {
-					vector<auger> Auger = Transit.Auger(Max_occ, runlog);
+				if (calc_auger) {
+					vector<auger> Auger = Transit.Auger(Max_occ, log);
 					for (size_t k = 0;k < Auger.size(); k++)
 					{
 						if (Auger[k].val <= 0) continue;
@@ -461,6 +471,232 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 }
 
 
+/*
+std::vector<RateData::photo> calc_photo(const std::vector<int>& Max_occ, const std::vector<int> Final_occ, vector<bool> shell_check){
+	// check that the inddices have been set up
+	if (!SetupIndex(Max_occ, Final_occ, log)) return Store;
+	RateData::Rate Tmp;
+	vector<RateData::Rate> LocalPhoto(0);
+
+	for (size_t i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
+	{
+		vector<RadialWF> Orbitals = orbitals;
+		cout << "[HF BEB] configuration " << i << " thread " << omp_get_thread_num() << endl;
+		int N_elec = 0;
+		for (size_t j = 0;j < Orbitals.size(); j++)
+		{
+			Orbitals[j].set_occupancy(orbitals[j].occupancy() - Index[i][j]);
+			N_elec += Orbitals[j].occupancy();
+			// Store shell flag if orbital corresponds to shell
+			if(shell_check[j]) Orbitals[j].flag_shell(true);
+		}
+		// Grid Lattice(lattice.size(), lattice.R(0), lattice.R(lattice.size() - 1) / (0.3*(u.NuclCharge() - N_elec) + 1), 4);
+		// Change Lattice to lattice for electron density evaluation.
+		Potential U(lattice, u.NuclCharge(), u.Type());
+		HartreeFock HF(lattice, Orbitals, U, input, log);
+
+		int size = 0;
+		
+		DecayRates Transit(lattice, Orbitals, u, input);
+
+		Tmp.from = i;
+
+		
+		vector<photo> PhotoIon = Transit.Photo_Ion(input.omega, log);
+		for (size_t k = 0;k < PhotoIon.size(); k++)
+		{
+			if (PhotoIon[k].val <= 0) continue;
+			Tmp.val = PhotoIon[k].val;
+			Tmp.to = i + hole_posit[PhotoIon[k].hole];
+			Tmp.energy = input.omega + Orbitals[PhotoIon[k].hole].Energy;
+			LocalPhoto.push_back(Tmp);
+		}
+		
+	}
+
+	return LocalPhoto;	
+
+}
+
+std::vector<RateData::fluor> calc_fluor(const std::vector<int>& Max_occ, const std::vector<int> Final_occ, vector<bool> shell_check){
+	// check that the inddices have been set up
+	if (!SetupIndex(Max_occ, Final_occ, log)) return Store;
+	RateData::Rate Tmp;
+	vector<RateData::Rate> Local(0);
+
+	for (size_t i = 1;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
+	{
+		vector<RadialWF> Orbitals = orbitals;
+		cout << "[HF BEB] configuration " << i << " thread " << omp_get_thread_num() << endl;
+		int N_elec = 0;
+		for (size_t j = 0; j < Orbitals.size(); j++)
+		{
+			Orbitals[j].set_occupancy(orbitals[j].occupancy() - Index[i][j]);
+			N_elec += Orbitals[j].occupancy();
+			// Store shell flag if orbital corresponds to shell
+			if(shell_check[j]) Orbitals[j].flag_shell(true);
+		}
+		// Grid Lattice(lattice.size(), lattice.R(0), lattice.R(lattice.size() - 1) / (0.3*(u.NuclCharge() - N_elec) + 1), 4);
+		// Change Lattice to lattice for electron density evaluation.
+		Potential U(lattice, u.NuclCharge(), u.Type());
+		HartreeFock HF(lattice, Orbitals, U, input, log);
+
+		int size = 0;
+		
+		DecayRates Transit(lattice, Orbitals, u, input);
+
+		Tmp.from = i;
+
+		vector<fluor> Fluor = Transit.Fluor();
+		for (size_t k = 0;k < Fluor.size(); k++)
+		{
+			if (Fluor[k].val <= 0) continue;
+			Tmp.val = Fluor[k].val;
+			Tmp.to = i - hole_posit[Fluor[k].hole] + hole_posit[Fluor[k].fill];
+			Tmp.energy = Orbitals[Fluor[k].fill].Energy - Orbitals[Fluor[k].hole].Energy;
+			Local.push_back(Tmp);
+		}
+		
+	}
+
+	return Local;	
+}
+
+
+
+std::vector<RateData::auger> calc_auger(const std::vector<int>& Max_occ, const std::vector<int> Final_occ, vector<bool> shell_check){
+	// check that the inddices have been set up
+	if (!SetupIndex(Max_occ, Final_occ, log)) return Store;
+	RateData::Rate Tmp;
+	vector<RateData::Rate> Local(0);
+
+	for (size_t i = 1;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
+	{
+		vector<RadialWF> Orbitals = orbitals;
+		cout << "[HF BEB] configuration " << i << " thread " << omp_get_thread_num() << endl;
+		int N_elec = 0;
+		for (size_t j = 0; j < Orbitals.size(); j++)
+		{
+			Orbitals[j].set_occupancy(orbitals[j].occupancy() - Index[i][j]);
+			N_elec += Orbitals[j].occupancy();
+			// Store shell flag if orbital corresponds to shell
+			if(shell_check[j]) Orbitals[j].flag_shell(true);
+		}
+		// Grid Lattice(lattice.size(), lattice.R(0), lattice.R(lattice.size() - 1) / (0.3*(u.NuclCharge() - N_elec) + 1), 4);
+		// Change Lattice to lattice for electron density evaluation.
+		Potential U(lattice, u.NuclCharge(), u.Type());
+		HartreeFock HF(lattice, Orbitals, U, input, log);
+
+		int size = 0;
+		
+		DecayRates Transit(lattice, Orbitals, u, input);
+
+		Tmp.from = i;
+
+		vector<auger> Aug = Transit.Auger();
+		for (size_t k = 0;k < Aug.size(); k++)
+		{
+			if (Aug[k].val <= 0) continue;
+			Tmp.val = Aug[k].val;
+			Tmp.to = i - hole_posit[Aug[k].hole] + hole_posit[Aug[k].fill];
+			Tmp.energy = Orbitals[Aug[k].fill].Energy - Orbitals[Aug[k].hole].Energy;
+			Local.push_back(Tmp);
+		}
+		
+	}
+
+	return Local;	
+}
+
+
+std::vector<RateData::EIIdata> calc_eii(const std::vector<int>& Max_occ, const std::vector<int> Final_occ, vector<bool> shell_check){
+	// Uses BEB model to compute fundamental
+	// EII, Auger, Photoionisation and Fluorescence rates
+	// Final_occ defines the lowest possible occupancies for the initial orbital.
+	// Intermediate orbitals are recalculated to obtain the corresponding rates.
+
+	if (!SetupIndex(Max_occ, Final_occ, log)) return Store;
+
+	Store.num_conf = dimension;
+
+	// RateData::Rate Tmp;
+	
+	// vector<ffactor> LocalFF(0);
+	// vector<energy_config> LocalEnergyConfig(0); 
+	// Electron impact ionization orbital enerrgy storage.
+	RateData::EIIdata tmpEIIparams;
+	int MaxBindInd = 0;
+	// Slippery assumption - electron impact cannot ionize more than the XFEL photon.
+	while(Final_occ[MaxBindInd] == orbitals[MaxBindInd].occupancy()) MaxBindInd++;
+
+	// horrible bullshit
+	tmpEIIparams.kin.clear();
+	tmpEIIparams.kin.resize(orbitals.size() - MaxBindInd, 0);
+	tmpEIIparams.ionB.clear();
+	tmpEIIparams.ionB.resize(orbitals.size() - MaxBindInd, 0);
+	tmpEIIparams.fin.clear();
+	tmpEIIparams.fin.resize(orbitals.size() - MaxBindInd, 0);
+	tmpEIIparams.occ.clear();
+	tmpEIIparams.occ.resize(orbitals.size() - MaxBindInd, 0);
+	vector<RateData::EIIdata> LocalEIIparams(0);
+
+	density.clear();
+
+  	// #pragma omp parallel default(none) num_threads(input.omp_threads)\
+	// shared(cout, log, shell_check, MaxBindInd, have_Aug, have_Flr, have_Pht, saveFF) \
+	// private(Tmp, LocalPhoto, LocalAuger, LocalFluor, LocalEnergyConfig, LocalEIIparams, tmpEIIparams, LocalFF) \
+	// firstprivate(Max_occ)  // I believe this should be shared, but it was in private() before (which I believe is a mistake, since this meant the value of max_occ was lost) so I'm putting it here to be safe. -S.P.
+	{
+		// #pragma omp for schedule(dynamic) nowait
+		for (size_t i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
+		{
+			vector<RadialWF> Orbitals = orbitals;
+			cout << "[HF BEB] configuration " << i << " thread " << omp_get_thread_num() << endl;
+			int N_elec = 0;
+			for (size_t j = 0;j < Orbitals.size(); j++) {
+				Orbitals[j].set_occupancy(orbitals[j].occupancy() - Index[i][j]);
+				N_elec += Orbitals[j].occupancy();
+				// Store shell flag if orbital corresponds to shell
+				if(shell_check[j]) Orbitals[j].flag_shell(true);
+			}
+			// Grid Lattice(lattice.size(), lattice.R(0), lattice.R(lattice.size() - 1) / (0.3*(u.NuclCharge() - N_elec) + 1), 4);
+			// Change Lattice to lattice for electron density evaluation.
+			Potential U(lattice, u.NuclCharge(), u.Type());
+			HartreeFock HF(lattice, Orbitals, U, input, log);
+
+			// EII parameters to store for Later BEB model calculation.
+			tmpEIIparams.init = i;
+			int size = 0;
+			for (int n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) size++;
+			tmpEIIparams.kin = U.Get_Kinetic(Orbitals, MaxBindInd);
+			tmpEIIparams.ionB = vector<float>(size, 0);
+			tmpEIIparams.fin = vector<int>(size, 0);
+			tmpEIIparams.occ = vector<int>(size, 0);
+			size = 0;
+			//tmpEIIparams.inds.resize(tmpEIIparams.vec2.size(), 0);
+			for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+				if (Orbitals[j].occupancy() == 0) continue;
+				int old_occ = Orbitals[j].occupancy();
+				Orbitals[j].set_occupancy(old_occ - 1);
+				tmpEIIparams.fin[size] = mapOccInd(Orbitals);
+				tmpEIIparams.occ[size] = old_occ;
+				Orbitals[j].set_occupancy(old_occ);
+				tmpEIIparams.ionB[size] = float(-1*Orbitals[j].Energy);
+				tmpEIIparams.kin[size] /= tmpEIIparams.ionB[size];
+				size++;
+			}
+			LocalEIIparams.push_back(tmpEIIparams);
+		}
+	}
+
+	return LocalEIIparams;
+}
+
+*/
+
+
+/*
+// What the fuck does this do?
 int ComputeRateParam::Symbolic(const string & input, const string & output)
 {
 	if (Store.Photo.size() == 0)
@@ -502,6 +738,8 @@ int ComputeRateParam::Symbolic(const string & input, const string & output)
 	}
 
 }
+*/
+
 string ComputeRateParam::InterpretIndex(int i)
 {
 	// Outputs electronic configuration referenced in the i^th entry of
@@ -547,11 +785,11 @@ int ComputeRateParam::Charge(int Iconf)
 	return Result;
 }
 
-bool ComputeRateParam::SetupIndex(vector<int> Max_occ, vector<int> Final_occ, ofstream & runlog)
+bool ComputeRateParam::SetupIndex(vector<int> Max_occ, vector<int> Final_occ)
 {
 	if (orbitals.size() != Final_occ.size())
 	{
-		runlog << "Final occupancies should be provided for all orbitals." << endl;
+		log << "Final occupancies should be provided for all orbitals." << endl;
 		return false;
 	}
 	// Work out the number of allowed configurations

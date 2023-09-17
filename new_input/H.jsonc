@@ -1,11 +1,10 @@
 {
     "name": "H",
     "nuclear_Z": 1,
-    "orbitals": [
-        {"n": 1, "l": 0, "occ": 1}
-    ],
+    "orbitals": [ {"n": 1, "l": 0, "occ": 1} ],
+    "omega_ev": 6000,
     "charge_model": "coulomb",
-    "hamiltonian": "HF",
+    "hamiltonian": "HartreeFock",
     "potential": "V_N",
     "me_gauge": "length",
     "num_grid_points": 2000,
