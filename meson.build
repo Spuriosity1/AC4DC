@@ -51,13 +51,13 @@ endif
 
 
 # Dependency management
-json_dep = dependency('nlohmann_json')
+# json_dep = dependency('nlohmann_json')
 # json_schema_dep = dependency('nlohmann_json_schema_validator')
 omp_dep = dependency('openmp')
 eigen3_dep = dependency('eigen3')
 
 global_deps = [
-  json_dep,
+  #json_dep,
   # json_schema_dep,
   omp_dep,
   eigen3_dep

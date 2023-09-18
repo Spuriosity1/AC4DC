@@ -1,7 +1,7 @@
 
 rate_io_bin = executable('test_rate_io','rate_io.cpp',
     include_directories: [common_include],
-    dependencies: [json_dep],
+    dependencies: [],
     link_with: [common_lib]
 )
 
