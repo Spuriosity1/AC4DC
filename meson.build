@@ -54,7 +54,12 @@ endif
 # json_dep = dependency('nlohmann_json')
 # json_schema_dep = dependency('nlohmann_json_schema_validator')
 omp_dep = dependency('openmp')
-eigen3_dep = dependency('eigen3',include_type:'system')
+eigen3_dep = dependency('eigen3',include_type: 'system', required: false)
+if not eigen3_dep.found()
+  eigen3_dep = declare_dependency(
+    include_directories: get_option('custom_include')
+    )
+endif
 
 global_deps = [
   #json_dep,
