@@ -223,9 +223,6 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 
 	Store.num_conf = dimension;
 
-
-	bool have_Aug, have_EII, have_Pht, have_Flr;
-
 	bool saveFF = true; //exists_test(RateLocation + "Form_Factor.txt");
 
 
@@ -279,28 +276,28 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 			HartreeFock HF(lattice, Orbitals, U, input, log);
 
 			if (this->calc_eii) {
-			// EII parameters to store for Later BEB model calculation.
-			tmpEIIparams.init = i;
-			int nfinal = 0;
-			for (int n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) nfinal++;
-			tmpEIIparams.kin = U.Get_Kinetic(Orbitals, MaxBindInd);
-			tmpEIIparams.ionB = vector<float>(nfinal, 0);
-			tmpEIIparams.fin = vector<int>(nfinal, 0);
-			tmpEIIparams.occ = vector<int>(nfinal, 0);
-			nfinal = 0;
-			//tmpEIIparams.inds.resize(tmpEIIparams.vec2.size(), 0);
-			for (int j = MaxBindInd; j < Orbitals.size(); j++) {
-				if (Orbitals[j].occupancy() == 0) continue;
-				int old_occ = Orbitals[j].occupancy();
-				Orbitals[j].set_occupancy(old_occ - 1);
-				tmpEIIparams.fin[nfinal] = mapOccInd(Orbitals);
-				tmpEIIparams.occ[nfinal] = old_occ;
-				Orbitals[j].set_occupancy(old_occ);
-				tmpEIIparams.ionB[nfinal] = float(-1*Orbitals[j].Energy);
-				tmpEIIparams.kin[nfinal] /= tmpEIIparams.ionB[nfinal];
-				nfinal++;
-			}
-			LocalEIIparams.push_back(tmpEIIparams);
+				// EII parameters to store for Later BEB model calculation.
+				tmpEIIparams.init = i;
+				int nfinal = 0;
+				for (int n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) nfinal++;
+				tmpEIIparams.kin = U.Get_Kinetic(Orbitals, MaxBindInd);
+				tmpEIIparams.ionB = vector<float>(nfinal, 0);
+				tmpEIIparams.fin = vector<int>(nfinal, 0);
+				tmpEIIparams.occ = vector<int>(nfinal, 0);
+				nfinal = 0;
+				//tmpEIIparams.inds.resize(tmpEIIparams.vec2.size(), 0);
+				for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+					if (Orbitals[j].occupancy() == 0) continue;
+					int old_occ = Orbitals[j].occupancy();
+					Orbitals[j].set_occupancy(old_occ - 1);
+					tmpEIIparams.fin[nfinal] = mapOccInd(Orbitals);
+					tmpEIIparams.occ[nfinal] = old_occ;
+					Orbitals[j].set_occupancy(old_occ);
+					tmpEIIparams.ionB[nfinal] = float(-1*Orbitals[j].Energy);
+					tmpEIIparams.kin[nfinal] /= tmpEIIparams.ionB[nfinal];
+					nfinal++;
+				}
+				LocalEIIparams.push_back(tmpEIIparams);
 			}
 
 			if (this->calc_bound_transport){

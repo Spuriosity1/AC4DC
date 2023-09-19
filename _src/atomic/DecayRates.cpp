@@ -45,9 +45,11 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	if (omega <= 0) return Result;
 
 	photo PhotoTmp;
-	int j = 0, N_elec = 0;
+	int j = 0;
+	//int N_elec = 0;
 	int infinity, L;
-	double Infinity = 0, k_min = sqrt(2*omega), k_max = 0, V_tmp = 0;
+	double Infinity = 0, k_min = sqrt(2*omega), k_max = 0;
+	//, V_tmp = 0;
 
 	vector<RadialWF> Orbitals(orbitals.size());
 
@@ -58,7 +60,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 		Orbitals[i].Energy = orbitals[i].Energy;
 		if (orbitals[i].occupancy() != 0)
 		{
-			N_elec += orbitals[i].occupancy();
+		//	N_elec += orbitals[i].occupancy();
 			if (j < orbitals[i].pract_infinity()) { j = orbitals[i].pract_infinity(); Infinity = lattice.R(j); }
 			if (omega + orbitals[i].Energy >= 0.25)
 			{
@@ -93,13 +95,16 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 
 	RadialWF Continuum(Lattice.size());
 
+	/*
 	// These lines do not do anything, it just initialises bogus values of n and l
 	// so that valgrind does not complain about the comparison in Potential.cpp.
 	// n=-1 is chosen to distinguish it from bound states.
+	// This is a bad approach! - AS
 	Continuum.set_N(-1);
 	Continuum.set_L(0); // bogus line to make valgrind happy
 	Continuum.set_occupancy(1);
 	Continuum.set_infinity(Lattice.size() - 1);
+	*/
 
 	Adams I(Lattice, 10);
 	vector<double> density;

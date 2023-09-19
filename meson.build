@@ -54,7 +54,7 @@ endif
 # json_dep = dependency('nlohmann_json')
 # json_schema_dep = dependency('nlohmann_json_schema_validator')
 omp_dep = dependency('openmp')
-eigen3_dep = dependency('eigen3')
+eigen3_dep = dependency('eigen3',include_type:'system')
 
 global_deps = [
   #json_dep,

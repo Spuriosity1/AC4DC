@@ -109,7 +109,6 @@ public:
   	Grid & Atom_Mesh() { return lattice; }
 
 protected:
-	ofstream& log;
 
 	bool calc_auger, calc_fluor, calc_photo, calc_eii, calc_FT, calc_bound_transport;
 
@@ -117,6 +116,8 @@ protected:
 	InputData::HFInputParam & input;
 	vector<RadialWF> & orbitals;
 	Potential& u;
+	ofstream& log;
+
 
 	vector<RateData::polarize> MixMe;
 	int dimension;//number of configurations

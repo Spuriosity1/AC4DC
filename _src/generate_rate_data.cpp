@@ -45,7 +45,6 @@ if (argc < 3){ std::cout << "Usage: ac4dc /path/to/infile.toml /path/to/outdir/ 
 //    nlohmann::json_schema::json_validator validator;
 //    validator.set_root_schema(HFInputParam::schema);
  //   validator.validate(input_data);
-    std::cout << input_data.dump() << '\n'; 
 
     HFInputParam in = input_data.get<HFInputParam>();
 
@@ -87,11 +86,11 @@ if (argc < 3){ std::cout << "Usage: ac4dc /path/to/infile.toml /path/to/outdir/ 
 
     ComputeRateParam Dynamics(lattice, orbitals, potential, in, _log);
     Dynamics.configure_calc(
-            /* Auger */ true,
-            /* Fluorescence */ true,
-            /* Photo */ true,
-            /* EII */ true,
-            /* Fourier t'form */true,
+            /* Auger */ false,
+            /* Fluorescence */ false,
+            /* Photo */ false,
+            /* EII */ false,
+            /* Fourier t'form */ false,
             /* bound */ false);
 
     vector<int> final_occ(orbitals.size(), 0);
