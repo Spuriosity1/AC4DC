@@ -74,7 +74,7 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	if (Infinity < 5*6.28/k_min) Infinity = 5*6.28/k_min;
 //	Usually a finer grid is required.
 	Grid Lattice;
-	Lattice.logspace_from_dR(lattice.R(0), Infinity, 0.03/k_max);
+	Lattice.loglin_from_dR(lattice.R(0), Infinity, 0.03/k_max);
 //	Grid Lattice(50000, 0.001, 50, "linear");
 
 //	Interpolate orbitals on the new grid
@@ -299,7 +299,7 @@ vector<auger> DecayRates::Auger(vector<int> Max_occ, ofstream & log)
 	}
 	//	Usually a finer grid is required.
 	Grid Lattice;
-	Lattice.logspace_from_dR(lattice.R(0), 50., 0.03 / k);
+	Lattice.loglin_from_dR(lattice.R(0), 50., 0.03 / k);
 
 	//	Interpolate orbitals on the new grid
 	Interpolation W(6);

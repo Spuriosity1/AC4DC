@@ -88,9 +88,9 @@ if (argc < 3){ std::cout << "Usage: ac4dc /path/to/infile.toml /path/to/outdir/ 
     Dynamics.configure_calc(
             /* Auger */ false,
             /* Fluorescence */ false,
-            /* Photo */ false,
+            /* Photo */ true,
             /* EII */ false,
-            /* Fourier t'form */ false,
+            /* Fourier t'form */ true,
             /* bound */ false);
 
     vector<int> final_occ(orbitals.size(), 0);

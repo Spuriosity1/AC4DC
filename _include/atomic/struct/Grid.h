@@ -22,6 +22,7 @@ This file is part of AC4DC.
 ===========================================================================*/
 #pragma once
 
+#include <stdexcept>
 #include <vector>
 #include <string>
 
@@ -42,14 +43,14 @@ private:
 	double beta;
 	int NumPts;
 public:
-	// Defines number of points on its own. Great for integrals with oscillating functions.
-	// Grid() { }//empty lattice to be defined elsewhere
-	// Grid(vector<double> & X, vector<double> & dX);
 	void logspace_from_nsteps(double r_min, double r_max, unsigned num_grid_pts, double Beta = 4);
-	void logspace_from_dR(double r_min, double r_max, double dR_max);//same linear logarithm, but with maximum dR_max. 
+	unsigned loglin_from_dR(double r_min, double r_max, double dR_max);//same linear logarithm, but with maximum dR_max. 
 	Grid refine(double dr_max){
 		Grid retval;
-		retval.logspace_from_dR(this->r[0], this->r.back(), dr_max);
+		if( r.size() == 0) {
+			throw std::runtime_error("Refinement impossible: grid has only one element");
+		}
+		retval.loglin_from_dR(this->r[0], this->r.back(), dr_max);
 		return retval;
 	}
 

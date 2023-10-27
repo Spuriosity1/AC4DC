@@ -1,4 +1,4 @@
-project('ac3dc','cpp',
+project('ac4dc','cpp',
   version:'0.2.0',
   license: ['GPLv3'],
   meson_version: '>=1.1.0',

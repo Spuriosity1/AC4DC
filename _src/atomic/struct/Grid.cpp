@@ -20,7 +20,6 @@ This file is part of AC4DC.
 
 void Grid::logspace_from_nsteps(double r_min, double r_max, unsigned num_grid_pts, double Beta)
 {
-	assert(r_max > r_min);
 	double r_tmp = r_min;
 	double s_tmp = 0.0;
 	double s_i = 0.0;
@@ -60,20 +59,31 @@ void Grid::logspace_from_nsteps(double r_min, double r_max, unsigned num_grid_pt
 	
 }
 
-void Grid::logspace_from_dR(double r_min, double r_max, double dR_max)
+/**
+ * @brief greates a log-spaced grid on the low part, followed by a linearly spaced grid
+ * @brief Transition point is fixed by dR_max
+ * 
+ * @param r_min minimum radius
+ * @param r_max maximum radius (point at which to place effective infinity)
+ * @param dR_max maximum grid spacing (determines position for log-to-linear transition)
+ *
+ * @return number of logspaced points
+ *
+ * */
+unsigned Grid::loglin_from_dR(double r_min, double r_max, double dR_max)
 {
-	// self-adjustable Grid.
 	// Box size r_max.
 	// Maximum spacing between the points at infinity dR_max.
 	double h = 0.05;
 	double exp_h = exp(h);
-	double r_tmp = r_min, dr_tmp = r_min*(1+h);
+	double r_tmp = r_min;
+	double dr_tmp = r_min*(1+h);
 	int n = 0;
 
 	assert(r_min < r_max);
 	assert(dR_max > 0);
 
-	// First part of the grid is fine to account for nuclear potential.
+	// Low part of the grid is fine due to nuclear potential, log spaced
 	//      r_n = r_min*exp(h*n) + r_min*n [= r_tmp + r_min*n];
 	//     dr_n = h*r_min*exp(h*n) + r_min [= h*r_tmp + r_min];
 	while (dr_tmp < dR_max) {
@@ -83,8 +93,13 @@ void Grid::logspace_from_dR(double r_min, double r_max, double dR_max)
 		r_tmp = r_tmp*exp_h;
 		dr_tmp = h*r_tmp + r_min;
 	}
-	r_tmp = r.back();
-	dr_tmp = dr.back();
+	if (n > 0) {
+		r_tmp = r.back();
+		dr_tmp = dr.back();
+	} else {
+		r_tmp = r_min;
+		dr_tmp = dR_max;
+	} 
 	// After an interval has reached dR_max, linear grid.
 	while(r_tmp < r_max) {
 		r_tmp += dr_tmp;
@@ -93,6 +108,7 @@ void Grid::logspace_from_dR(double r_min, double r_max, double dR_max)
 	}
 
 	NumPts = r.size();
+	return n;
 }
 
 // Grid::Grid(double r_min, double r_max, int num_grid_pts, std::string mode)
