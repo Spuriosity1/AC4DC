@@ -52,11 +52,13 @@ class Hybrid : public Adams_BM<T>{
     virtual void sys_ee(const T& q, T& qdot) =0;
     // virtual void Jacobian2(const T& q, T& qdot, double t) =0; 
     protected:
-
+    
     double stiff_rtol = 1e-4;  // relative tolerance
     unsigned stiff_max_iter = 300;//200; 
     double intolerable_stiff_divergence =0;//0.5; // allowed (relative) divergence  if stiff_max_iter exceeded
     
+    int num_steps; // Number of steps - tracked and updated through adaptive methods.
+
     // stiff ode intermediate steps (i.e. steps it does without the nonstiff part)
     int mini_n;
     int old_mini_n;
@@ -85,8 +87,8 @@ class Hybrid : public Adams_BM<T>{
     std::vector<double> times_to_increase_dt;  
     
     void run_steps(ofstream& _log, const double t_resume, const int steps_per_time_update);  // TODO clean up bootstrapping. -S.P.
-    void iterate(ofstream& _log, double t_initial, size_t npoints_initial, const double t_resume, const int steps_per_time_update);
-    void initialise_transient_y(int n); // Approximates initial stiff intermediate steps
+    void solve_dynamics(ofstream& _log, double t_initial, const double t_resume, const int steps_per_time_update);
+    void initialise_transient_y(int latest_step); // Approximates initial stiff intermediate steps
     void initialise_transient_y_v2(int n); // Uses lagrange interpolation to approximate initial stiff intermediate steps
     void modify_ministeps(const int n,const int num_ministeps);
     #ifdef NO_MINISTEP_UPDATING
@@ -98,10 +100,9 @@ class Hybrid : public Adams_BM<T>{
     std::vector<T> y_transient; // stores transient/intermediate steps for stiff solver
     std::vector<T> old_y_transient; // stores final transient/intermediate steps of last step. 
     // More virtual funcs defined by ElectronRateSolver:
-    virtual state_type get_ground_state()=0;
-    // trivial instantiations (these will be overridden)
-    void pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update){};
-    int post_ode_step(ofstream& _log, size_t& n){return 0;}
+    virtual state_type get_initial_state()=0;
+    virtual void pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update) = 0;
+    virtual int post_ode_step(ofstream& _log, size_t& n) = 0;
     /// Unused
     void backward_Euler(unsigned n); 
     void step_stiff_part(unsigned n);
@@ -115,11 +116,10 @@ template<typename T>
  * 
  * @param _log 
  * @param t_initial 
- * @param npoints Initial number of time steps, defining the end time along with this->dt. Thus allows flexibility in chosen end time. 
  * @param t_resume 
  * @param steps_per_time_update 
  */
-void Hybrid<T>::iterate(ofstream& _log, double t_initial, size_t npoints, const double t_resume, const int steps_per_time_update) {
+void Hybrid<T>::solve_dynamics(ofstream& _log, double t_initial, const double t_resume, const int steps_per_time_update) {
     if (this->dt < 1E-16) {
         std::cerr<<"WARN: step size "<<this->dt<<"is smaller than machine precision"<<std::endl;
     } else if (this->dt < 0) {
@@ -130,21 +130,21 @@ void Hybrid<T>::iterate(ofstream& _log, double t_initial, size_t npoints, const 
 
     size_t resume_n = 0;
     if (resume_sim){
-        for (size_t n=1; n<npoints; n++){
+        for (size_t n=1; n<static_cast<size_t>(num_steps); n++){
             if (this->t[n] >= t_resume){
                 resume_n = n;
                 break;
             }
         }
-        // The time step size does not depend on previous run's time step size. i.e. step size is same as if there was no loading.
+        // resize num_steps to allow for differing dt in loaded data. 
         // TODO implement assertion that density isn't empty.
         size_t resume_n_if_const_dt = (t_resume-t_initial)/this->dt ;
-        npoints -= (resume_n_if_const_dt + 1);
-        npoints += this->t.size(); // 
+        num_steps -= (resume_n_if_const_dt + 1);
+        num_steps += this->t.size(); // 
         // Try to set checkpoint to be at the starting step 
         // Check if need to set it before the last knot change.
         size_t checkpoint_n = resume_n;
-        while (Distribution::most_recent_knot_change_idx(checkpoint_n) >= resume_n - this->order + 1){ 
+        while (static_cast<int>(checkpoint_n) - static_cast<int>(Distribution::most_recent_knot_change_idx(checkpoint_n-1)) < static_cast<int>(this->order)) {
             checkpoint_n--;
             assert(checkpoint_n > this->order);
             assert(checkpoint_n > resume_n - this->order); // may trigger if knot changes too close together.
@@ -163,22 +163,23 @@ void Hybrid<T>::iterate(ofstream& _log, double t_initial, size_t npoints, const 
         }
         assert(check_states.size() == this->order);
         assert(check_times.size() == this->order);
-        assert(check_states.front().F.container_size() == check_states.back().F.container_size());
+        // TODO change so that when loading simulation loads from a step before the latest checkpoint if it is too close.
+        assert(check_states.front().F.container_size() == check_states.back().F.container_size() && "Loaded too close to a grid update, try loading from a time farther from the most recent knot update.");
 
         checkpoint = {checkpoint_n, Distribution::get_knot_energies(),this->regimes,check_states,check_times};
+        old_checkpoint = checkpoint; 
     }
-    old_checkpoint = checkpoint; 
 
-    npoints = (npoints >= this->order) ? npoints : this->order;
+    num_steps = (num_steps >= static_cast<int>(this->order)) ? num_steps : static_cast<int>(this->order);
 
     // Set up the containers
-    this->t.resize(npoints,INFINITY);
-    this->y.resize(npoints);
+    this->t.resize(num_steps,INFINITY);
+    this->y.resize(num_steps);
 
     // Set up the t grid       
     this->t[0] = t_initial;
 
-    for (size_t n=1; n<npoints; n++){
+    for (size_t n=1; n<static_cast<size_t>(num_steps); n++){
         if (resume_sim && n <= resume_n){
             continue; // Don't reset already simulated states
         }
@@ -223,6 +224,7 @@ void Hybrid<T>::run_steps(ofstream& _log, const double t_resume, const int steps
         }        
         assert(check_states.size() == this->order);
         assert(check_times.size() == this->order);
+        assert(n == this->order);
         assert(check_states.front().F.container_size() == check_states.back().F.container_size());
         checkpoint = {this->order, Distribution::get_knot_energies(), this->regimes, check_states,check_times};
         old_checkpoint = checkpoint;
@@ -316,10 +318,12 @@ void Hybrid<T>::step_stiff_part(unsigned n){
     #ifdef DEBUG
     assert(this->y[n].F[3] == y_transient[last_rel_idx].F[3]);
     #endif
-
+    
+    #ifndef NO_MINISTEP_UPDATING
     int excess_count = 0;
     int under_count = 0;
     int num_ministep_reductions = 0;
+    #endif
     old_mini_n = mini_n;
     old_y_transient = y_transient; // Stores final ministeps of step n-1.
     while (mini_n < old_mini_n + num_stiff_ministeps){  // mini_n = n if num_stiff_ministeps = 1.
@@ -328,7 +332,7 @@ void Hybrid<T>::step_stiff_part(unsigned n){
         T tmp;
         tmp = this->zero_y;
         // tmp acts as an aggregator
-        for (int i = 1; i < this->order; i++){  // work through last N=order-1 ministeps. i.e. Order = 3 corresponds to 2 step method.
+        for (int i = 1; i < int(this->order); i++){  // work through last N=order-1 ministeps. i.e. Order = 3 corresponds to 2 step method.
             T ydot; // ydot stores the change this loop.
             this->sys_ee(y_transient[(1-i+mini_n)%(this->order)], ydot); 
             ydot *= this->b_AM[i];
@@ -355,10 +359,11 @@ void Hybrid<T>::step_stiff_part(unsigned n){
             y_transient[next_rel_idx] = tmp;
             y_transient[next_rel_idx] += dydt;
             prev += y_transient[next_rel_idx];
-            diff = prev.norm()/y_transient[next_rel_idx].norm(); // Seeking convergence
+            diff = prev.norm(0)/y_transient[next_rel_idx].norm(0); // Seeking convergence
             idx++;
         }
         if(idx==stiff_max_iter){
+            #ifndef NO_MINISTEP_UPDATING
             if (num_ministep_reductions < max_ministep_reductions){
                 // Try again with more ministeps
                 modify_ministeps(n,min(num_stiff_ministeps*2,1000));
@@ -373,6 +378,15 @@ void Hybrid<T>::step_stiff_part(unsigned n){
                 this->euler_exceeded = true;  
                 break;
             }
+            #else
+            if (diff > intolerable_stiff_divergence){
+                //std::cerr << "Max error ("<<intolerable_stiff_divergence<<") exceeded, ending simulation early." <<std::endl; // moved to 
+                this->good_state = false;
+                this->timestep_reached = this->t[n+1]*Constant::fs_per_au; // t[n+1] is equiv. to t in bound !good_state case, where error condition this is modelled off is found.
+                this->euler_exceeded = true;  
+                break;
+            }
+            #endif
         }
         y_transient[next_rel_idx] += delta_bound_interpolated[mini_n-old_mini_n];  // Add interpolated bound state contribution
         #ifndef NO_MINISTEP_UPDATING
@@ -399,7 +413,7 @@ void Hybrid<T>::step_stiff_part(unsigned n){
 /// Initialises intermediate steps needed for stiff solver to get going.
 // For order 3, transient y is indexed as: [mini_n-3,mini_n-2,mini_n-1,mini_n]
 template<typename T>
-void Hybrid<T>::initialise_transient_y(int n) {
+void Hybrid<T>::initialise_transient_y(int n) {  // n is the last calculated step.
     assert(this->y[n-1].F.container_size() == this->y[n].F.container_size());
 
     y_transient.resize(this->order);
@@ -414,7 +428,7 @@ void Hybrid<T>::initialise_transient_y(int n) {
         ydot += this->y.at(n);
         ydot *= 1./(double)num_stiff_ministeps;    
         // Set transient_y  = [y[n]-3*ydot,y[n]-2*ydot,y[n]-ydot,y[n]] for order 3. Value at the first index will be given the value at the next ministep, and so on.
-        for(int i = 0; i < this->order; i++){  // Technically we don't need to fill the first idx, but we may as well.
+        for(int i = 0; i < int(this->order); i++){  // Technically we don't need to fill the first idx, but we may as well.
             // y[n-i] = y[n] - ydot*i   (here y and n refer to the intermediate steps)
             y_transient.at(mini_n-i) = this->y[n];
             T tmp;
@@ -426,18 +440,18 @@ void Hybrid<T>::initialise_transient_y(int n) {
 
     //}
     else{
+        // Not enough ministeps to remain within a single step. Synchronise with full step size.
         mini_dt = this->dt;
-        // Not enough ministeps to remain within a single step.
-        for(int i = 0; i < this->order; i++){
+        for(int i = 0; i < int(this->order); i++){
             y_transient[mini_n-i] = this->y[n-i];
         }
     }
     // sample to catch the error of y(n) != y_transient(mini_n).
-    assert(this->y[n].F[0] == y_transient[mini_n].F[0]);
+    assert(this->y[n].F[0][0] == y_transient[mini_n].F[0][0]);
     if (this->y[n].F.container_size() > 3)
-        assert(this->y[n].F[3] == y_transient[mini_n].F[3]);
+        assert(this->y[n].F[0][3] == y_transient[mini_n].F[0][3]);
     if (this->y[n].F.container_size() > 5)
-        assert(this->y[n].F[5] == y_transient[mini_n].F[5]);
+        assert(this->y[n].F[0][5] == y_transient[mini_n].F[0][5]);
 }
 
 
@@ -512,7 +526,7 @@ void Hybrid<T>::modify_ministeps(const int n,const int num_ministeps){
         std::vector<double> new_times(old_y_transient.size());
         std::vector<T> old_y(old_y_transient.size());
         
-        for(int i = 0; i < this->order; i++){ 
+        for(int i = 0; i < int(this->order); i++){ 
             // unwind last few ministeps of last step (in old_y_transient)
             int old_idx = (old_mini_n-i)%(this->order);
             int new_idx = (mini_n-i)%(this->order);
@@ -527,7 +541,7 @@ void Hybrid<T>::modify_ministeps(const int n,const int num_ministeps){
     else{
         // Not enough ministeps to remain within a single step.
         mini_dt = this->dt;
-        for(int i = 0; i < this->order; i++){
+        for(int i = 0; i < int(this->order); i++){
             y_transient[(mini_n-i)%(this->order)] = this->y[n-i];
         }        
     }
@@ -542,7 +556,7 @@ void Hybrid<T>::initialise_transient_y_v2(int n){
         std::vector<double> old_times(y_transient.size());
         std::vector<double> new_times(y_transient.size());    
 
-        for(int i = 0; i < this->order; i++){ 
+        for(int i = 0; i < int(this->order); i++){ 
             old_times[mini_n-i] = this->t[n-i];
             new_times[mini_n-i] = this->t[n] - mini_dt*i;
         }
@@ -556,11 +570,11 @@ void Hybrid<T>::initialise_transient_y_v2(int n){
     else{
         // Not enough ministeps to remain within a single step.
         mini_dt = this->dt;
-        for(int i = 0; i < this->order; i++){
+        for(int i = 0; i < int(this->order); i++){
             y_transient[mini_n-i] = this->y[n-i];
         }
     }
-    assert(this->y[n].F[3] == y_transient[(mini_n)%(this->order)].F[3]);  
+    assert(this->y[n].F[0][3] == y_transient[(mini_n)%(this->order)].F[0][3]);  
 }
 
 
@@ -590,7 +604,7 @@ void Hybrid<T>::backward_Euler(unsigned n){
         
         tmp *= -1;
         tmp += this->y[n+1];
-        diff = tmp.norm()/this->y[n].norm();
+        diff = tmp.norm(0)/this->y[n].norm(0);
         idx++;
     }
     this->y[n+1] += old;

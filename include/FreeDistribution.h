@@ -49,27 +49,46 @@ struct indexed_knot
  * @brief Electron distribution class.
  * @details Represents a statistical distribution of electron density. Internal units are atomic units.
  * @note F is referred to as the distribution throughout the code. F[i] returns the i'th spline factor, but
- * F.f is the container that holds the spline factors. F(e) expands out the basis to return the density at energy e. 
+ * F.f_array[0], (in prior versions F.f), is the container that holds the spline factors for the total continuum (later indices are for tracking cascades initiated by each atomic species). F(e) expands out the basis to return the density at energy e divided by local knot width.
  */
 class Distribution
 {
 public:
     Distribution() {
-        f.resize(size);
+        f_array.resize(num_continuums);
+        for (auto& f : f_array){
+            f.resize(size);}   
     }
 
-    /**
-     * @brief Get spline factor at 
-     * @param n 
-     * @return 
-     */
-    inline double& operator[](size_t n) {
-        return this->f[n];
+
+    inline std::vector<double>& operator[](size_t _c) {
+        return this->f_array[_c];
     }
 
-    inline double operator[](size_t n) const{
-        return this->f[n];
+    inline std::vector<double> operator[](size_t _c) const{
+        return this->f_array[_c];
     }
+
+    // /**
+    //  * @brief Get spline factors at 
+    //  * @param n 
+    //  * @return 
+    //  */
+    // inline double& operator()(size_t _c, size_t n) {
+    //     return this->f_array[_c][n];
+    // }
+    // inline double operator()(size_t _c, size_t n) const{
+    //     return this->f_array[_c][n];
+    // }
+    
+    // // Accesses the continuum, not atom-split parts of it.
+    // inline double& operator[](size_t n) {
+    //     return this->f_array[0][n];
+    // }
+
+    // inline double operator[](size_t n) const{
+    //     return this->f_array[0][n];
+    // }
 
     // vector-space algebra
 
@@ -79,8 +98,10 @@ public:
      * @return Distribution& 
      */
     Distribution& operator+=(const Distribution& d) {
-        for (size_t i=0; i<size; i++) {
-            f[i] += d.f[i];
+        for (size_t _c = 0; _c < num_continuums; _c++){  // Iterate through each continuum
+            for (size_t i=0; i<size; i++) {
+                f_array[_c][i] += d.f_array[_c][i];
+            }
         }
         // total += d.total;
         return *this;
@@ -92,8 +113,10 @@ public:
      * @return Distribution& 
      */
     Distribution& operator*=(double x) {
-        for (size_t i=0; i<size; i++) {
-            f[i] *= x;
+        for (auto& f : this->f_array){
+            for (size_t i=0; i<size; i++) {
+                f[i] *= x;
+            }
         }
         // total *= d.total;
         return *this;
@@ -105,7 +128,10 @@ public:
      * @return Distribution& 
      */
     Distribution& operator=(const Distribution& d) {
-        f = d.f;
+        f_array = d.f_array;
+        // for (size_t _c = 0; _c < num_continuums; _c++){ 
+        //     f_array[_c] = d.f_array[_c];
+        // }
         // total = d.total;
         return *this;
     }
@@ -117,15 +143,19 @@ public:
      */
     Distribution& operator=(double y) {
         // total = y;
-        f.resize(size);
-        for (size_t i=0; i<size; i++) {
-            f[i] = y;
+        for (auto& f : this->f_array){
+            f.resize(size);
+            for (size_t i=0; i<size; i++) {
+                f[i] = y;
+            }
         }
         return *this;
     }
 
     static vector<double> get_knot_energies(){return basis.get_knot();}
     static double num_basis_funcs(){return basis.num_funcs;}
+    static void initialise_dynamic_regions(DynamicGridPreset& preset){basis.initialise_regions(preset);}
+
 
     /**
      * @brief Returns an order-preserved copy of knots with points that overlap with the basis's boundary removed.
@@ -144,13 +174,13 @@ public:
      * @return Distribution& 
      * @todo make clearer this is only for static grid case or just put into one function.
      */
-    void set_distribution_STATIC_ONLY(vector<double> new_knot, vector<double> new_f);
-    void set_spline_factors(vector<double> new_f);
+    void set_distribution_STATIC_ONLY(size_t _c, vector<double> new_knot, vector<double> new_f);
+    void set_spline_factors(size_t _c, vector<double> new_f);
     // loads the knot and appropriately updates params like the overlap matrix as done in set_parameters.
     static void load_knot(vector<double> loaded_knot);
 
-    double norm() const;
-    double integral() const; //unused
+    double norm(size_t _c) const;
+    //double integral(size_t _c) const; //unused
     // modifiers
 
     /**
@@ -160,28 +190,28 @@ public:
      * This seems correct, given that dfdt is inputted for the spline basis's Sinv (S_inverse * <VectorXd input>) function, which names the input deltaf.
      * @param v deltaf
      */
-    void applyDeltaF(const Eigen::VectorXd& dfdt, const int & threads);
-    
+    void applyDeltaF(size_t a, const Eigen::VectorXd& dfdt, const int & threads);
+    void applyDeltaF_element_scaled(size_t a, const Eigen::VectorXd& dfdt, const int & threads);
 
     // Q functions
     // Computes the dfdt vector v based on internal f
     // e.g. dfdt v; F.calc_Qee(v);
-    void get_Q_eii (Eigen::VectorXd& v, size_t a, const bound_t& P, const int & threads) const;
-    void get_Q_tbr (Eigen::VectorXd& v, size_t a, const bound_t& P, const int & threads) const;
-    void get_Q_ee  (Eigen::VectorXd& v, const int & threads) const;
+    void get_Q_eii (size_t _c, Eigen::VectorXd& v, size_t a, const bound_t& P, const int & threads) const;
+    void get_Q_tbr (size_t _c, Eigen::VectorXd& v, size_t a, const bound_t& P, const int & threads) const;
+    void get_Q_ee  (size_t _c, Eigen::VectorXd& v, const int & threads) const;
 
     void get_Jac_ee (Eigen::MatrixXd& J) const; // Returns the Jacobian of Qee
     
     /// N is the Number density (inverse au^3) of particles to be added at energy e.
     static void addDeltaLike(Eigen::VectorXd& v, double e, double N);
     /// Adds a Dirac delta to the distribution
-    void addDeltaSpike(double N, double e);
+    void addDeltaSpike(size_t a, double N, double e);
     /// Applies the loss term to the distribution 
-    void addLoss(const Distribution& d, const LossGeometry& l, double charge_density);
-    void addFiltration(const Distribution& d, const Distribution& bg,const LossGeometry &l);
+    void addLoss(size_t _c, const Distribution& d, const LossGeometry& l, double charge_density);
+    void addFiltration(size_t _c, const Distribution& d, const Distribution& bg,const LossGeometry &l);
     
     /// Sets the object to have a MB distribution
-    void add_maxwellian(double N, double T);
+    void add_maxwellian(size_t _c, double N, double T);
 
     /**
      * @brief 
@@ -189,7 +219,7 @@ public:
      * @param densities Densities corresponding to each energy.
      * @param energies Energies in ascending order.
      */
-    void add_density_distribution(std::vector<vector<double>>);
+    void add_density_distribution(size_t _c, std::vector<vector<double>>);
 
     // Precalculators
     static void Gamma_eii( eiiGraph& Gamma, const std::vector<RateData::EIIdata>& eii, size_t J) {
@@ -226,9 +256,9 @@ public:
      * @param num_pts 
      * @return 
      */
-    std::string output_densities(size_t num_pts, std::vector<double> reference_knots) const;
+    std::string output_densities(size_t _c, size_t num_pts, std::vector<double> reference_knots) const;
 
-    std::vector<double> get_densities(size_t num_pts, std::vector<double> reference_knots) const;
+    std::vector<double> get_densities(size_t _c, size_t num_pts, std::vector<double> reference_knots) const;
     static std::string output_knots_eV();
     // 
     /**
@@ -242,7 +272,7 @@ public:
     // (Unused) This does electron-electron because it is CURSED
     void from_backwards_Euler(double dt, const Distribution& prev_step, double tolerance, unsigned maxiter);
 
-    double operator()(double e) const;
+    double operator()(size_t _c, double e) const;
 
     /**
      * @brief The setup function.
@@ -252,8 +282,8 @@ public:
      * @param max_e max elec energy
      * @param grid_style 
      */
-    static void set_basis(size_t step, GridSpacing grid_style, Cutoffs param_cutoffs, FeatureRegimes regimes, ManualGridBoundaries elec_grid_regions, DynamicGridPreset dyn_grid_preset = DynamicGridPreset());
-    static void set_basis(size_t step, Cutoffs param_cutoffs, FeatureRegimes regimes, std::vector<double> knots);
+    static void set_basis(size_t step, GridSpacing grid_style, Cutoffs param_cutoffs, FeatureRegimes regimes, ManualGridBoundaries elec_grid_regions);
+    static void set_basis(size_t step, Cutoffs param_cutoffs, FeatureRegimes regimes, std::vector<double> knots,bool update_knot_history = true);
     
     //void prep_adapt_knots(const FeatureRegimes& regimes);
     int adapt_knots(bool init, GridSpacing gt, Distribution original_distribution, std::vector<double> original_knots, std::vector<double> reference_energies = {}, std::vector<double> prev_Edens = {},size_t iteration = 0);
@@ -261,6 +291,10 @@ public:
     static double get_min_E(){
         return basis.min_elec_e();
     }
+    static double get_lowest_allowed_knot(){
+        return basis.first_gp_min_E;
+    }
+
     static double get_max_E(){
         return basis.max_elec_e();
     }
@@ -271,7 +305,7 @@ public:
         return basis.mb_max_over_kT;
     }
     static size_t size;
-    double my_size(){return f.size();}
+    static size_t num_continuums;
     static std::vector<double> load_knots_from_history(size_t step_idx);
     static size_t most_recent_knot_change_idx(size_t step_idx);
     static size_t next_knot_change_idx(size_t step_idx);
@@ -279,9 +313,12 @@ public:
     static void set_knot_history(size_t i, std::vector<double> replacement_knot){knots_history[i]={i,replacement_knot};}
     // history of grid points (for dynamic grid)
     static std::vector<indexed_knot> knots_history;  
-    int container_size(){return f.size();}  
+    int container_size(){return f_array[0].size();}  
+    
+    static bool reset_on_next_grid_update; //TODO part of a duct tape implementation of FIND_INITIAL_DIRAC
+
 private:
-    std::vector<double> f;  // Spline expansion factors
+    std::vector<std::vector<double>> f_array;  // Spline expansion factors, placed in vector so have option to track a continuum for each element's cascades.
     static SplineIntegral basis;
     static size_t CoulombLog_cutoff;
     /// Coulomb repulsion is ignored if density is below this threshold

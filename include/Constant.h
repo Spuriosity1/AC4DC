@@ -129,8 +129,8 @@ namespace RateData {
 	{
 		//EIIdata() : init(0), fin(vector<int>(0)), occ(vector<int>(0)),ionB(vector<float>(0)),kin(vector<float>(0)) {}
 
-		int init; // initial state
 		vector<int> fin; // final states
+		int init; // initial state
 		vector<int> occ; // occupancy of state
 		vector<float> ionB; // ion binding energy
 		vector<float> kin; // u for atom in this state (see Kim and Rudd BEB for details)
@@ -178,6 +178,7 @@ namespace RateData {
 
 	struct Atom
 	{
+		bool bound_free_excluded = false; // Whether to skip calculation of EII and TBR for this species.
 		vector<string> index_names = vector<string>(0);
 		std::string name = "";
 		double nAtoms = 1.;// atomic number density
@@ -193,6 +194,8 @@ namespace RateData {
 
 	bool ReadRates(const string & input, vector<RateData::Rate> & PutHere);
 	bool ReadEIIParams(const string & input, vector<RateData::EIIdata> & PutHere);
+	bool ReadDecayRates(const string & rate_location, const string & rate_file_type, vector<RateData::Rate> & PutHere,int num_allowed_configs);
+	bool InterpolateRates(const string & rate_location, const string & rate_file_type, vector<RateData::Rate> & PutHere, double photon_energy,double allowed_interp = 1000);
 	void WriteRates(const string& fname, const vector<RateData::Rate>& rateVector);
 	void WriteEIIParams(const string& fname, const vector<RateData::EIIdata>& eiiVector);
 }

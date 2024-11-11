@@ -40,6 +40,7 @@ public:
 
 	
 	vector<photo> Photo_Ion(double omega, ofstream & log); // All photoinonization crossections. Position in vector indicates orbital
+	vector<vector<photo>> Photo_Ion(std::vector<double> omega_array, ofstream & log); // All photoinonization crossections. Position in vector indicates orbital
 	vector<fluor> Fluor(); // Fluorescence rates for all channels.
 	vector<auger> Auger(vector<int> Max_occ, ofstream & log); // Auger decay rates for all channels.
 

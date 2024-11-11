@@ -29,13 +29,27 @@ import numpy as np
 
 set_highlighted_excepthook()
 
-#handle =  "lys_nass_no_S_2"#"sulfur_3shell_baseline_3"#"Naive_Lys_mid_21"#"Carbon_294"#"Carbon_Wiggleless_2500_Fluence"#"Carbon_Sanders"""
-#handle =  "lys_nass_6"#
-#handle =  "lys_nass_Gd_12"#
-#handles = ["lys_nass_no_S_2","lys_nass_6","lys_nass_Gd_16"]
-#handles = ["lys_nass_Gd_16"]
-handles = ["lys_nass_square_13","lys"]
+FIGWIDTH = 3.49751
+FIGHEIGHT = FIGWIDTH*2/3
+###
+ANG_TO_BOHR =0.529177
+HIGH_RES = 1
+LOW_RES = 4
+NUM_TRACES = 5
+SHOW_AVG=False
+PLOT_DIFF = True
+YLIM = [-35,5]
+###
+handles = ["lys_nass_no_S_3","lys_nass_gauss","lys_nass_Gd_full_1"]
+#handles=["lys_nass_no_S_3"]
+##
+#atoms = pl.atomdict
+#atoms = ["N","Gd_fast"]
+#atoms = ["C","N","O"]
+atoms = ["C"]
 #######
+dname_Figures = "../../output/_Graphs/plots/"
+dname_Figures = path.abspath(path.join(__file__ ,dname_Figures)) + "/"
 for handle in handles:
     label = handle +'_' 
 
@@ -45,22 +59,23 @@ for handle in handles:
     plt.close()
     photon_energy = 6000
     # q_max is in units of bohr^-1 (atomic units). 
-    q_max = 20*0.529177# 20 angstrom. 
-    pl.initialise_form_factor_params(-10,17.5,q_max,photon_energy,50,100,True)
+    q_max = 2*np.pi/HIGH_RES*ANG_TO_BOHR
+    pl.initialise_form_factor_params(-18,18,q_max,photon_energy,50,100,True)
 
-    # form factors dependent on q 
-    #atoms = pl.atomdict
-    atoms = ["N","Gd_fast"]
+
+    
     for atom in atoms:
-        pl.plot_ffactor_get_R_sanders(atom)
-        # Atomic form factor at time as a function of q
+        # Plot atomic form factor at different times as a function of q
+        #pl.plot_ffactor_get_R_AC4DC(atom)   # More accurate form factors from AC4DC
 
-
-
-        pl.plot_form_factor(6,[atom])
-        plt.title(handle+" - "+atom) 
+        # Slater form factors. Should be fine for light atoms.
+        pl.plot_form_factor(NUM_TRACES,[atom],resolution=True,q_min=2*np.pi/LOW_RES*ANG_TO_BOHR,fig_width=FIGWIDTH,fig_height=FIGHEIGHT,show_average=SHOW_AVG,percentage_change=PLOT_DIFF)
+        #plt.title(handle+" - "+atom) 
+        plt.tight_layout()
+        plt.ylim(YLIM)
+        plt.savefig(dname_Figures+atom+"-ff-"+handle+".pdf")
     if len(atoms) > 1:
-        pl.plot_form_factor(6)
+        pl.plot_form_factor(NUM_TRACES,atoms,resolution=True,q_min=2*np.pi/LOW_RES*ANG_TO_BOHR,fig_width=FIGWIDTH,fig_height=FIGHEIGHT,show_average=SHOW_AVG,percentage_change=PLOT_DIFF)
         plt.title(handle+" - combined") 
 
     #print(pl.get_A_bar(-10,-7.5,12,12,"C_fast","C_fast",100))

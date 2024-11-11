@@ -20,7 +20,7 @@ atomos = sys.argv[2]
 minval = -10
 maxval = 0
 
-fig, ax = pl.plot_ffactor_get_R_sanders(atomos, 10, timespan=(minval,maxval), show_avg=False)
+fig, ax = pl.plot_ffactor_get_R_AC4DC(atomos, 10, timespan=(minval,maxval), show_avg=False)
 sm = plt.cm.ScalarMappable(cmap=plt.get_cmap('plasma'), norm=plt.Normalize(vmin=minval, vmax=maxval))
  
 cbaxes = fig.add_axes([0.5, 0.9, 0.35, 0.02])

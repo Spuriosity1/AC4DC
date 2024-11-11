@@ -1,0 +1,50 @@
+// Abdullah glycine supercell
+#ATOMS
+C 210
+N 105
+O 210
+
+#VOLUME
+3432        // Volume per molecule in Angstrom^3.
+2000         // Length scale of sample in Angstrom. Used for effective escape rate of photo-electrons.
+none // Spatial boundary shape - options are none, spherical, cylindrical, planar
+
+#PULSE
+10000         // Photon energy in eV.
+10           // Pulse width in femtoseconds (defined as FWHM for Gaussian pulse).
+gaussian       // Pulse shape
+
+#USE_INTENSITY
+true         // enabled? true/false.
+0.15            // Maximum intensity in 10^19 * W/cm^2. Will give different fluence between square and gaussian.
+
+#NUMERICAL
+1000        // Initial guess for number of time step points for rate equation.
+18           // Number of threads in OpenMP.
+
+#DYNAMIC_GRID
+medium          // Grid regions preset, options are 'low', 'medium', 'high', (accuracy) among others (see README).
+1         // Grid update period in fs, (dynamic grid only).
+
+#OUTPUT
+800          // Number of time steps in the output files.
+4000         // Number of free-electron grid points in output file.
+N            // Write atomic charges in a separate file (Y/N)?
+Y            // Write intensity in a separate file (Y/N)?
+Y            // Write data for molecular dynamics (MD) in a separate file (Y/N)?
+
+#LOAD
+// carbon_redux_3
+// 99999
+// false
+
+#DEBUG
+99           // Simulation cutoff time in fs
+0.01          // Interval to display current timestep [fs].
+####END####
+
+Notes:
+Idea: R factor for Abdullah's work should roughly correspond to our R factor, as the R factor we obtain can be thought 
+of as the error introduced with the best possible effective (static) form factor. 
+measure of the difference from a coherently evolving pattern (i.e. multiplied by a scalar factor).
+(I think... )

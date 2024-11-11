@@ -1,0 +1,59 @@
+#ATOMS
+C 613
+N 193
+O 185
+Ar 10
+
+#BOUND_FREE_EXCLUSIONS
+Ar
+
+#VOLUME
+20000        // Volume per molecule in Angstrom^3.
+500         // Length scale of sample in Angstrom. Used for effective escape rate of photo-electrons (assumes surrounded by a void).
+none // Spatial boundary shape - options are none, spherical, cylindrical, planar
+
+#PULSE
+7112         // Photon energy in eV.
+15           // Pulse width in femtoseconds (defined as FWHM for Gaussian pulse).
+gaussian       // Pulse shape
+2.4  // total sim time in fwhm
+1.2 // time before pulse peak to start at in fwhm 
+
+#USE_COUNT
+true    // active (using count)?
+1.75  // Photon density (x10^12 ph.µm-2)
+
+#NUMERICAL
+1500      // Initial guess for number of time step points for rate equation.
+18            // Number of threads in OpenMP.
+
+#DYNAMIC_GRID
+l              // Grid regions preset, options are: dismal, low, medium, high, (referring to accuracy),  and no_dirac (static region is used rather than dynamic dirac regions)
+5.05           // Grid update period in fs, (dynamic grid only).
+
+#OUTPUT
+800         // Number of time steps in the output files.
+4000        // number of free-electron grid points in output file.
+N            // Write atomic charges in a separate file (Y/N)?
+Y            // Write intensity in a separate file (Y/N)?
+Y            // Write data for molecular dynamics (MD) in a separate file (Y/N)?
+
+#DEBUG
+999 //10     // Simulation (early) cutoff time in fs
+0.01    // Interval to update current timestep [fs].
+####END#####
+
+Notes:
+Parameters approximate (pump) pulse used in Nass et al 2020 https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7156470/
+Hen egg-white lysozyme https://files.rcsb.org/pub/pdb/validation_reports/et/4et8/4et8_full_validation.pdf
+Ignores:
+- precipitant (NaCl)
+- surrounding water, which would filter photoelectron distribution in crystal with own.
+    - If photoelectrons aren't slowed by boundary significantly, this is on a timescale shorter 
+    than the pulse.
+- spatial boundary, since the water droplet size is unknown
+
+from many runs, distributions are very well-approximated by low accuracy grid, 
+for the purposes of both a) atomic form factor determination and b) debye length 
+determination for hybrid models.
+

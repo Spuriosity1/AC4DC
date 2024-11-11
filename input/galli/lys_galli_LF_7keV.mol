@@ -1,10 +1,12 @@
 #ATOMS
-Gd_galli 2
+Gd_fast_LDA 2
 C 613
 N 193
 O 185
 S 10
 
+#BOUND_FREE_EXCLUSIONS
+Gd_fast_LDA
 
 
 #VOLUME
@@ -26,8 +28,8 @@ true    // active (using count)?
 18            // Number of threads in OpenMP.
 
 #DYNAMIC_GRID
-l           //support for 50-200 eV   // Grid regions preset, options are: dismal, low, medium, high, (referring to accuracy),  and no_dirac (static region is used rather than dynamic dirac regions)
-5.05            // Grid update period in fs, (dynamic grid only).
+M           // L   // Grid regions preset, options are: dismal, low, medium, high, (referring to accuracy),  and no_dirac (static region is used rather than dynamic dirac regions)
+10.05            // Grid update period in fs, (dynamic grid only).
 
 #OUTPUT
 800         // Number of time steps in the output files.
@@ -42,6 +44,4 @@ Y            // Write data for molecular dynamics (MD) in a separate file (Y/N)?
 ####END#####
 
 Notes:
-Reduced to below L edges (energies of nass), to test effect of locking those out, as was the case in Nass's work.
-The null hypothesis is that the damage should increase as energy decreases, with photon count held constant (fluence decreases). 
-Predict that, since the L edge provides a large number of auger energy/'cold' photoelectrons, damage will be noticeably delayed.
+Reduced to below L edges (energy of Nass), to test effect of locking those out, as was the case in Nass's work.

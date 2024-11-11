@@ -6,11 +6,11 @@ matplotlib.rcParams.update({
     'text.usetex': True,
     'pgf.rcfonts': False,
     #thaumatin thing
-    'axes.titlesize':14,     # fontsize of the axes title
-    'axes.labelsize':14,    # fontsize of the x and y labels   
-    'ytick.labelsize':14,
-    'xtick.labelsize':14,
-    'legend.fontsize':12,    
+    'axes.titlesize':10,     # fontsize of the axes title
+    'axes.labelsize':10,    # fontsize of the x and y labels   
+    'ytick.labelsize':10,
+    'xtick.labelsize':10,
+    'legend.fontsize':10,    
     'lines.linewidth':2,
 })
 import matplotlib.pyplot as plt
@@ -21,14 +21,30 @@ import os.path as path
 import os
 from QoL import set_highlighted_excepthook
 
-ELECTRON_DENSITY = False # energy density if False
-###
-PLOT_ELEMENT_CHARGE= True
-PLOT_ION_RATIOS=False
-PLOT_FREE_CONTINUUM = False
-PLOT_FREE_SLICES=False
-###
 
+####
+ELECTRON_DENSITY = False # Whether to use electron density for free distribution plots. Energy density if False
+###
+PLOT_ELEMENT_CHARGE= True #
+PLOT_FREE_CONTINUUM = True
+PLOT_FREE_SLICES=False
+PLOT_ION_RATIOS=False
+PLOT_ION_RATIOS_BARS= False
+PLOT_ORBITAL_DENSITIES = False #
+PLOT_PHOTO_RATES = False
+###
+COLUMNWIDTH = 3.4975
+#COLUMNWIDTH = 2
+FIGWIDTH = COLUMNWIDTH#/2
+FIGHEIGHT = FIGWIDTH*1/2#*9/16
+
+# FIGWIDTH = COLUMNWIDTH/2
+# FIGHEIGHT = FIGWIDTH*9/16
+
+DPI = 800
+##
+END_T = None#None
+##
 def main():
     set_highlighted_excepthook()
 
@@ -50,9 +66,9 @@ def main():
     assert valid_folder_names, "One or more arguments (directory names) were not present in the output folder."
     for data_folder in sys.argv[1:]:
         label = data_folder +'_Plt'
-        make_some_plots(data_folder,molecular_path,label,dname_Figures,PLOT_ELEMENT_CHARGE,PLOT_ION_RATIOS,PLOT_FREE_CONTINUUM,PLOT_FREE_SLICES)
+        make_some_plots(data_folder,molecular_path,label,dname_Figures,PLOT_ELEMENT_CHARGE,PLOT_ION_RATIOS,PLOT_FREE_CONTINUUM,PLOT_FREE_SLICES,PLOT_ION_RATIOS_BARS,PLOT_ORBITAL_DENSITIES,PLOT_PHOTO_RATES)
 
-def make_some_plots(mol_name,sim_output_parent_dir, label,figure_output_dir, charge_conservation=False,bound_ionisation=False,free=False,free_slices=False):
+def make_some_plots(mol_name,sim_output_parent_dir, label,figure_output_dir, tot_charge=False,bound_ionisation=False,free=False,free_slices=False,bound_ionisation_bar=False,orbital_densities_bar=False,photo_rates = False):
     '''
     Arguments:
     mol_name: The name of the folder containing the simulation's data (the csv files). (By default this is the stem of the mol file.)
@@ -62,24 +78,50 @@ def make_some_plots(mol_name,sim_output_parent_dir, label,figure_output_dir, cha
     ############
     # File/directory names
     #######  
-    figures_ext = "" #.png
-    fname_charge_conservation = "charge_conservation"
+    figures_ext = ".png" #.png
+    fname_tot_charge = "tot_charge"
     fname_free = "free"
     fname_HR_style = "HR_style"
     fname_bound_dynamics = "bound_dynamics"
+    load_specific_atoms = None #["C","N","O"] #None  # If plotting free dsitribution, will combine the contributions from those specified here (e.g. if "C","N" then dist_C.csv and dist_N.csv ). If none is specified, will just use the full continuum freeDist.csv.
+    if load_specific_atoms is not None:
+        label+="_"
+        for elem in load_specific_atoms:
+            label+=elem
 
-    pl = Plotter(mol_name,sim_output_parent_dir,use_electron_density = ELECTRON_DENSITY)
+    pl = Plotter(mol_name,sim_output_parent_dir,use_electron_density = ELECTRON_DENSITY,end_t = END_T,load_specific_atoms=load_specific_atoms)
     num_atoms = len(pl.statedict)
-    num_subplots = charge_conservation + bound_ionisation*num_atoms + free + free_slices
+    num_subplots = tot_charge + free + free_slices + bound_ionisation_bar + (bound_ionisation+ orbital_densities_bar+ photo_rates)*num_atoms 
     pl.setup_axes(num_subplots)
+    if num_subplots > 1:
+        pl.fig.tight_layout()
+        pl.fig.subplots_adjust(left=0.12/pl.axs.shape[0], bottom=None, right=None, top=None, wspace=0.2, hspace=None)
 
-    if charge_conservation: 
-        pl.plot_tot_charge(every=10,charge_difference=False,legend_loc="best")  #TODO automatically set to charge_difference to True if starting with ions...
-        #plt.savefig(figure_output_dir + label + fname_charge_conservation + figures_ext)
+    if tot_charge: 
+        #NOTE ensure load_specific_atoms is None or does not exclude `atoms` if `atoms` is passed.
+        pl.plot_tot_charge(ylim=[None,None],every=1,charge_difference=True,legend_loc="best")  
+        #pl.plot_tot_charge(ylim=[None,None],every=1,charge_difference=True,legend_loc="best",atoms=["C","N","O"])  
+        #pl.plot_tot_charge(ylim=[0,6],every=1,charge_difference=False,legend_loc="best",atoms=["C","N","O"])  
+        #pl.plot_tot_charge(ylim=[0,6],plot_legend=False,every=1,charge_difference=True,legend_loc="best")  
+        #pl.plot_tot_charge(ylim=[0,6],plot_legend=False,every=1,charge_difference=True,legend_loc="best",atoms=["C","N","O","S","Gd_fast"])  
+        #pl.plot_tot_charge(ylim=[0,1.1],plot_legend=False,every=1,charge_difference=True,legend_loc="best",atoms=["C","N","O","S","Gd_fast"])  
+        #pl.plot_tot_charge(ylim=[0,1.1],plot_legend=False,every=1,charge_difference=True,legend_loc="best",atoms=["C","N","O","S"])  
+        #pl.plot_tot_charge(ylim=[0,6],plot_legend=False,every=1,charge_difference=False,legend_loc="best",atoms=["C","N","O","S"])  
+        #pl.plot_tot_charge(ylim=[0,2.5],plot_legend=False,every=1,charge_difference=True,scale_intensity=0.939)  #TODO automatically set to charge_difference to True if starting with ions...
+        #pl.plot_tot_charge(ylim=[0,2.5],xlim=[-15.5,0.5],plot_legend=False,every=1,charge_difference=True)  #TODO automatically set to charge_difference to True if starting with ions...
  
 
+    if bound_ionisation_bar:
+        pl.plot_charges_bar("C",show_pulse_profile=False)
+        #plt.gcf().set_figwidth(15)        
+    if orbital_densities_bar:
+        pl.plot_orbitals_bar(atoms=None,atoms_excluded=["N","O"],show_pulse_profile=False,normalise = True)
+        #pl.plot_orbitals_bar("Gd_fast",show_pulse_profile=True,orbitals=["3p","4p","5p"])
+    if photo_rates:
+        pl.plot_photoionisation(atoms=None,show_pulse_profile=True)
     if bound_ionisation:
         pl.plot_all_charges(show_pulse_profile=False,ylim=[0,1])
+
         #Abdallah
         #pl.plot_all_charges(show_pulse_profile=False,xlim=[-40,0],ylim=[0,1])
         #pl.fig.set_figwidth(6)
@@ -95,11 +137,13 @@ def make_some_plots(mol_name,sim_output_parent_dir, label,figure_output_dir, cha
         # pl.fig.set_figheight(6*0.7)  
         
     if free:
-        #Leonov
-        ymax = 9e3
-        pl.plot_free(log=True, cmin=10**(-6.609),cmax = 10**(-2), every=5,mask_below_min=True,cmap='turbo',ymax=ymax,leonov_style=True)
-        pl.fig.set_figwidth(6.662*0.7*1.16548042705)  
-        pl.fig.set_figheight(6*0.7)      
+        #pl.plot_free(log=True,cmin=10**(-7.609),cmax=1e-3,ylim=[10,8000])
+        pl.plot_free(log=True,ylog=False,cmin=10**(-8),cmax=10**(-3.609),ylim=[0,8000],keV=True)
+        # #Leonov
+        # ymax = 9e3
+        # pl.plot_free(log=True, cmin=10**(-6.609),cmax = 10**(-2), every=5,mask_below_min=True,cmap='turbo',ymax=ymax,leonov_style=True)
+        # pl.fig.set_figwidth(6.662*0.7*1.16548042705)  
+        # pl.fig.set_figheight(6*0.7)      
     if free_slices:
         pl.initialise_step_slices_ax()
         from plotter_core import fit_maxwell, maxwell
@@ -236,8 +280,17 @@ def make_some_plots(mol_name,sim_output_parent_dir, label,figure_output_dir, cha
     # pl.ax_steps.set_xscale("linear")
     # pl.ax_steps.set_xlim([0,1800])
     # pl.ax_steps.set_ylim([0.5e-4,0.5])
-    plt.tight_layout()
-    plt.savefig(figure_output_dir + label + figures_ext)
+    pl.delete_remaining_axes()
+    if num_subplots > 2:
+        plt.gcf().set_figwidth(FIGWIDTH*pl.axs.shape[0])
+        plt.gcf().set_figheight(FIGHEIGHT*pl.axs.shape[1])
+    elif num_subplots == 2:
+        plt.gcf().set_figheight(FIGWIDTH*pl.axs.shape[0])
+    else:
+        plt.gcf().set_figwidth(FIGWIDTH)
+        plt.gcf().set_figheight(FIGHEIGHT)          
+    #plt.tight_layout()
+    plt.savefig(figure_output_dir + label + figures_ext,dpi=DPI)
     plt.close()
 
 if __name__ == "__main__":

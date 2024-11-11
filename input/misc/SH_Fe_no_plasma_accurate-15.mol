@@ -1,0 +1,42 @@
+// AC4DC input file generated from: input/superheavy/SH_Fe.mol
+
+#ATOMS
+C 613
+N 193
+O 185
+Fe_LDA 10
+
+#VOLUME
+20000.00      // Volume per molecule in Angstrom^3.
+2000         // Radius of a sample in Angstrom. Used for effective escape rate of photo-electrons.
+none         // Spatial boundary shape - options are none (confined system), spherical, cylindrical, planar.
+
+#PULSE
+10000         // Photon energy in eV.
+15.0         // Pulse-dependent definition of duration in femtoseconds: FWHM for Gaussian pulse, pulse width for square pulse.
+square    // Pulse shape.
+1 // simulation total timespan, as a multiple of fwhm
+
+#USE_COUNT
+true         // enabled? true/false.
+10.00            // Photon density (x10^12 ph.µm-2)
+
+#NUMERICAL
+1000         // Initial guess for number of time step points for rate equation (Note e-e scattering part takes num_stiff_ministeps = 500 substeps for each step).
+26           // Number of threads in OpenMP.
+
+#DYNAMIC_GRID
+M            // Grid regions preset, options are 'low', 'medium', 'high', (accuracy) among others (see README).
+5.15         // Grid update period in fs, (dynamic grid only).
+
+#OUTPUT
+800          // Number of time steps in the output files.
+4000         // Number of free-electron grid points in output file.
+
+#DEBUG
+999           // Simulation cutoff time in fs (can end before but not after).
+0.01          // Interval to display current timestep [fs].
+5             // Interval to update live plot (steps).
+####END####
+
+Notes:

@@ -34,12 +34,14 @@ state_type::state_type() {
     for (size_t i = 0; i < atomP.size(); i++) {
         atomP[i].resize(P_sizes[i]);
     }
+    cumulative_photo.resize(atomP.size());
 }
 
 
 // Critical vector-space operators
 state_type& state_type::operator+=(const state_type &s) {
     for (size_t r = 0; r < atomP.size(); r++) {
+        cumulative_photo[r] += s.cumulative_photo[r];
         for (size_t i = 0; i < atomP[r].size(); i++) {
             atomP[r][i] += s.atomP[r][i];
         }
@@ -51,6 +53,7 @@ state_type& state_type::operator+=(const state_type &s) {
 
 state_type& state_type::operator*=(const double x) {
     for (size_t r = 0; r < atomP.size(); r++) {
+        cumulative_photo[r] *= x;
         for (size_t i = 0; i < atomP[r].size(); i++) {
             atomP[r][i] *= x;
         }
@@ -62,6 +65,8 @@ state_type& state_type::operator*=(const double x) {
 
 // convenience members
 state_type& state_type::operator=(const double x) {
+    for (auto&a : cumulative_photo)
+        a=x;
     for (auto& P : atomP) {
         for (auto& p : P) {
             p=x;
@@ -82,14 +87,14 @@ void state_type::set_P_shape(const vector<RateData::Atom>& atomsys) {
 }
 
 // Returns the L1 norm
-double state_type::norm() const {
+double state_type::norm(size_t _c) const {
     double n = 0;
     for (auto& P : atomP) {
         for (auto& p : P) {
             n += fabs(p);
         }
     }
-    n += F.norm();
+    n += F.norm(_c);
     return n;
 }
 

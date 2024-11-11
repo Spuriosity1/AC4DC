@@ -1,6 +1,6 @@
 // 3+ Ion - as in Gadoteridol 
 // Average over configuration fractional occupancy is supported, so closed orbitals can have occupancy between 0 and 4L+2.
-
+// 4446 configs excluding K and L shells.
 #ATOM
 64            // Nuclear charge
 coulomb      // Nuclear potential model. Can be "coulomb" for point-like nucleus, "sphere" for spherical nucleus.

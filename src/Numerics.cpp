@@ -146,11 +146,19 @@ void Adams::Integrate(RadialWF* Psi, int start_pt, int end_pt)
 			F_tmp += incr * Adams_Coeff[j] * dF_dR[i - incr*j] * Lattice.dR(i - incr*j);
 			G_tmp += incr * Adams_Coeff[j] * dG_dR[i - incr*j] * Lattice.dR(i - incr*j);
 		}
-		if (std::isnan(Psi->F[i])){throw std::runtime_error("Psi->F[i] is nan!");}
+		if (std::isnan(Psi->F[i])){
+
+			throw std::runtime_error("Psi->F[i] is nan!0");
+
+		}
 		
 		Psi->F[i] = (F_tmp * (1.0 - incr * Lattice.dR(i) * Adams_Coeff[0] * D[i]) + G_tmp * incr * Lattice.dR(i) * Adams_Coeff[0] * B[i]) / Det;
 		Psi->G[i] = (F_tmp * incr * Lattice.dR(i) * Adams_Coeff[0] * C[i] + G_tmp * (1.0 - incr * Lattice.dR(i) * Adams_Coeff[0] * A[i])) / Det;
-		if (std::isnan(Psi->F[i])){throw std::runtime_error("Psi->F[i] is nan!1");}
+		if (std::isnan(Psi->F[i])){	
+			
+			throw std::runtime_error("Psi->F[i] is nan!1");
+
+		}
 		
 		dF_dR[i] = A[i] * Psi->F[i] + B[i] * Psi->G[i] + X[i];
 		dG_dR[i] = C[i] * Psi->F[i] + D[i] * Psi->G[i] + Y[i];

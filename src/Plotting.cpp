@@ -59,8 +59,8 @@ void Plotting::plot_frame(std::vector<double> energies, std::vector<double> dens
     py::module_ sys = py::module_::import("sys");
     try { 
         py::module_::import("scipy"); // test importing
-        py::object py_clear_frame = py::module_::import("script_generate_frame").attr("clear_frame_c")();
-        py::object py_plot_frame = py::module_::import("script_generate_frame").attr("plot_frame_from_c")(energy_list,density_list,knot_to_plot_list);
+        py::object py_clear_frame = py::module_::import("PYBIND_script_generate_frame").attr("clear_frame_c")();
+        py::object py_plot_frame = py::module_::import("PYBIND_script_generate_frame").attr("plot_frame_from_c")(energy_list,density_list,knot_to_plot_list);
     } 
     catch (const std::exception& e) {
         Display::close();

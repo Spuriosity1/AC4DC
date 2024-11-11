@@ -20,7 +20,7 @@
 
 CPP := g++-10 #(not g++-11) 
 
-LIB := -lncurses -fopenmp -lpython3.9 # Link special external libraries here! (-L for directory of libraries). Eigen contains no source files (pure header implementation) thus is excluded. 
+LIB := -lncurses -fopenmp -lpython3.9  -lboost_system -lboost_filesystem # Link special external libraries here! (-L for directory of libraries). Eigen contains no source files (pure header implementation) thus is excluded. 
 
 INC := -Iinclude -I/home/linuxbrew/.linuxbrew/include/eigen3 -I/usr/include/ncursesw $(shell python3.9 -m pybind11 --includes)
 

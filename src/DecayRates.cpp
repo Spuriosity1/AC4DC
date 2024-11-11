@@ -175,6 +175,200 @@ vector<photo> DecayRates::Photo_Ion(double omega, ofstream & log)
 	return Result;
 }
 
+// vectorized version...
+vector<vector<photo>> DecayRates::Photo_Ion(std::vector<double> omega_array, ofstream & log)
+{
+	size_t dim = omega_array.size();
+	vector<vector<photo>> Result_array(dim,vector<photo>(0));
+
+
+	photo PhotoTmp;
+	int j = 0, N_elec = 0;
+	int infinity, L;
+	//vector<double> Infinity(dim,0), V_tmp(dim,0);
+	double Infinity = 0;
+	vector<double> V_tmp(dim,0);
+	//vector<bool> found_result(dim,0); // tracks when results have been found.
+	vector<RadialWF> Orbitals(orbitals.size());
+
+		std::vector<double> k_min(dim), k_max(dim,0);
+		for (size_t m = 0; m < dim; m++){
+			k_min[m] = sqrt(2*omega_array[m]);
+		}
+		for (int i = 0; i < orbitals.size(); i++)
+		{
+			Orbitals[i].set_N(orbitals[i].N());
+			Orbitals[i].set_L(orbitals[i].L());        // Resets occupancy
+			Orbitals[i].Energy = orbitals[i].Energy;
+			
+			for (size_t m = 0; m < dim; m++){
+				if (orbitals[i].occupancy() != 0)
+				{
+					N_elec += orbitals[i].occupancy();
+					if (j < orbitals[i].pract_infinity()) { j = orbitals[i].pract_infinity(); Infinity = lattice.R(j); }
+					if (omega_array[m] + orbitals[i].Energy >= 0.25)
+					{
+						if (0.5*k_min[m]*k_min[m] > omega_array[m] + orbitals[i].Energy) k_min[m] = sqrt(2 * (omega_array[m] + orbitals[i].Energy));
+						if (0.5*k_max[m]*k_max[m] < omega_array[m] + orbitals[i].Energy) k_max[m] = sqrt(2 * (omega_array[m] + orbitals[i].Energy));
+					}
+				}
+			}
+
+			Orbitals[i].set_occupancy(orbitals[i].occupancy());
+		}
+		double max_k_max = 0;
+		for (size_t m = 0; m < dim; m++){
+			//if (k_max[m] <= 0) found_result[m] = true;
+			if (Infinity < 5*6.28/k_min[m]) Infinity = 5*6.28/k_min[m];
+			if (max_k_max < k_max[m]) max_k_max = k_max[m];
+		}
+	//	Usually a finer grid is required.
+	//	Grid Lattice(50000, 0.001, 50, "linear");
+	Grid Lattice(lattice.R(0), Infinity, 0.03/max_k_max);
+
+//	Interpolate orbitals on the new grid
+	Interpolation W(6);
+
+	for (int i = 0; i < Orbitals.size(); i++) {
+		if (input.Exited_Pot_Model() != "V_N-1" && orbitals[i].occupancy() == 0) continue;
+		if (orbitals[i].F[0] != 0) W.RecalcWF(orbitals[i], lattice, Orbitals[i], Lattice);
+		Infinity = lattice.R(orbitals[i].pract_infinity());
+		j = 0;
+		while (Lattice.R(j) < Infinity && j < Lattice.size() - 1) j++;
+		Orbitals[i].set_infinity(j);
+	}
+
+//	Potential on the new grid.
+	Potential U(&Lattice, u.NuclCharge());
+	U.GenerateTrial(Orbitals);
+
+	RadialWF Continuum(Lattice.size());
+
+	// These lines do not do anything, it just initialises bogus values of n and l
+	// so that valgrind does not complain about the comparison in Potential.cpp.
+	// n=-1 is chosen to distinguish it from bound states.
+	Continuum.set_N(-1);
+	Continuum.set_L(0); // bogus line to make valgrind happy
+	Continuum.set_occupancy(1);
+	Continuum.set_infinity(Lattice.size() - 1);
+
+	Adams I(Lattice, 10);
+	vector<double> density;
+	double ME = 0;
+
+// main loop over all the possible transitions, peformed largely independently of omega.
+	std::vector<photo> omega_independent_Result(0);
+	std::vector<std::vector<double>> continuum_energies(dim);
+	for (int i = 0; i < Orbitals.size(); i++)
+	{
+		if (Orbitals[i].occupancy() > 0)
+		{
+			infinity = Orbitals[i].pract_infinity();
+
+			density.clear();
+			density.resize(infinity + 1);
+			for (int s = 0; s < density.size(); s++) density[s] = pow(Orbitals[i].F[s], 2);
+			ME = I.Integrate(&density, 0, infinity);
+
+			j = Orbitals[i].occupancy();
+			PhotoTmp.hole = i;
+			PhotoTmp.val = 0;
+			std::vector<photo> phototmps(dim,PhotoTmp);
+			if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[i].set_occupancy(j - 1);//excite one electron...
+			double max_continuum_energy = 0;
+			for (size_t m = 0; m < dim; m++){
+				double cont_energy = omega_array[m] + Orbitals[i].Energy;
+				if (cont_energy > max_continuum_energy) max_continuum_energy = cont_energy;
+			}
+			Continuum.Energy = max_continuum_energy;
+			if (Continuum.Energy > 0)
+			{
+				// Update here if Input.Hamiltonian == "LDA".
+				if (input.Hamiltonian() == 1) {
+					U.LDA_upd_dir(Orbitals);
+				} else {
+					U.HF_upd_dir(&Continuum, Orbitals); // This line seems to give 'conditional jump or move depends on uninitialised values'
+				}
+				if (input.Exited_Pot_Model() == "V_N-1") U.HF_V_N1(&Continuum, Orbitals, i, true, false);
+				
+				for (int l = Orbitals[i].L() - 1; l <= Orbitals[i].L() + 1; l += 2)
+				{
+					if (l >= 0)
+					{
+						for (size_t m = 0; m < dim; m++){
+							Continuum.Energy = omega_array[m] + Orbitals[i].Energy;
+							if (Continuum.Energy <= 0) continue;
+							Continuum.set_L(l);   //TODO make sure this is fine - S.P.
+							if (IntegrateContinuum(Lattice, U, Orbitals, &Continuum, i) < 0) {
+							log << "====================================================================" << endl;
+								log << "Continuum didn't converge: " << endl;
+								for (int i = 0; i < orbitals.size(); i++)
+								{
+									log << i + 1 << ") n = " << orbitals[i].N() << " l = " << orbitals[i].L()
+										<< " Energy = " << orbitals[i].Energy << " Occup = " << orbitals[i].occupancy() << endl;
+								}
+								log.flush();
+							}
+
+							density.clear();
+							density.resize(infinity + 1);
+							if (input.Gauge() == "length") {
+									for (int s = 0; s < density.size(); s++)	{
+									density[s] = Lattice.R(s)*Continuum.F[s] * Orbitals[i].F[s];
+								}
+								ME = I.Integrate(&density, 0, infinity);
+							}
+							else {
+							// Velocity gauge.
+								double ang_coeff =  0.5*(Orbitals[i].L() - Continuum.L())*(Orbitals[i].L() + Continuum.L() + 1);
+									for (int s = 0; s < density.size(); s++)	{
+									density[s] = Continuum.F[s] *(Orbitals[i].G[s] + ang_coeff * Orbitals[i].F[s]/Lattice.R(s)) ;
+								}
+								ME = I.Integrate(&density, 0, infinity)/omega_array[m]; //;
+							}
+
+							if (Orbitals[i].L() > l) { L = Orbitals[i].L();	}
+							else { L = l; }
+							phototmps[m].val += 4*Pi*Pi*Alpha*omega_array[m]*j*ME*ME*L / ((2*Orbitals[i].L()+1) * 3);; 
+						}
+					}
+				}
+			}
+			if (input.Exited_Pot_Model() == "V_N-1no") Orbitals[i].set_occupancy(j);
+			for (size_t m = 0; m < dim; m++){
+				Result_array[m].push_back(phototmps[m]);
+			}
+		}
+	}
+	// Fill in for all omegas TODO This logic is wrong at present.
+	for (size_t m = 0; m < dim; m++){
+		// Result_array[m] = omega_independent_Result;
+		// for (int i = 0; i < omega_independent_Result.size(); i++)
+		// {
+		// 	if (continuum_energies[m][i] < 0){
+		// 		Result_array[m][i].val = 0;
+		// 	}
+		// 	// We multiply by ME twice and multiply by omega.
+		// 	if (input.Gauge() == "length")
+		// 		Result_array[m][i].val *= omega_array[m];
+		// 	else
+		// 		Result_array[m][i].val /= omega_array[m];
+				
+		// }
+		// Remove the zero elements
+		Result_array[m].erase(
+			std::remove_if(
+				Result_array[m].begin(), 
+				Result_array[m].end(),
+				[](photo const & e) { return e.val == 0; }
+			), 
+			Result_array[m].end()
+		); 
+	}
+
+	return Result_array;
+}
+
 
 vector<fluor> DecayRates::Fluor()
 {

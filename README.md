@@ -11,11 +11,12 @@ The main code of the suite, AC4DC (the literal acronym is no longer apt), simula
 + Allows for an arbitrary form of the free-electron distribution f(E) interpolated over a basis of B-splines. 
   + The basis is adaptive; it is transformed periodically to automatically assign more splines where sharp, non-polynomial peaks are present in the distribution. 
 
+# DRAFT warning
+When the grid fails to cnverge, it loads a checkpoint and decreases time steps. However, sometimes ((always?)) the divergence to an oscillatory (incorrect) fit occurs over a small number of steps. If a grid update occurs during this period, the fit may then converge, and the fluctuation is uncaught. This is quite rare but means data should be double checked    
+
 ## Scatter
 
 An auxilliary simulation, Scatter, generates scattering patterns off realistic targets constructed from PDB structure files, with the atoms’ states selected entirely based off the probability distributions produced by AC4DC, without regard for selections of prior snapshots. These are then compared with the scattering pattern produced by a structure in the 'ideal', undamaged case where no ionisation occurs. 
-
-
 
 ### Installing AC4DC
 
@@ -38,13 +39,13 @@ Tested on an Ubuntu environment in WSL2.
 4. Run `make`
 
 #### For live plotting (optional)
-`brew install python3.9` 
+`brew install python3.9`  <br> 
 Run 'pip3.9 install' for: pybind11, plotly, scipy.
 
 #### Running and testing
 
-`mv bin/ac4dc ac4dc`
-`./ac4dc input/lys_example.mol`   
+`mv bin/ac4dc ac4dc`  <br>
+`./ac4dc input/lys_example.mol`  <br>   
 If the file cannot execute it may be a linking error. Run ‘ldd ac4dc’ to check dependencies.
 
 ### Dependencies
@@ -65,36 +66,70 @@ This and the use of python may be disabled by commenting out `#define PYBIND` in
 
 ### Configuration
 
-AC4DC reads the composition of the target, the pulse parameters, and various hyperparameters (e.g pertaining to the spline knot grid)  from the molecular (.mol) file it is provided. See AC4DC/input/mol_template.mol for the style of these files and the parameters available.     
+AC4DC reads the composition of the target, the pulse parameters, and various hyperparameters (e.g pertaining to the spline knot grid) from the molecular (.mol) file it is provided. See AC4DC/input/mol_template.mol for the style of these files and the parameters available.     
 
-In AC4DC/include/config.h various features of the simulation can be disabled (e.g. plasma processes, live plotting, backing up of data).
+In AC4DC/include/config.h various features of the simulation can be disabled (e.g. plasma processes, live plotting, backing up of data). Most features are enabled by default, with the exception of tracking the electron cascades seeded by each element ("TRACK_SINGLE_CONTINUUM"), as this is computationally costly. 
+
+### Grid regions preset
+
+Relevant files:
+  include/GridSpacing.hpp
+  src/DynamicRegions.cpp
+
+        case 'd':
+            preset.selected = DynamicGridPreset::dismal_acc;
+            break;
+        case 'l':
+            preset.selected = DynamicGridPreset::low_acc;
+            break;
+        case 'm':
+            preset.selected = DynamicGridPreset::medium_acc;
+            break;
+        case 'h':
+            preset.selected = DynamicGridPreset::high_acc;
+            break;    
+        case 'n':
+            preset.selected = DynamicGridPreset::no_dirac;
+            break;         
+        case 't':
+            preset.selected = DynamicGridPreset::training_wheels;
+            break;                      
+        case 'A':
+            preset.selected = DynamicGridPreset::heavy_support;
+            break;  
+        case 'B':
+            preset.selected = DynamicGridPreset::Zr_support;
+            break;              
+        case 'D':
+            preset.selected = DynamicGridPreset::lower_dirac_support;
+            break;            
 
 ### Running AC4DC and workflow
 
-0. Compile
-`make`
-`mv bin/ac4dc ac4dc`
-1. Simulate the damage
-Run with `./ac4dc input/lys_example.mol`
+0. Compile  <br>
+`make`  <br>
+`mv bin/ac4dc ac4dc`  <br>
+1. Simulate the damage  <br>
+Run with `./ac4dc input/lys_example.mol`  <br>
 Once completed, the simulation produces a folder containing the data in AC4DC/output/__Molecular/lys_example_#, where # is the number for the simulation (this will be 1 if it is the first time the program has been run with this .mol file). 
-The simulation saves the data to AC4DC/output/backup_data hourly. This can be loaded if specified in the input file. Note that old files are never removed, but they are overwritten. 
-2. Analysis
-The plotting/scattering programs always take in a folder handle, which is searched for within the AC4DC/output/__Molecular directory and subdirectories (ambiguities are flagged and handled).
-View an interactive plot for the electron distribution with
-`python3.9 scripts/_generate_interactive lys_example_#`
-and generate various plots with
-`python3.9 scripts/generate_plots lys_example_#`
+The simulation saves the data to AC4DC/output/backup_data hourly. This can be loaded if specified in the input file. Note that old files are never removed, but they are overwritten.  <br> 
+2. Analysis  <br>
+The plotting/scattering programs always take in a folder handle, which is searched for within the AC4DC/output/__Molecular directory and subdirectories (ambiguities are flagged and handled).  <br>
+View an interactive plot for the electron distribution with  <br>
+`python3.9 scripts/_generate_interactive lys_example_#`  <br>
+and generate various plots with  <br>
+`python3.9 scripts/generate_plots lys_example_#`  <br>
 These will be contained in AC4DC/output/graphs/
 
-Automated generation of batches of simulations is also supported.
-Configure generate_batch.py and run:
-`python3.9 generate_batch.py input/templates/lys` will generate a batch of simulations with each permutation of parameters, located in the folder AC4DC/input/batch_lys/.
-run_sims.sh can be configured to run these batches. 
-If these results are manually moved to the folder AC4DC/output/__Molecular/my_batch/, we can run
-`python3.9 scripts/_generate_interactive my_batch`
-and
-`python3.9 scripts/generate_plots my_batch`
-which will generate figures for each simulation, saved in AC4DC/output/graphs/my_batch
+Automated generation of batches of simulations is also supported.  <br>
+Configure generate_batch.py and run:  <br>
+`python3.9 generate_batch.py input/templates/lys` will generate a batch of simulations with each permutation of parameters, located in the folder AC4DC/input/batch_lys/.  <br>
+run_sims.sh can be configured to run these batches.  <br>
+If these results are manually moved to the folder AC4DC/output/__Molecular/my_batch/, we can run  <br>
+`python3.9 scripts/_generate_interactive my_batch`  <br>
+and  <br>
+`python3.9 scripts/generate_plots my_batch`  <br>
+which will generate figures for each simulation, saved in AC4DC/output/graphs/my_batch  <br>
 
 
 
@@ -122,14 +157,9 @@ Corresponding lines in the `index.txt` file explain which configuration the to/f
 EII parameters are stored in "sort-of-json" format - please note that the program does NOT use a robust json parser, and is sensitive to line formatting.
 
 
-### Known Bugs
-
-- When compiled under gcc8 on Debian, a malloc error is thrown when trying to run lysozyme. The error has something to do with the allocation of the Q tensors, but the source is not clear. Unknown whether this is still an issue.
-- The fit for the free electron distribution gets 'stuck' when attempting to simulate lysozyme.Gd, where the photon energy is ~100 eV above the L-shell edge calculated by AC4DC (under the orbital-shell approximation), e.g. input/galli/lys_galli_HF_L_edge.
-
 ## TODO
 
-1.  Refactor to decouple atomic physics from rate equation solving. Make Hartree-Fock atomic code interpolate the rates for a given beam energy and store them in a file, to be read by the dynamics solver. Very important for capability in simulating heavier atoms (i.e. with more electron configurations).
+1. Refactor to decouple atomic physics from rate equation solving. Make Hartree-Fock atomic code interpolate the rates for a given beam energy and store them in a file, to be read by the dynamics solver. Very important for capability in simulating heavier atoms (i.e. with more electron configurations).
 2. Fermi-sea collision kernel
 3. Finish implementation of electron filtration by the water background.
 4. Finish implementation of correction for bound transport.
@@ -142,12 +172,12 @@ EII parameters are stored in "sort-of-json" format - please note that the progra
 11. Move to a proper database system to store input/output data
 12. Implement 'output version control' for atomic parameters in storage: avoid unnecessary recalculation, guarantee recalculation if new input parameters are incompatible
 13. Add methods to `Input.cpp` to enable reading/writing salient parameters to file, e.g. `output/C/run_2021-04-11/input.txt`
-14. Add linear search implementation to input logic
 16. Incorporate minimum and maximum energy into GridSpacing (perhaps rename it to GridParams)
 18. Restructure parameter input and rate output files to use JSON format
 19. GUI (Current candidate framework: Qt)
 20. Optimise with static arrays - promote state_type to a N_FREE-dimensioned template for faster reads.
 21. ODE integration routines: borrow from [rodent](https://www.github.com/jeanluct/rodent)'s ideas, make the function a template parameter rather than a virtual member. (Probably not limiting, but it's a fairly glaring misuse of virtual functions)
+22. Upgrade dynamic grid algorithm to handle low-energy photoelectron peaks - currently mistakes them for MB peaks and so the solver fails.
 
 ### Bibliography:
 

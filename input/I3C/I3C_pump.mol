@@ -1,0 +1,64 @@
+#ATOMS
+C 1000
+N 125
+O 500
+I_fast 375
+
+#BOUND_FREE_EXCLUSIONS
+I_fast
+
+#VOLUME
+40000        // Volume per molecule in Angstrom^3.
+500         // Length scale of sample in Angstrom. Used for effective escape rate of photo-electrons (assumes surrounded by a void).
+none // Spatial boundary shape - options are none, spherical, cylindrical, planar
+
+#PULSE
+9750         // Photon energy in eV.
+10           // Pulse width in femtoseconds (defined as FWHM for Gaussian pulse).
+gaussian       // Pulse shape
+7.2  // total sim time in fwhm
+1.2 // time before pulse peak to start at in fwhm 
+
+#USE_COUNT
+true    // active (using count)?
+0.1  // Photon density (x10^12 ph.µm-2) (3.5e12 um-2)
+
+#NUMERICAL
+6000      // Initial guess for number of time step points for rate equation.
+24            // Number of threads in OpenMP.
+
+#DYNAMIC_GRID
+M              // Grid regions preset, options are: dismal, low, medium, high, (referring to accuracy),  and no_dirac (static region is used rather than dynamic dirac regions)
+5.05            // Grid update period in fs, (dynamic grid only).
+
+#OUTPUT
+2400         // Number of time steps in the output files.
+4000        // number of free-electron grid points in output file.
+N            // Write atomic charges in a separate file (Y/N)?
+Y            // Write intensity in a separate file (Y/N)?
+Y            // Write data for molecular dynamics (MD) in a separate file (Y/N)?
+
+#DEBUG
+99 //10     // Simulation cutoff time in fs
+0.01    // Interval to update current timestep [fs].
+####END#####
+
+Notes:
+Pulse energy 90 eV above Zn K edge 
+Intensity was between 8e17 Wcm^-2 and 1.7e^18 Wcm^-2? This file assumes 1.25e18 Wcm^-2. EDIT: 1.5e18 W cm^-2
+W = 6.242e18 eV/s = 6242 eV/fs = 0.64 9.75 keV ph / fs.
+cm^-2 = 10^-8 um^-2
+So 1.25e18*0.64*1e-8 = 8e9 ph/fs at peak
+
+Peak power = 0.94*E/FWHM
+-> fluence = 10/0.94*8e9 = 8.5e10 ph/um^2
+
+But if was given as average intensity (like in a square pulse), then the fluence is
+8e9*10 = 8e10
+
+
+I3C
+C 8
+I 3
+N 1
+O 4

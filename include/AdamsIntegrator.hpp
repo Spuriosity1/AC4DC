@@ -51,9 +51,10 @@ protected:
     std::vector<T> y;
     std::vector<double> t;    
     virtual void sys_bound(const T& q, T& qdot,T& q_bg, double t) =0;
+    virtual void set_zero_y() =0;
     T zero_y;
 
-    std::vector<T> y_bg;  // background
+    std::vector<T> y_bg;  // background to use for boundary exchange. (e.g. data from prior simulation of mother liquor)
 
 };
 
@@ -68,9 +69,7 @@ template<typename T>
 void IVPSolver<T>:: setup(const T& initial_state, double _dt, double _step_tolerance ) {
     step_tolerance = _step_tolerance;
     this->y[0] = initial_state;
-    // Makes a zero std::vector in a mildly spooky way
-    this->zero_y = initial_state; // do this to make the underlying structure large enough
-    this->zero_y *= 0.; // set it to Z E R O
+    this->set_zero_y();  // NOT equal to initial state necessarily.
     if (_dt < 1E-16) {
         std::cerr<<"WARN: step size "<<dt<<"is smaller than machine precision"<<std::endl;
     }
@@ -84,7 +83,7 @@ template<typename T>
 class Adams_BM : public IVPSolver<T>{
 public:
     Adams_BM(unsigned int order=4);
-    void iterate(double t_initial, double t_final);
+    void solve_dynamics(double t_initial, double t_final);
 
 protected:
     void run_steps();
@@ -206,7 +205,7 @@ void Adams_BM<T>::step_nonstiff_part(int n) {
     this->sys_bound(tmp2, tmp, this->y_bg[n+1], this->t[n+1]);
     tmp *= b_AM[0];
     // Now tmp goes back to being an aggregator
-    for (int i = 1; i < order; i++) {
+    for (size_t i = 1; i < order; i++) {
         this->sys_bound(this->y[n-i+1], ydot, this->y_bg[n-i+1], this->t[n-i+1]);
         ydot *= b_AM[i];
         tmp += ydot;
@@ -227,7 +226,7 @@ void Adams_BM<T>::step_nonstiff_part(int n) {
 }
 
 template<typename T>
-void Adams_BM<T>::iterate(double t_initial, double t_final) {
+void Adams_BM<T>::solve_dynamics(double t_initial, double t_final) {
 
     if (this->dt < 1E-16) {
         std::cerr<<"WARN: step size "<<this->dt<<"is smaller than machine precision"<<std::endl;

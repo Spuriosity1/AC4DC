@@ -272,7 +272,7 @@ void BasisSet::manual_set_knot(const GridSpacing& gt){
             //  Get the index of the region (rgn) that this point is part of.
             size_t rgn = 0;
             for( ; rgn < _region_powers.size(); rgn++){
-                if( i - start < _manual_region_bndry_index[rgn+1]
+                if( i - start < static_cast<size_t>(_manual_region_bndry_index[rgn+1])
                     || rgn == _region_powers.size() - 1){
                     break;
                     }
@@ -314,7 +314,7 @@ void BasisSet::manual_set_knot(const GridSpacing& gt){
  * @param gt gt.zero_degree_0: The number of derivatives to set to zero: 0 = open conditions, 1=impose f(0)=0, 2=impose f(0)=f'(0) =0
  * @param  
  */
-void BasisSet::set_parameters(const GridSpacing& gt, ManualGridBoundaries& manual_elec_grid_regions, FeatureRegimes& regimes,DynamicGridPreset dyn_grid_preset) {
+void BasisSet::set_parameters(const GridSpacing& gt, ManualGridBoundaries& manual_elec_grid_regions, FeatureRegimes& regimes) {
     this->_manual_region_bndry_index = manual_elec_grid_regions.bndry_idx;   // TODO: refactor, can replace min and max with array of region start and region ends. -S.P.
     this -> _manual_region_bndry_energy = manual_elec_grid_regions.bndry_E;   
     this -> _region_powers = manual_elec_grid_regions.powers;   
@@ -331,8 +331,6 @@ void BasisSet::set_parameters(const GridSpacing& gt, ManualGridBoundaries& manua
     // boundary at minimum energy enforces energy conservation 
     this->_min = 0;
     if (gt.mode == GridSpacing::dynamic){
-        if (dyn_grid_preset.selected != DynamicGridPreset::unknown) // By default this will be False, only on initialisation of sim do we pass the preset to this function.
-            initialise_regions(dyn_grid_preset);
         assert(regions.size() > 0);
         this->_max = dynamic_max_inner_knot();  
         set_knot(gt,regimes);        

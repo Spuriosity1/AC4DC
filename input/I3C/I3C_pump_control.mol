@@ -1,0 +1,46 @@
+#ATOMS
+C 1000
+N 500
+O 500
+
+
+
+
+
+#VOLUME
+40000        // Volume per molecule in Angstrom^3.
+500         // Length scale of sample in Angstrom. Used for effective escape rate of photo-electrons (assumes surrounded by a void).
+none // Spatial boundary shape - options are none, spherical, cylindrical, planar
+
+#PULSE
+9750         // Photon energy in eV.
+10           // Pulse width in femtoseconds (defined as FWHM for Gaussian pulse).
+gaussian       // Pulse shape
+7.2  // total sim time in fwhm
+1.2 // time before pulse peak to start at in fwhm 
+
+#USE_COUNT
+true    // active (using count)?
+0.1  // Photon density (x10^12 ph.µm-2) (3.5e12 um-2)
+
+#NUMERICAL
+2000      // Initial guess for number of time step points for rate equation.
+26            // Number of threads in OpenMP.
+
+#DYNAMIC_GRID
+M              // Grid regions preset, options are: dismal, low, medium, high, (referring to accuracy),  and no_dirac (static region is used rather than dynamic dirac regions)
+5.05            // Grid update period in fs, (dynamic grid only).
+
+#OUTPUT
+800         // Number of time steps in the output files.
+4000        // number of free-electron grid points in output file.
+N            // Write atomic charges in a separate file (Y/N)?
+Y            // Write intensity in a separate file (Y/N)?
+Y            // Write data for molecular dynamics (MD) in a separate file (Y/N)?
+
+#DEBUG
+99 //10     // Simulation cutoff time in fs
+0.01    // Interval to update current timestep [fs].
+####END#####
+
+Notes:

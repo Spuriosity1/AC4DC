@@ -1,0 +1,37 @@
+// 3+ Ion - as in Gadoteridol 
+// Average over configuration fractional occupancy is supported, so closed orbitals can have occupancy between 0 and 4L+2.
+// 4446 configs excluding K and L shells.
+// 93,366 configs excluding K shell.
+#ATOM
+64            // Nuclear charge
+coulomb      // Nuclear potential model. Can be "coulomb" for point-like nucleus, "sphere" for spherical nucleus.
+LDA           // Hamiltonian form. Can be HF, LDA.
+// Orbitals and their occupancies
+6	         // Number of orbitals.
+1s 2
+2s 2
+2p 6
+3N 18
+4N 25
+5N 8
+V_N          // Potential model. Can be "V_N" for Hartree-Fock, "V_N-1no" for non-orthogonal excited state orbitals, "V_N-1" for classical potential.
+length       // Gauge type for matrix elements involving photon absorption/emission. Can be either "length" or "velocity".
+
+
+#NUMERICAL
+10000          // Number of grid points
+0.001	      // Origin of the coordinate grid. Should be > 0.
+170	          // Box radius, maximum distance from the nucleus.
+1000          // Initial guess for number of time step points for rate equation. If the value is 0, program skips rate equation soluving step.
+7             // Number of threads in OpenMP.
+// Hartree-Fock implementation numerical parameters.
+-6            // Hartree-Fock tolerance.
+-10           // Radial Schroedinger equation solver, tolerance (Master).
+-3            // No-exchange step convergence tolerance.
+1500           // Maximum number of hartree-Fock iterations.
+70            // Maximum number of Virtual orbital iterations. Not used unless virtual orbitals are evaluated.
+
+#OUTPUT
+500           // Number of time steps in the output files.
+Y             // Write charge into a separate file (Y/N)?
+Y             // Write intensity into a separate file (Y/N)?

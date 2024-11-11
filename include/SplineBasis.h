@@ -36,7 +36,7 @@ class BasisSet  : public GridRegions
 {
 public:
     BasisSet() : GridRegions::GridRegions() {} 
-    void set_parameters(const GridSpacing& gt, ManualGridBoundaries& elec_grid_regions, FeatureRegimes& regimes,DynamicGridPreset dyn_grid_preset);
+    void set_parameters(const GridSpacing& gt, ManualGridBoundaries& elec_grid_regions, FeatureRegimes& regimes);
     void set_parameters(FeatureRegimes& regimes, std::vector<double> new_grid_knots);
     void compute_overlap(size_t num_funcs);
     /// Returns S_inverse(deltaf) 

@@ -22,7 +22,7 @@ from copy import deepcopy
 
 NORMED = False
 FULL_FIG = True
-PLOT_MODE = 0  # 0: plot the ionisation rates at snapshot times. 1: Plot the EEDF alongside the ionisation rate. 2: Plot the ionisation rate only. 
+PLOT_MODE = 2  # 0: plot the ionisation rates at snapshot times. 1: Plot the EEDF alongside the ionisation rate. 2: Plot the ionisation rate only. 
 MULTIPLY_BY_NEUTRAL = "C" #TODO remove this
 
 def main():

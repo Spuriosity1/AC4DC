@@ -1,5 +1,6 @@
 // Highest orbital removed, to place a lower bound on damage in case of photon energy above second shell.. 
 // Average over configuration fractional occupancy is supported, so closed orbitals can have occupancy between 0 and 4L+2.
+// Gd 11+, 4446 configs excluding 1s.
 
 #ATOM
 64            // Nuclear charge

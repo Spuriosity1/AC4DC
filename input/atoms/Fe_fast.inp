@@ -1,22 +1,22 @@
-// 3+ Ion - as in Gadoteridol 
-// Average over configuration fractional occupancy is supported, so closed orbitals can have occupancy between 0 and 4L+2.
+// Average over configuration fractional occupancy is supported, atomic orbital occupancies are between 0 and 4L+2.
+// 5103 configs with 1s, 1701 without.
 
 #ATOM
-26            // Nuclear charge
+26           // Nuclear charge
 coulomb      // Nuclear potential model. Can be "coulomb" for point-like nucleus, "sphere" for spherical nucleus.
-HF          // Hamiltonian form. Can be HF, LDA.
+HF           // Hamiltonian form. Can be HF, LDA.
 // Orbitals and their occupancies
-4	         // Number of orbitals.
+5	           // Number of orbitals. Can include virtual orbitals which have occupancy = 0.
 1s 2
-2N 14
+2N 8
 3N 8
-4N 2
+4s 2
+3d 6
 V_N          // Potential model. Can be "V_N" for Hartree-Fock, "V_N-1no" for non-orthogonal excited state orbitals, "V_N-1" for classical potential.
 length       // Gauge type for matrix elements involving photon absorption/emission. Can be either "length" or "velocity".
 
-
 #NUMERICAL
-6000          // Number of grid points
+5000          // Number of grid points
 0.001	      // Origin of the coordinate grid. Should be > 0.
 150	          // Box radius, maximum distance from the nucleus.
 1000          // Initial guess for number of time step points for rate equation. If the value is 0, program skips rate equation soluving step.
@@ -25,7 +25,7 @@ length       // Gauge type for matrix elements involving photon absorption/emiss
 -6            // Hartree-Fock tolerance.
 -10           // Radial Schroedinger equation solver, tolerance (Master).
 -3            // No-exchange step convergence tolerance.
-1500           // Maximum number of hartree-Fock iterations.
+800           // Maximum number of hartree-Fock iterations.
 70            // Maximum number of Virtual orbital iterations. Not used unless virtual orbitals are evaluated.
 
 #OUTPUT

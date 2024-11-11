@@ -85,7 +85,7 @@ vector<double> EigenSolver::EigenVals()
 {
 	vector<double> Result(EigenValues.size(), 0);
 
-	for (int i = 0; i < Result.size(); i++) {
+	for (size_t i = 0; i < Result.size(); i++) {
 		Result[i] = EigenValues(i);
 	}
 
@@ -95,8 +95,8 @@ vector<double> EigenSolver::EigenVals()
 vector<vector<double>> EigenSolver::EigenVecs()
 {
 	vector<vector<double>> Result(EigenValues.size(), vector<double>(EigenValues.size(), 0));
-	for (int i = 0; i < Result.size(); i++) {
-		for (int j = 0; j < Result.size(); j++) {
+	for (size_t i = 0; i < Result.size(); i++) {
+		for (size_t j = 0; j < Result.size(); j++) {
 			Result[i][j] = EigenVectors(j, i);
 		}
 	}

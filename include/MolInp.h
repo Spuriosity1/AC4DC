@@ -29,6 +29,7 @@ This file is part of AC4DC.
 #include "LossGeometry.hpp"
 #include "Pulse.h"
 
+
 class MolInp
 {
 	// Molecular input for coupled atom/electron plasma calculations.
@@ -70,7 +71,7 @@ public:
 	string name = "";
 
 	// Scans for atomic process rates in the folder output/[atom name]/Xsections and recalculates if absent.
-	// 'Recalculate' flag skips scanning and forces recomputation.
+	// 'Recalculate' flag skips scanning for primary ionization data and forces computation for the specific photon energy used. As it only generates data for a single photon energy, it is quicker than the initial generation of data for when recalc is False. However, the data is not (currently) stored for use in later runs.
 	// The result is available as Store.
     void calc_rates(ofstream &_log, bool recalc=true);
 
@@ -86,7 +87,14 @@ public:
 
 	int num_time_steps = -1; // Number of time steps for time dynamics
 
-	double time_update_gap = 0; // interval between each cout'd time.	 
+	double time_update_gap = 0; // interval **in fs** between each cout'd time.	May be useful to set to a high number for HPC or when otherwise not using ncurses.
+    int steps_per_live_plot_update = 20; // Interval  **in steps** between plotting of the free electron distribution to _live_plot.png. Setting to 1 (updating every step) has a negligible effect on speed outside of very fast high step count simulations. 
+
+	double electron_source_fraction = 0;
+	double electron_source_energy = -1;
+	double electron_source_duration = 1; // As fraction of entire pulse
+	char electron_source_type = 'c'; // (c)onstant: rate is ([intensity]/[initial intensity]) * [initial photoion. rate of atoms in target]  *  [electron source fraction]. | (p)roportional: rate is [source fraction] * [total photionisation rate of all atoms in target].   
+
 protected:
 
 	bool validate_inputs();
@@ -122,6 +130,11 @@ protected:
 
 	// Dynamic grid
 	double grid_update_period; // time period between dynamic grid updates, fs.
+
+	// Rate calc exclusions
+	std::vector<bool> bound_free_exclusions;
+
+
 };
 
 

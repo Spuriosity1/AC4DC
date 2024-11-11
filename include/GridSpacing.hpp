@@ -34,9 +34,18 @@ struct DynamicGridPreset{
     const static char no_dirac = 4;
     const static char training_wheels = 5;
     const static char heavy_support = 6;
+    const static char Zr_support = 7;
+    const static char lower_dirac_support = 8;
+    const static char Galli_support = 9;
+    const static char all_log_grid = 10;
+    const static char mb_log_grid = 11;
+    const static char static_high_energy = 12;
     const static char unknown = 101;
     char selected = unknown;  
     double pulse_omega = -1;  // Photon energy [eV]
+    double min_dirac_region_peak_energy;  // Minimum energy for a peak that the dirac dynamic region will support (Ha). #TODO  move, don't store this here.
+	double electron_source_energy = -1;
+    std::string name;
 };
 
 struct GridSpacing {
@@ -110,9 +119,10 @@ namespace {
             gs.mode = GridSpacing::dynamic;
             break;          
         default:
-            std::cerr<<"Unrecognised grid mode \""<<tmp<<"\", defaulting to dynamic mode..."<<std::endl;
-            gs.mode = GridSpacing::dynamic;
-            break;
+            std::cerr<<"Unrecognised grid mode \""<<tmp<<"\""<<std::endl;
+            assert(false);
+            //gs.mode = GridSpacing::dynamic;
+            //break;
         }
         return is;
     }
@@ -147,11 +157,30 @@ namespace {
             break;                      
         case 'A':
             preset.selected = DynamicGridPreset::heavy_support;
-            break;                      
-        default:
-            std::cerr<<"Unrecognised grid preset \""<<tmp<<"\", defaulting to medium accuracy..."<<std::endl;
-            preset.selected = DynamicGridPreset::medium_acc;
+            break;        
+        case 'B':
+            preset.selected = DynamicGridPreset::Zr_support;
+            break;                           
+        case 'D':
+            preset.selected = DynamicGridPreset::lower_dirac_support;
             break;
+        case 'G':
+            preset.selected = DynamicGridPreset::Galli_support;
+            break;      
+        case 'L':
+            preset.selected = DynamicGridPreset::all_log_grid;
+            break;          
+        case 'M':
+            preset.selected = DynamicGridPreset::mb_log_grid;
+            break;           
+        case 'S':
+            preset.selected = DynamicGridPreset::static_high_energy;
+            break;                                                     
+        default:
+            std::cerr<<"Unrecognised grid preset \""<<tmp<<"\""<<std::endl;
+            assert(false);
+            //preset.selected = DynamicGridPreset::medium_acc;
+            //break;
         }
         return is;
     }    

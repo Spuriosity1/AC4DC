@@ -19,14 +19,14 @@ void Distribution::from_backwards_Euler(double dt, const Distribution& prev_step
 
     bool converged = false;
 
-    Eigen::Map<const Eigen::VectorXd > prev_step (prev_step_dist.f.data(), size);
-    Eigen::Map<Eigen::VectorXd > curr_step(f.data(), size);
+    Eigen::Map<const Eigen::VectorXd > prev_step (prev_step_dist.f_array[0].data(), size);
+    Eigen::Map<Eigen::VectorXd > curr_step(f_array[0].data(), size);
 
     while (!converged && idx < MAX_ITER){
         
         old_curr_step = curr_step;
         v = Eigen::VectorXd::Zero(size);
-        this->get_Q_ee(v, size/3); // calculates v based on curr_step
+        this->get_Q_ee(0, v, size/3); // calculates v based on curr_step
         
         // Newton iterator
         get_Jac_ee(M);
@@ -66,8 +66,8 @@ void Distribution::get_Jac_ee(Eigen::MatrixXd& M) const{
         for (size_t Q=0; Q<size; Q++) {
             for (auto& q : basis.Q_EE[P][Q]) {
                 // q.idx is  L
-                M(P,q.idx) += q.val * f[Q] * CoulombLog;
-                M(P, Q) += q.val * f[q.idx] * CoulombLog;
+                M(P,q.idx) += q.val * f_array[0][Q] * CoulombLog;
+                M(P, Q) += q.val * f_array[0][q.idx] * CoulombLog;
             }
         }
     }

@@ -1,4 +1,5 @@
 // Average over configuration fractional occupancy is supported, atomic orbital occupancies are between 0 and 4L+2.
+// 945 configs. 
 
 #ATOM
 16            // Nuclear charge

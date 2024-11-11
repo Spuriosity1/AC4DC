@@ -25,6 +25,10 @@ void SplineIntegral::precompute_QEII_coeffs(vector<RateData::Atom>& Atoms) {
     Q_EII.resize(Atoms.size());
     
     for (size_t a=0; a<Atoms.size(); a++) {
+        if (Atoms[a].bound_free_excluded){
+            Q_EII[a].resize(0);
+            continue;
+        }
         std::cout<<"\n[ Q precalc ] Atom "<<a+1<<"/"<<Atoms.size()<<std::endl;
         Q_EII[a].resize(Atoms[a].num_conf);
         for (size_t eta=0; eta<Atoms[a].num_conf; eta++) {
@@ -65,6 +69,10 @@ void SplineIntegral::precompute_QTBR_coeffs(vector<RateData::Atom>& Atoms) {
     // Size Q_TBR appropriately
     Q_TBR.resize(Atoms.size());
     for (size_t a=0; a<Atoms.size(); a++) {
+        if (Atoms[a].bound_free_excluded){
+            Q_TBR[a].resize(0);
+            continue;
+        }
         std::cout<<"\n[ Q precalc ] Atom "<<a+1<<"/"<<Atoms.size()<<std::endl;
         Q_TBR[a].resize(Atoms[a].num_conf);
         for (size_t eta=0; eta<Atoms[a].num_conf; eta++) {

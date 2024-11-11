@@ -1,0 +1,43 @@
+// Carbon (amorphous similar to Hau-Riege). Assumes 100nm cylindrical beam fired into much larger target.
+// Confirmed to work with AC4DCv2 (Sanders 2020 thesis).
+#ATOMS
+C 1
+
+#VOLUME
+18.11        // Volume per molecule in Angstrom^3.
+2000         // Length scale of sample in Angstrom. Used for effective escape rate of photo-electrons.
+none // Spatial boundary shape - options are none, spherical, cylindrical, planar
+
+#PULSE
+10000         // Photon energy in eV.
+15.0         // Pulse-dependent definition of duration in femtoseconds: FWHM for Gaussian pulse, pulse width for square pulse.
+gaussian     // Pulse shape.
+
+#USE_COUNT
+true         // enabled? true/false.
+1.00            // Photon density (x10^12 ph.µm-2)
+
+#NUMERICAL
+1000        // Initial guess for number of time step points for rate equation (Note e-e scattering part takes num_stiff_ministeps = 500 substeps for each step).
+26           // Number of threads in OpenMP.
+
+#DYNAMIC_GRID
+L       // Grid regions preset, options are 'low', 'medium', 'high', (accuracy) among others (see README).
+5.15         // Grid update period in fs, (dynamic grid only).
+
+#ELECTRON_SOURCE
+3       // Additional electrons as fraction of other photoion. events
+500     // Electron energy in eV
+0.0278        // Fraction of pulse to emit over
+
+#OUTPUT
+800          // Number of time steps in the output files.
+4000         // Number of free-electron grid points in output file.
+
+#DEBUG
+999           // Simulation cutoff time in fs (can end before but not after).
+0.01          // Interval to display current timestep [fs].
+1             // Steps per live plot update
+####END####
+
+Notes:

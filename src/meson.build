@@ -10,7 +10,8 @@ main_sources = files(
 'EigenSolver.cpp',
 'ElectronRateSolver.cpp',
 'ElectronSolverGridDynamics.cpp',
-'ElectronSolverIO.cpp',
+'ElectronSolverLoading.cpp',
+'ElectronSolverOutput.cpp',
 'FreeDistribution.cpp',
 'Grid.cpp',
 'HartreeFock.cpp',
@@ -26,6 +27,8 @@ main_sources = files(
 'SplineIntegral.cpp',
 'main.cpp',
 )
+
+
 
 
 project_sources += main_sources
