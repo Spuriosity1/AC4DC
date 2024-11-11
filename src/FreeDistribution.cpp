@@ -27,6 +27,8 @@ This file is part of AC4DC.
 #include "Constant.h"
 #include "SplineIntegral.h"
 #include <Eigen/StdVector>
+#include <algorithm>
+#include <cstring>
 
 // #define NDEBUG
 // to remove asserts
@@ -102,21 +104,24 @@ void Distribution::get_Q_eii (size_t _c, Eigen::VectorXd& v, size_t a, const bou
     assert(basis.has_Qeii());
     assert(P.size() == basis.Q_EII[a].size());
     assert((unsigned) v.size() == size);
-    
-    //double v_copy [size] = {0};
-    
-    for (size_t J=0; J<size; J++) {
-        double vj=0;
-        #pragma omp parallel for num_threads(threads) reduction(+ : vj) // Do NOT use collapse(2), it's about twice as slow.
-        for (size_t xi=0; xi<P.size(); xi++) {
+ 
+    double* v_copy = new double[size];
+
+    for (size_t xi=0; xi<P.size(); xi++) {
         // Loop over configurations that P refers to
+        std::fill_n(v_copy, size, 0.); // v_copy .= 0
+        for (size_t J=0; J<size; J++) {
+            double vj = 0;
+            #pragma omp parallel for num_threads(threads) reduction(+ : vj) // Do NOT use collapse(2), it's about twice as slow.
             for (size_t K=0; K<size; K++) {
-                v_copy[J] += P[xi]*f_array[_c][K]*basis.Q_EII[a][xi][J][K];
+                vj += P[xi]*f_array[_c][K]*basis.Q_EII[a][xi][J][K];
             }
+            v_copy[J] += vj;
         }
-        v[J] += vj;
-        //v += Eigen::Map<Eigen::VectorXd>(v_copy,size);
+        v += Eigen::Map<Eigen::VectorXd>(v_copy,size);
     }
+
+    delete[] v_copy;
 }
 
 /**
@@ -131,19 +136,22 @@ void Distribution::get_Q_eii (size_t _c, Eigen::VectorXd& v, size_t a, const bou
 void Distribution::get_Q_tbr (size_t _c, Eigen::VectorXd& v, size_t a, const bound_t& P, const int & threads) const {
     assert(basis.has_Qtbr());
     assert(P.size() == basis.Q_TBR[a].size());
-    double v_copy [size];
-    #pragma omp parallel for num_threads(threads) reduction(+ : v_copy) collapse(2)
+    double* v_copy = new double[size];
     for (size_t eta=0; eta<P.size(); eta++) {          // eta -> configuration
         // Loop over configurations that P refers to
-        for (size_t J=0; J<size; J++) {                   // J -> grid point
+        for (size_t J=0; J<size; J++) {                   // J -> grid point 
+            double vj=0;
+            #pragma omp parallel for num_threads(threads) reduction(+ : vj)
             for (auto& q : basis.Q_TBR[a][eta][J]) {   // Thousands of iterations for each J - S.P.
-                v_copy[J] += q.val * P[eta] * (f_array[_c][q.K] * f_array[0][q.L] + f_array[0][q.K] * f_array[_c][q.L])*0.5; //Correct?
+                vj += q.val * P[eta] * (f_array[_c][q.K] * f_array[0][q.L] + f_array[0][q.K] * f_array[_c][q.L])*0.5; //Correct?
                 //v_copy[J] += q.val * P[eta] * f_array[_c][q.K] * f_array[_c][q.L];
 
             }
+            v_copy[J] += vj;
         }
     }
     v += Eigen::Map<Eigen::VectorXd>(v_copy,size);
+    delete[] v_copy;
 }
 
 // Puts the Q_EE changes in the supplied vector v
@@ -159,17 +167,20 @@ void Distribution::get_Q_ee(size_t _c, Eigen::VectorXd& v, const int & threads) 
     // cerr<<"LnDebLen = "<<LnLambdaD<<endl;
     // A guess. This should only happen when density is zero, so Debye length is infinity.
     // Guess the sample size is about 10^5 Bohr. This shouldn't ultimately matter much.   /// Attention - S.P. // Actually it seems this isn't active? Something something fences on roads.
-    double v_copy [size] = {0}; 
-    #pragma omp parallel for num_threads(threads) reduction(+ : v_copy)  collapse(2)       
+    double* v_copy  = new double[size];
     for (size_t J=0; J<size; J++) {
+        double vj=0;
+        #pragma omp parallel for num_threads(threads) reduction(+ : vj)  collapse(1)       
         for (size_t K=0; K<size; K++) {
             for (auto& q : basis.Q_EE[J][K]) {
                  //v_copy[J] += q.val * f_array[0][K] * f_array[0][q.idx] * CoulombLog;  
-                 v_copy[J] += q.val * (f_array[_c][K] * f_array[0][q.idx] + f_array[0][K] * f_array[_c][q.idx])*0.5 * CoulombLog; 
+                 vj += q.val * (f_array[_c][K] * f_array[0][q.idx] + f_array[0][K] * f_array[_c][q.idx])*0.5 * CoulombLog; 
             }
         }
+        v_copy[J] += vj;
     }
     v += Eigen::Map<Eigen::VectorXd>(v_copy,size);
+    delete[] v_copy;
 }
 
 
