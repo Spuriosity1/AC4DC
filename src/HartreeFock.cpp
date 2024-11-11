@@ -81,7 +81,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 				else
 				{ 	for(int L_other = 0; L_other < screening_shell_occupancies.size(); L_other++){ 
 						if (L > L_other && Orbitals[i].N() >= Orbitals[j].N())
-						{ N_elec_n2_plus += Orbitals[j].occupancy();
+						{ N_elec_n2_plus += screening_shell_occupancies[L_other];
 						}
 					}
 				}
@@ -174,6 +174,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 		while (E_rel_change[single_orb_idx] > HF_tolerance) {
 			if (m > 20) {
 				log << "Starting approximation does not converge... " << endl;
+				throw std::runtime_error("Starting single shell approximation didn't converge."); // Added throw because suspect this causes really bad behaviour.
 				break;
 			}
 

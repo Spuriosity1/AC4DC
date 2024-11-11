@@ -7,12 +7,20 @@
 coulomb      // Nuclear potential model. Can be "coulomb" for point-like nucleus, "sphere" for spherical nucleus.
 HF           // Hamiltonian form. Can be HF, LDA.
 // Orbitals and their occupancies
+<<<<<<< HEAD
 4	         // Number of orbitals.
+=======
+5	         // Number of orbitals.
+>>>>>>> spencer/working_branch
 1s 2
 2N 8
 3N 18
 4N 18
+<<<<<<< HEAD
 5N 8
+=======
+5N 7  // Model doesn't allow us to put in 8...
+>>>>>>> spencer/working_branch
 V_N          // Potential model. Can be "V_N" for Hartree-Fock, "V_N-1no" for non-orthogonal excited state orbitals, "V_N-1" for classical potential.
 length       // Gauge type for matrix elements involving photon absorption/emission. Can be either "length" or "velocity".
 

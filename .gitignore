@@ -42,8 +42,6 @@ core
 scripts/scattering/R_plots
 *.pickle
 scripts/scattering/dmg_data
-valgrind-out*
-.cache
 valgrind*
 input/_batches/*
 scripts/scattering/reflections/*
@@ -51,4 +49,3 @@ scripts/scattering/scalepack/*
 scripts/scattering/*.pdf
 *results/*
 */.goldilocks_saves/*
-*.out

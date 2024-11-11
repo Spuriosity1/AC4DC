@@ -21,27 +21,7 @@ pio.templates.default = "seaborn" #"plotly_dark" # "plotly"
 
 T_PRECISION = 6 # Truncate past 6 d.p. (millionth of an fs) to Avoid floating point error
 
-# ATOMS = 'H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr'.split()
-# ATOMNO = {}
-# i = 1
-# for symbol in ATOMS:
-#     ATOMNO[symbol] = i
-#     ATOMNO[symbol + '_fast'] = i
-#     #ATOMNO[symbol + '_faster'] = i
-#     i += 1
-# ATOMNO["Gd"] = i 
-# ATOMNO["Gd_galli"] = i 
-# ATOMNO["Gd_fast"] = i
-# i+= 1
 
-
-# def get_colors(num, seed):
-#     idx = list(np.linspace(0, 1, num))[1:]
-#     random.seed(seed)
-#     # random.shuffle(idx)
-#     idx.insert(0,0)
-#     C = plt.get_cmap('nipy_spectral')
-#     return C(idx)
 
 class PlotData:
     def __init__(self, abs_molecular_path, mol_name,output_mol_query, max_final_t, max_points,custom_name = None):

@@ -61,4 +61,13 @@ I3C
 C 8
 I 3
 N 1
+<<<<<<< HEAD
 O 4
+=======
+O 4
+
+// Maximum intensity
+#USE_INTENSITY
+true         // enabled? true/false.
+0.15            // Maximum intensity in 10^19 * W/cm^2. Will give different fluence between square and gaussian.
+>>>>>>> spencer/working_branch

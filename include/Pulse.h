@@ -27,7 +27,7 @@ This file is part of AC4DC.
 #include <iostream>
 
 enum class PulseShape {
-    square, gaussian, none
+    square, gaussian, pumpProbeGaussians, pumpProbeSquares, none
 };
 
 
@@ -39,9 +39,14 @@ public:
         this->set_pulse(_fluence, _fwhm);
         shape=ps;
     };
+    Pulse(double _fluence, double _fwhm, double probe_delay, PulseShape ps) {
+        this->set_pulse(_fluence, _fwhm,probe_delay);
+        shape=ps;
+    };
     double operator()(double t); // Yields Photon flux in units of A/fwhm
     void save(const std::vector<double>& T, const std::string& file);
     void set_pulse(double fluence, double width);
+    void set_pulse(double fluence, double width, double probe_delay);
     void set_shape(PulseShape ps){
         if (ps != PulseShape::none){
             shape = ps;
@@ -54,6 +59,7 @@ private:
     PulseShape shape;
     double I0;
     double fwhm;
+    double probe_delay;
 };
 
 namespace {
@@ -65,7 +71,13 @@ namespace {
             os << "Gaussian";
             break;
         case PulseShape::square:
-            os << "rectangular";
+            os << "Rectangular";
+            break;
+        case PulseShape::pumpProbeGaussians:
+            os << "Pump-probe Gaussians";
+            break;
+        case PulseShape::pumpProbeSquares:
+            os << "pump-probe squares";
             break;
         default:
             os << "Unknown pulse shape";
@@ -90,6 +102,7 @@ namespace {
         case 's':
         case 'r':
             ps = PulseShape::square;
+            break;
             break;
         default:
             std::cerr<<"Unrecognised pulse shape \""<<tmp<<"\""<<std::endl;

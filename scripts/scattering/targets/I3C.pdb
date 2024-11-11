@@ -1,0 +1,89 @@
+# for purpose of constructing structure. converted from (Beck 2008): https://www.crystallography.net/cod/7211786.html
+
+REMARK 290                                                                      
+REMARK 290 CRYSTALLOGRAPHIC SYMMETRY                                            
+REMARK 290 SYMMETRY OPERATORS FOR SPACE GROUP: P 43 21 2                        
+REMARK 290                                                                      
+REMARK 290      SYMOP   SYMMETRY                                                
+REMARK 290     NNNMMM   OPERATOR                                                
+REMARK 290       1555   X,Y,Z                                                   
+REMARK 290       2555   -X+1/2,Y+1/2,Z                                             
+REMARK 290       3555   X,-Y+1/2,Z+1/2                                      
+REMARK 290       4555   X+1/2,Y,-Z+1/2                                      
+REMARK 290       5555   -X,-Y,-Z                                  
+REMARK 290       6555   X+1/2,-Y+1/2,-Z                                    
+REMARK 290       7555   -X,Y+1/2,-Z+1/2                                                  
+REMARK 290       8555   -X+1/2,-Y,Z+1/2       
+
+      x,            y,            z
+    1/2-x,        1/2+y,          z
+      x,          1/2-y,        1/2+z
+    1/2+x,          y,          1/2-z
+ 
+     -x,           -y,           -z
+    1/2+x,        1/2-y,         -z
+     -x,          1/2+y,        1/2-z
+    1/2-x,         -y,          1/2+z
+  
+
+REMARK 290                                                                      
+REMARK 290     WHERE NNN -> OPERATOR NUMBER                                     
+REMARK 290           MMM -> TRANSLATION VECTOR                                  
+REMARK 290                                                                      
+REMARK 290 CRYSTALLOGRAPHIC SYMMETRY TRANSFORMATIONS                            
+REMARK 290 THE FOLLOWING TRANSFORMATIONS OPERATE ON THE ATOM/ATOM               
+REMARK 290 RECORDS IN THIS ENTRY TO PRODUCE CRYSTALLOGRAPHICALLY                
+REMARK 290 RELATED MOLECULES.                                                   
+REMARK 290   SMTRY1   1  1.000000  0.000000  0.000000        0.00000            
+REMARK 290   SMTRY2   1  0.000000  1.000000  0.000000        0.00000            
+REMARK 290   SMTRY3   1  0.000000  0.000000  1.000000        0.00000            
+REMARK 290   SMTRY1   2 -1.000000  0.000000  0.000000        4.60700            
+REMARK 290   SMTRY2   2  0.000000  1.000000  0.000000        7.86750            
+REMARK 290   SMTRY3   2  0.000000  0.000000  1.000000        0.00000           
+REMARK 290   SMTRY1   3  1.000000  0.000000  0.000000        0.00000            
+REMARK 290   SMTRY2   3  0.000000 -1.000000  0.000000        7.86750            
+REMARK 290   SMTRY3   3  0.000000  0.000000  1.000000        9.40800            
+REMARK 290   SMTRY1   4  1.000000  0.000000  0.000000        4.60700            
+REMARK 290   SMTRY2   4  0.000000  1.000000  0.000000        0.00000            
+REMARK 290   SMTRY3   4  0.000000  0.000000 -1.000000        9.40800            
+REMARK 290   SMTRY1   5 -1.000000  0.000000  0.000000        0.00000            
+REMARK 290   SMTRY2   5  0.000000 -1.000000  0.000000        0.00000            
+REMARK 290   SMTRY3   5  0.000000  0.000000 -1.000000        0.00000            
+REMARK 290   SMTRY1   6  1.000000  0.000000  0.000000        4.60700            
+REMARK 290   SMTRY2   6  0.000000 -1.000000  0.000000        7.86750            
+REMARK 290   SMTRY3   6  0.000000  0.000000 -1.000000        0.00000            
+REMARK 290   SMTRY1   7 -1.000000  0.000000  0.000000        0.00000            
+REMARK 290   SMTRY2   7  0.000000  1.000000  0.000000        7.86750            
+REMARK 290   SMTRY3   7  0.000000  0.000000 -1.000000        9.40800            
+REMARK 290   SMTRY1   8 -1.000000  0.000000  0.000000        4.60700            
+REMARK 290   SMTRY2   8  0.000000 -1.000000  0.000000        0.00000            
+REMARK 290   SMTRY3   8  0.000000  0.000000  1.000000        9.40800            
+REMARK 290                                                                      
+REMARK 290 REMARK: NULL                                                         
+CRYST1    9.3044   15.8623   18.9924  90.00  90.00  90.00 P b  c  a     8 
+ORIGX1      1.000000  0.000000  0.000000        0.00000                         
+ORIGX2      0.000000  1.000000  0.000000        0.00000                         
+ORIGX3      0.000000  0.000000  1.000000        0.00000                         
+ATOM      1  I1  I3C A 500       2.030  13.080  14.567  1.00  0.00
+ATOM      2  I2  I3C A 500       5.029   8.261  16.641  1.00  0.00
+ATOM      3  I3  I3C A 500       6.377  13.770  18.719  1.00  0.00
+ATOM      4  C8  I3C A 500       4.616  10.318  16.719  1.00  0.00
+ATOM      5  C5  I3C A 500       4.243  13.075  16.651  1.00  0.00
+ATOM      6  C3  I3C A 500       5.424  11.148  17.500  1.00  0.00
+ATOM      7  C7  I3C A 500       3.555  10.834  15.954  1.00  0.00
+ATOM      8  C4  I3C A 500       5.229  12.523  17.481  1.00  0.00
+ATOM      9  C6  I3C A 500       3.421  12.235  15.895  1.00  0.00
+ATOM     10  O1  I3C A 500       6.039  10.096  19.492  1.00  0.00
+ATOM     11  H1  I3C A 500       6.600   9.617  19.853  1.00  0.00
+ATOM     12  O3  I3C A 500       3.165  15.160  17.097  1.00  0.00
+ATOM     13  O2  I3C A 500       7.658  10.453  18.001  1.00  0.00
+ATOM     14  O4  I3C A 500       4.996  15.129  15.817  1.00  0.00
+ATOM     15  H4  I3C A 500       4.843  15.932  15.754  1.00  0.00
+ATOM     16  N1  I3C A 500       2.716   9.995  15.217  1.00  0.00
+ATOM     17  H1A I3C A 500       2.844   9.143  15.226  1.00  0.00
+ATOM     18  H1B I3C A 500       2.072  10.328  14.755  1.00  0.00
+ATOM     19  C1  I3C A 500       6.504  10.525  18.356  1.00  0.00
+ATOM     20  C2  I3C A 500       4.077  14.568  16.556  1.00  0.00
+ATOM     21  O1W I3C A 500       4.990   1.826  15.659  1.00  0.00
+ATOM     22  HW1 I3C A 500       5.561   1.894  15.027  1.00  0.00
+ATOM     23  HW2 I3C A 500       5.355   2.086  16.385  1.00  0.00

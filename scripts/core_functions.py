@@ -26,12 +26,14 @@ def get_sim_params(handle,input_path=None,molecular_path=None):
     photon_measure = None  
     reading_photons = False
     reading_pulse = False    
+    reading_probe_pulse = False
     reading_electron_source = False
     photon_unit = None
     photon_measure_val = None
     source_energy = None
     source_fraction = None
     source_duration = None
+    probe_delay = None
 
     def init_photon_read(param_type,unit):
         nonlocal reading_photons,photon_measure,photon_unit
@@ -57,15 +59,19 @@ def get_sim_params(handle,input_path=None,molecular_path=None):
                 continue
             elif line.startswith("#ELECTRON_SOURCE"):
                 reading_electron_source = True
-                continue                        
+                continue       
+            elif line.startswith("#PROBE_PULSE"):
+                reading_probe_pulse = True
+                continue 
+            elif line.startswith("####END####"):
+                break                     
             elif line.startswith("#") or line.startswith("//") or len(line.strip()) == 0:
                 reading_photons = False
                 reading_pulse = False
                 reading_electron_source = False 
+                reading_probe_pulse = False
                 n = 0
                 continue
-            if line.startswith("####END####"):
-                break
             if reading_pulse:
                 if n < 2:
                     val = float(line.split(' ')[0])         
@@ -91,6 +97,9 @@ def get_sim_params(handle,input_path=None,molecular_path=None):
                 if n == 2:
                     source_duration = float(line.split(' ')[0])  
                 n+=1            
+            if reading_probe_pulse:
+                if n == 0:
+                    probe_delay = float(line.split(' ')[0])
     print("Time range:",start_t,"-",end_t)
     print("Photon energy:", photon_energy)
     if source_energy is not None:
@@ -107,6 +116,7 @@ def get_sim_params(handle,input_path=None,molecular_path=None):
         source_fraction = source_fraction,
         source_energy = source_energy,
         source_duration = source_duration,
+        probe_delay = probe_delay,
     )
     return param_dict, param_name_list,unit_list
 
@@ -223,6 +233,7 @@ def get_pdb_paths_dict(my_dir):
     '''
     my_dir = calling file's directory
     '''
+    #TODO use enum for keys
     PDB_PATHS = dict(
         tetra = "targets/5zck.pdb",
         lys = "targets/4et8.pdb", #"targets/2lzm.pdb",
@@ -258,7 +269,7 @@ def parse_elecs_from_latex(latexlike):
     return qdict
 
 ATOMS = ('H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr'
-       +' Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe').split()
+       +'Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe').split()
 ATOMNO = {}
 i = 1
 for symbol in ATOMS:
@@ -268,9 +279,11 @@ for symbol in ATOMS:
     i += 1
 i = 1 
 ATOMNO["Gd"] = ATOMNO["Gd_fast"] = ATOMNO["Gd_galli"]  = 64 
+ATOMNO["Fe_singleShell"] = ATOMNO["Fe"]
 for symbol in list(ATOMNO.keys()):
-    ATOMNO[symbol + '_LDA'] = i
-    i += 1
+    if "_" not in symbol:
+        ATOMNO[symbol + '_LDA'] = i
+        i += 1
 
 
 

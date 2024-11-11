@@ -111,7 +111,7 @@ void Distribution::get_Q_eii (size_t _c, Eigen::VectorXd& v, size_t a, const bou
         for (size_t xi=0; xi<P.size(); xi++) {
         // Loop over configurations that P refers to
             for (size_t K=0; K<size; K++) {
-                vj += P[xi]*f_array[_c][K]*basis.Q_EII[a][xi][J][K];
+                v_copy[J] += P[xi]*f_array[_c][K]*basis.Q_EII[a][xi][J][K];
             }
         }
         v[J] += vj;

@@ -120,6 +120,18 @@ MolInp::MolInp(const char* filename, ofstream & _log)
 		if (n == 3) stream >> timespan_factor;
 		if (n == 4) stream >> negative_timespan_factor;
 	}
+	for (size_t n = 0; n < FileContent["#PROBE_PULSE"].size(); n++) {  
+		stringstream stream(FileContent["#PROBE_PULSE"][n]);
+		if (n == 0) 
+			{stream >> probe_delay;
+			if (pulse_shape == PulseShape::gaussian){
+				pulse_shape = PulseShape::pumpProbeGaussians;
+			}
+			else{
+				pulse_shape = PulseShape::pumpProbeSquares;
+			}
+		}
+	}
 
 	string tmp = "";
 	for (size_t n = 0; n < FileContent["#USE_COUNT"].size(); n++) {  
@@ -321,6 +333,7 @@ MolInp::MolInp(const char* filename, ofstream & _log)
 
 	// Convert to atomic units.
 	width /= Constant::fs_per_au;
+	probe_delay /= Constant::fs_per_au;
 	simulation_cutoff_time /= Constant::fs_per_au;
 	time_update_gap /= Constant::fs_per_au;
 	grid_update_period /= Constant::fs_per_au;
@@ -400,6 +413,8 @@ bool MolInp::validate_inputs() { // TODO need to add checks probably -S.P. TODO 
 	if (timespan_factor < negative_timespan_factor){cerr << "ERROR, the timespan factor for the negative times must be smaller than the full timespan factor";is_valid=false;}
 	if (pulse_shape == PulseShape::square && (timespan_factor < 1 && timespan_factor !=0)){cerr << "ERROR, timespan too short to capture full square pulse";is_valid=false;}
 	if (pulse_shape == PulseShape::square && negative_timespan_factor != 0){cerr << "ERROR, timespan for negative times cannot be specified with square pulse";is_valid=false;}
+	if ((pulse_shape == PulseShape::pumpProbeGaussians || pulse_shape == PulseShape::pumpProbeSquares) && probe_delay < 0){cerr << "ERROR, probe delay unset or negative: " << probe_delay, is_valid=false;}
+	if ((pulse_shape != PulseShape::pumpProbeGaussians && pulse_shape != PulseShape::pumpProbeSquares) && probe_delay > 0){cerr << "ERROR, don't have pump probe shape",is_valid=false;}
 	if (use_fluence + use_count + use_intensity != 1) {cerr << "ERROR, require exactly one of #USE_FLUENCE, #USE_COUNT, and #USE_INTENSITY to be active ";is_valid = false;}
 	if (omp_threads <= 0) { omp_threads = 4; cerr<<"Defaulting number of OMP threads to 4"; }
 	if (steps_per_live_plot_update < 1){steps_per_live_plot_update = 1; cerr<<"Steps per live plot was raised to 1 from given value of "<<steps_per_live_plot_update;}

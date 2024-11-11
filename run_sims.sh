@@ -20,16 +20,26 @@ set -x
 
 #############################
 
+#./ac4dc input/nass/nass_probe_0
+#./ac4dc input/nass/nass_probe_35
+#./ac4dc input/nass/nass_probe_62
+./ac4dc input/nass/nass_probe_112
+./ac4dc input/nass/nass_probe_102
+./ac4dc input/nass/nass_probe_37
+
+
+# ./ac4dc input/_batches/batch_SH_Ag/SH_Ag-1hacky.mol
+# ./ac4dc input/_batches/batch_SH_Ag/SH_Ag-1.mol
 
 #./ac4dc input/nass/lys_nass_water_solvent
 #./ac4dc input/nass/lys_nass_water_solvent_9kev
 #./ac4dc input/nass/lys_nass_gd_solvent
-./ac4dc_continuum input/nass/lys_nass_gauss
+#./ac4dc_continuum input/nass/lys_nass_gauss
 
 #./ac4dc input/galli/lys_galli_LF_no_Gd
 # ./ac4dc input/galli/lys_galli_LF
 # ./ac4dc input/galli/lys_galli_HF_no_Gd
-./ac4dc input/galli/lys_galli_HF
+#./ac4dc input/galli/lys_galli_HF
 #./ac4dc_consta input/_batches/batch_ES_C/ES_C-0
 
 # #for f in input/_batches/batch_SH2_N/*; do ./ac4dc "$f"; done

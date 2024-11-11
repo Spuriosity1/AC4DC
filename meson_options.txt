@@ -1,0 +1,36 @@
+#option('example',
+#  type : 'boolean',
+#  value : false,
+#  description : 'Here is a sample option'
+#)
+
+option('disable_tbr',
+  type : 'boolean',
+  value : false,
+  description : 'Disables three-body recombination.'
+)
+
+option('disable_ee',
+  type : 'boolean',
+  value : false,
+  description : 'disables electron-electron interactions'
+)
+
+option('disable_eii',
+  type : 'boolean',
+  value : false,
+  description : 'Disables electorn-impact ionisation.'
+)
+
+
+option('ministep_updating',
+  type : 'boolean',
+  value : true,
+  description : 'Enables ministep updating for stiff part of ODE'
+)
+
+option('interactive',
+  type : 'boolean',
+  value : false,
+  description : 'Enables python-based bindings and interactivity'
+  )

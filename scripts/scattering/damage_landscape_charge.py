@@ -147,8 +147,8 @@ def multi_damage(params,pdb_path,allowed_atoms_1,CNO_to_N,S_to_N,same_deviations
             c_IA = np.average(pl.get_total_charge(atoms=element_considered)*pl.intensityData)/np.average(pl.intensityData)  # Intensity scaled Average charge 
             
         dmg_data.append([c,c_IA])   
-        print("Average final carbon charge:",c)
-        print("Intensity-averaged carbon charge:",c_IA)
+        print("Average final charge of element considered",c)
+        print("Intensity-averaged charge of element considered:",c_IA)
         print("")
     
     return np.array(pulse_params,dtype=float),np.array(dmg_data,dtype=object), np.array(resolutions_vect,dtype=object), names, param_name_list
@@ -430,7 +430,7 @@ if __name__ == "__main__":
         sctr_results_batch_dir = None, 
         get_R_only=True,
         eop_charge_only=False, # Only calculate the end of pulse charge (much faster as doesn't load whole data file)
-        element_considered = "Gd_fast"#"Gd_fast"#"C"
+        element_considered = "C"#"Gd_fast"#"C"
     )
 
 
@@ -470,8 +470,8 @@ if __name__ == "__main__":
         #kwargs["plasma_handles"] = ["lys_nass_no_S_2","lys_nass_HF","lys_nass_Gd_HF"]  
         #kwargs["plasma_handles"] = ["lys_nass_gauss","lys_nass_square"]  
         #kwargs["plasma_handles"] = ["lys_galli_LF_no_Gd_6","lys_galli_LF_17"]
-        #kwargs["plasma_handles"] = ["lys_galli_HF_15","lys_galli_LF_17","lys_galli_HF_no_Gd_2","lys_galli_LF_no_Gd_6",]
-        kwargs["plasma_handles"] = ["lys_galli_HF_15","lys_galli_LF_17","lys_galli_LF_19"]
+        kwargs["plasma_handles"] = ["lys_galli_HF_15","lys_galli_LF_17","lys_galli_HF_no_Gd_2","lys_galli_LF_no_Gd_6",]
+        #kwargs["plasma_handles"] = ["lys_galli_HF_15","lys_galli_LF_17","lys_galli_LF_19"]
         #kwargs["plasma_handles"] = ["lys_nass_HF","lys_nass_Gd_HF"]  
         #kwargs["plasma_handles"] = ["lys_full-typical","lys_all_light-typical"]  
         #kwargs["plasma_handles"] = ["glycine_abdullah_4"]

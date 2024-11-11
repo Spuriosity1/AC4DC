@@ -49,6 +49,7 @@ public:
 
 	double Omega() {return omega;}
 	double Width() {return width;}
+	double ProbeDelay() {return probe_delay;}
 	double Cutoff_Inputted() {return cutoff_flag;}
 	double Simulation_Cutoff() {return simulation_cutoff_time;}
 	double Fluence() {return fluence;}
@@ -101,6 +102,7 @@ protected:
 
 	double omega = -1;// XFEL photon energy, au.
 	double width = -1; // XFEL pulse width in au. Gaussian profile hardcoded.
+	double probe_delay = -1;
 
 	bool use_fluence = false;
 	bool use_count = false;

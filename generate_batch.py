@@ -146,14 +146,14 @@ def copy_params(mol_path,handle):
             elif line.startswith("#VOLUME"):
                 reading_volume=True
                 continue
+            elif line.startswith("####END####"):
+                break
             elif line.startswith("#") or line.startswith("//") or len(line.strip()) == 0:
                 reading_atoms = False
                 reading_volume = False
                 reading_secondary_ion_exclusions = False
                 n = 0
                 continue
-            if line.startswith("####END####"):
-                break
             if reading_atoms:
                 atom_lines.append(line)
             if reading_secondary_ion_exclusions:

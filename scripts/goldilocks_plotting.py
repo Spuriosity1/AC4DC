@@ -51,8 +51,8 @@ matplotlib.rcParams.update({
 
 
 ####### User parameters #########
-INDEP_VARIABLE = 1 # | 0: energy of photons |1: Energy separation from edge given in edge_dict |2: Artificial electron source energy
-DEP_VARIABLE = 0 # | 0: mean carbon charge, either integrated over intensity or at end of pulse ) | 1: R factors (performs scattering simulations for each) |
+INDEP_VARIABLE = 0 # | 0: energy of photons |1: Energy separation from edge given in edge_dict |2: Artificial electron source energy
+DEP_VARIABLE = 1 # | 0: mean carbon charge, either integrated over intensity or at end of pulse ) | 1: R factors (performs scattering simulations for each) |
 BATCH = 0 #| 0: Real elements | 1: Electron source. 
 
 ## Subcategories of dependent variables
@@ -140,14 +140,19 @@ if BATCH is REAL_ELEMENTS:
             #"SH_excl_Zn":[1,9],
             #"L_Gd":[1,9],
     }
+    tmp = { 
+            "SH_N":[[1,10],[901,903]], #[700,704],
+            "SH_Se":[[0,13],],
+
+    }
     HF_15fs_SH2 = { 
             #"SH2_N":[[24,33]],
             #"SH2_S":[[24,33]], 
-            "SH2_Fe":[[24,33]],
-            "SH_Fe":[[0,10],[901,904]],
+            #"SH2_Fe":[[24,33]],
+            #"SH_Fe":[[0,10],[901,904]],
             #"SH2_Zn":[[24,33]],
-            "SH2_Se":[[24,33]],
-            "SH_Se":[[0,13],],
+            #"SH2_Se":[[24,33]],
+            #"SH_Se":[[0,13],],
             #"SH2_Zr":[[24,33]],
             #-----L------
             #"SH2_Ag":[[24,33]],
@@ -162,7 +167,7 @@ if BATCH is REAL_ELEMENTS:
     }
     HF_10fs = {}
     LF_10fs = {} 
-    stem_dict = HF_15fs
+    stem_dict = tmp
 
 same_targets_dict = dict(
     SH2_N=["SH2_N_1e12",], 
@@ -348,7 +353,7 @@ def main():
     plot(batches,label,dname_Figures,mode=DEP_VARIABLE)
 
 def plot(batches,label,figure_output_dir,mode = 0):
-    ylabel = {AVERAGE_CHARGE:"Averaged carbon charge",R_FACTOR:"$R_{dmg}$"}
+    ylabel = {AVERAGE_CHARGE:"Averaged carbon charge",R_FACTOR:"Electronic damage (arb. u.)"}#R_FACTOR:"$R_{dmg}$"}
     '''
     Arguments:
     '''    
@@ -432,20 +437,26 @@ def plot(batches,label,figure_output_dir,mode = 0):
                 #     del(Y[i])
                 #     del(energies[i])
                 #     del(times[i])
-
         if BATCH is REAL_ELEMENTS:
             _label = dopant 
             if ground_charge_dict[stem]>1: 
                 _label+="$^{"+str(ground_charge_dict[stem])+"+}$"
             elif ground_charge_dict[stem]==1:
                 _label+="$^{+}$"
+            if dopant == "N":
+                _label = "Lysozyme"
+            else:
+                _label = "Lysozyme.Se"
         if BATCH is ELECTRON_SOURCE:
             _label = "\,Source"
         print(mol_name)
         if stem is NORMALISING_STEM:
             continue
-
-        ax.scatter(X,Y,label=_label,color = cmap(c))
+        
+        if _label == "Lysozyme":
+            ax.scatter(X,Y,label=_label,color = cmap(c))
+        else:
+            ax.scatter(X,Y,label=_label,color = cmap(c),marker=",")
         
         k =2 # Spline order
         if FIT and len(X)>=k+1:
@@ -542,7 +553,7 @@ def plot(batches,label,figure_output_dir,mode = 0):
 
     if LEGEND:
         if BATCH is REAL_ELEMENTS:
-            ax.legend(title="Dopant",fancybox=True,ncol=2,loc='upper center',bbox_to_anchor=(0.758, 1.02),handletextpad=0.01,columnspacing=0,handlelength=1.35,borderpad = 0.18,frameon=True)
+            ax.legend(title="Target",fancybox=True,ncol=1,loc='upper center',bbox_to_anchor=(0.798, 1.02),handletextpad=0.01,columnspacing=0,handlelength=1.35,borderpad = 0.18,frameon=True)
         if BATCH is ELECTRON_SOURCE:
             handles, labels = ax.get_legend_handles_labels()
             handles.reverse()

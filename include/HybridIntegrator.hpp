@@ -101,8 +101,8 @@ class Hybrid : public Adams_BM<T>{
     std::vector<T> old_y_transient; // stores final transient/intermediate steps of last step. 
     // More virtual funcs defined by ElectronRateSolver:
     virtual state_type get_initial_state()=0;
-    virtual void pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update) = 0;
-    virtual int post_ode_step(ofstream& _log, size_t& n) = 0;
+    virtual void pre_ode_step(ofstream& _log, size_t& n,const int steps_per_time_update)=0;
+    virtual int post_ode_step(ofstream& _log, size_t& n)=0;
     /// Unused
     void backward_Euler(unsigned n); 
     void step_stiff_part(unsigned n);
@@ -238,15 +238,6 @@ void Hybrid<T>::run_steps(ofstream& _log, const double t_resume, const int steps
     while(this->t[n] < t_resume)
         n++;
     initialise_transient_y((int)n);
-
-    // Set up display (if ncurses is enabled)
-    std::stringstream tol;
-    tol << "[ sim ] Implicit solver uses relative tolerance "<<stiff_rtol<<", max iterations "<<stiff_max_iter<<"\n\r";
-    std::cout << tol.str();  // Display in regular terminal even after ncurses screen is gone.
-    Display::header += tol.str(); 
-    Display::display_stream = std::stringstream(Display::header, ios_base::app | ios_base::out); // text shown that updates with frequency 1/steps_per_time_update.
-    Display::popup_stream = std::stringstream(std::string(), ios_base::app | ios_base::out);  // text displayed during step of special events like grid updates
-    Display::create_screen(); 
 
     // Run hybrid multistepping (nonstiff -> bound dynamics, stiff -> free dynamics). 
     while (n < this->t.size()-1) {

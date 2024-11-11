@@ -228,6 +228,11 @@ public:
     static void Gamma_tbr( eiiGraph& Gamma, const std::vector<RateData::InverseEIIdata>& tbr, size_t J, size_t K) {
         return basis.Gamma_tbr(Gamma, tbr, J, K);
     }
+    // Grid-dependent coefficients. These are not saved due to dynamic implementation of the grid.
+    // Still, changing dynamic implementation to one that snaps to fixed points, with a limited number of options for neighbourin splne sizes,
+    // and then saving values for grid points given the splines within their min and max support 
+    // (i.e. for a cubic spline, the energies of the two knots higher than the knot considered)
+    // would make it worthwhile to save this info. But that would be an endeavour.
     static void precompute_Q_coeffs(vector<RateData::Atom>& Store) {
         #ifndef NO_EII
         basis.precompute_QEII_coeffs(Store);   

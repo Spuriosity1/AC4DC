@@ -11,14 +11,19 @@ The main code of the suite, AC4DC (the literal acronym is no longer apt), simula
 + Allows for an arbitrary form of the free-electron distribution f(E) interpolated over a basis of B-splines. 
   + The basis is adaptive; it is transformed periodically to automatically assign more splines where sharp, non-polynomial peaks are present in the distribution. 
 
-# DRAFT warning
-When the grid fails to cnverge, it loads a checkpoint and decreases time steps. However, sometimes ((always?)) the divergence to an oscillatory (incorrect) fit occurs over a small number of steps. If a grid update occurs during this period, the fit may then converge, and the fluctuation is uncaught. This is quite rare but means data should be double checked    
-
 ## Scatter
 
 An auxilliary simulation, Scatter, generates scattering patterns off realistic targets constructed from PDB structure files, with the atoms’ states selected entirely based off the probability distributions produced by AC4DC, without regard for selections of prior snapshots. These are then compared with the scattering pattern produced by a structure in the 'ideal', undamaged case where no ionisation occurs. 
 
 ### Installing AC4DC
+
+This project is built using the meson build system.
+
+```
+git clone https://github.com/Spuriosity1/AC4DC/tree/master && cd AC4DC
+meson setup build
+ninja -C build
+```
 
 Compatibility is only promised for Linux variants and macOS. (lack of Windows support is mainly due to the UNIX-style path assumptions used throughout. In principle, this may be corrected for by rewriting with `boost::filesystem`.) Previous versions of AC4DC have been tested in the following environments:
 + Debian 10 (buster), gcc8
@@ -69,6 +74,40 @@ This and the use of python may be disabled by commenting out `#define PYBIND` in
 AC4DC reads the composition of the target, the pulse parameters, and various hyperparameters (e.g pertaining to the spline knot grid) from the molecular (.mol) file it is provided. See AC4DC/input/mol_template.mol for the style of these files and the parameters available.     
 
 In AC4DC/include/config.h various features of the simulation can be disabled (e.g. plasma processes, live plotting, backing up of data). Most features are enabled by default, with the exception of tracking the electron cascades seeded by each element ("TRACK_SINGLE_CONTINUUM"), as this is computationally costly. 
+
+### Grid regions preset
+
+Relevant files:
+  include/GridSpacing.hpp
+  src/DynamicRegions.cpp
+
+        case 'd':
+            preset.selected = DynamicGridPreset::dismal_acc;
+            break;
+        case 'l':
+            preset.selected = DynamicGridPreset::low_acc;
+            break;
+        case 'm':
+            preset.selected = DynamicGridPreset::medium_acc;
+            break;
+        case 'h':
+            preset.selected = DynamicGridPreset::high_acc;
+            break;    
+        case 'n':
+            preset.selected = DynamicGridPreset::no_dirac;
+            break;         
+        case 't':
+            preset.selected = DynamicGridPreset::training_wheels;
+            break;                      
+        case 'A':
+            preset.selected = DynamicGridPreset::heavy_support;
+            break;  
+        case 'B':
+            preset.selected = DynamicGridPreset::Zr_support;
+            break;              
+        case 'D':
+            preset.selected = DynamicGridPreset::lower_dirac_support;
+            break;            
 
 ### Grid regions preset
 
@@ -157,27 +196,6 @@ Corresponding lines in the `index.txt` file explain which configuration the to/f
 EII parameters are stored in "sort-of-json" format - please note that the program does NOT use a robust json parser, and is sensitive to line formatting.
 
 
-## TODO
-
-1. Refactor to decouple atomic physics from rate equation solving. Make Hartree-Fock atomic code interpolate the rates for a given beam energy and store them in a file, to be read by the dynamics solver. Very important for capability in simulating heavier atoms (i.e. with more electron configurations).
-2. Fermi-sea collision kernel
-3. Finish implementation of electron filtration by the water background.
-4. Finish implementation of correction for bound transport.
-5. Improve pulse shape code quality, add capability to input arbitrary temporal profiles, or mimic the stochastic temporal profile of a SASE pulse.
-6. Implement stochastic spectral profile for low-energy (< 1000 eV) photoelectrons (current approximation is sufficient for high energies), or at least widen low-energy photoelectron emission profiles to a more realistic width.
-7. Smoothing to stabilize fitting and grid updating when running with coarser grids.
-8. The cutoff/transition energy (for an electron to be considered thermalised) currently only updates when the grid updates. It should instead update independently and frequently. 
-9. Refactor to get rid of compiler warnings wherever possible (usually about signed comparisons)
-10. Fix bug where `-s` flag causes crash
-11. Move to a proper database system to store input/output data
-12. Implement 'output version control' for atomic parameters in storage: avoid unnecessary recalculation, guarantee recalculation if new input parameters are incompatible
-13. Add methods to `Input.cpp` to enable reading/writing salient parameters to file, e.g. `output/C/run_2021-04-11/input.txt`
-16. Incorporate minimum and maximum energy into GridSpacing (perhaps rename it to GridParams)
-18. Restructure parameter input and rate output files to use JSON format
-19. GUI (Current candidate framework: Qt)
-20. Optimise with static arrays - promote state_type to a N_FREE-dimensioned template for faster reads.
-21. ODE integration routines: borrow from [rodent](https://www.github.com/jeanluct/rodent)'s ideas, make the function a template parameter rather than a virtual member. (Probably not limiting, but it's a fairly glaring misuse of virtual functions)
-22. Upgrade dynamic grid algorithm to handle low-energy photoelectron peaks - currently mistakes them for MB peaks and so the solver fails.
 
 ### Bibliography:
 

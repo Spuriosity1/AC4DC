@@ -459,4 +459,3 @@ void ElectronRateSolver::loadBound() {
         this->set_zero_y();     
     }    
 }
-

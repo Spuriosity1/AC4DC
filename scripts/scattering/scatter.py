@@ -67,6 +67,7 @@ import plotly.graph_objects as go
 import plotly.offline as pltly_offline
 from IPython.display import display, HTML
 from IPython import get_ipython
+from core_functions import get_sim_elements
 interactive = True
 if interactive and __name__ == "__main__":
     get_ipython().run_line_magic('colors', 'nocolor')
@@ -84,6 +85,49 @@ c_au = 137.036; eV_per_Ha = 27.211385; ang_per_bohr = 1/1.88973  # > 1 ang = 1.8
 
 RESULTS_LOCAL_PATH = "results/"
 
+<<<<<<< HEAD
+=======
+
+class Custom_Gromacs_Parser():
+    class Structure():
+        def __init__(self,structure_id,conf_path):
+            self.id = structure_id
+            self.conf_path = conf_path
+        def get_atoms(self):
+            atoms = []
+            with open(self.conf_path) as gromacs_config_file:
+                i = 1
+                for line in gromacs_config_file:
+                    if line[0] == " ":
+                        vals = line.split()
+                        if "." in vals[0]:
+                            continue
+                            
+                        # After 10k the name and serial number columns are joined together
+                        elif i > 9999:
+                            oom = len(str(i))
+                            vals.insert(2,vals[1][-oom:])
+                            vals[1] = vals[1][:-oom]
+                                
+                        atom = PDB_Atom(
+                            name = vals[1],
+                            coord = (float(vals[3])*10,float(vals[4])*10,float(vals[5])*10), # converts from nm to angstrom
+                            bfactor = 0,
+                            occupancy = None,
+                            altloc = None,
+                            fullname = " " + vals[1] + " ",
+                            serial_number = int(vals[2])
+                        )
+                        atoms.append(atom)
+                        assert(int(vals[2])==i)
+                        i+=1
+                    
+            return atoms
+
+    def get_structure(self,structure_id, conf_path):
+            return self.Structure(structure_id,conf_path)
+
+>>>>>>> spencer/working_branch
 class Results():
     def __init__(self,num_points,image_index):
         self.phi = np.zeros(num_points)
@@ -119,11 +163,23 @@ class Results_Grid():
     pass    
 
 class Crystal():
+<<<<<<< HEAD
     def __init__(self, pdb_fpath, allowed_atoms, positional_stdv = 0, is_damaged=True, include_symmetries = True, rocking_angle = 0.3, cell_packing = "SC", CNO_to_N = False, supercell_scale = 1,num_supercells=1, supercell_simulations = 1, S_to_N=False,convert_excluded_elements_to_N=False):
+=======
+    def __init__(self, struct_file_path, allowed_atoms, positional_stdv = 0, is_damaged=True, include_symmetries = None, rocking_angle = 0.3, cell_packing = "SC", CNO_to_N = False, supercell_scale = 1,num_supercells=1, supercell_simulations = 1, S_to_N=False,convert_excluded_elements_to_N=False):
+>>>>>>> spencer/working_branch
         '''
         rocking_angle [degrees]
         cell_packing ("SC","BCC","FCC","FCC-D")
         '''
+        self.gromacs_config = struct_file_path.split('.')[-1]=="gro"
+        if include_symmetries is None:
+            include_symmetries = not self.gromacs_config
+        if self.gromacs_config:
+            print("Using gromacs file")
+            assert include_symmetries == False
+            assert num_supercells == 1
+
         self.cell_packing = cell_packing
         self.rocking_angle = rocking_angle * np.pi/180            
         self.is_damaged = is_damaged
@@ -132,7 +188,7 @@ class Crystal():
         self.supercell_simulations = supercell_simulations
         if positional_stdv == 0 and is_damaged == False:
             self.supercell_simulations = 1
-        self.pdb_fpath = pdb_fpath
+        self.struct_file_path = struct_file_path
         self.positional_stdv = positional_stdv/ang_per_bohr # RMS error in coord positions, designed for SPI sim only but I guess it wouldn't be detrimental for crystal sim.
         
         assert self.supercell_simulations <= num_supercells
@@ -141,12 +197,22 @@ class Crystal():
         self.cell_dim = None   # unit cell length parameters. Angles not implemented yet.        
         self.parse_data_from_pdb() # All asymmetric units in unit cell
 
+        if self.gromacs_config:
+            self.cell_dim = [0,0,0]
+
         if not include_symmetries:
             # Ignore parsed symmetries and use a single asymmetric unit per cell.
             self.sym_rotations = []; self.sym_translations = []; 
             self.add_symmetry_to_cells(np.identity(3),np.zeros((3)),"(X,Y,Z)")
 
+<<<<<<< HEAD
         self.supercell_dim = self.cell_dim*supercell_scale 
+=======
+        
+
+        self.supercell_dim = self.cell_dim*supercell_scale 
+
+>>>>>>> spencer/working_branch
 
         ## Dictionary for going from pdb to ac4dc names.
         # different names
@@ -168,10 +234,13 @@ class Crystal():
             if convert_excluded_elements_to_N and v not in allowed_atoms: 
                     v = "N"    
             PDB_to_AC4DC_dict[k] = v       
-        # Get structure using Bio.PDB's parser
-        parser=copy.deepcopy(xPDBParser)
-        structure_id = os.path.basename(self.pdb_fpath)
-        structure = parser.get_structure(structure_id, self.pdb_fpath)     
+        if self.gromacs_config:
+            parser = Custom_Gromacs_Parser()
+        else:
+            # Get structure using Bio.PDB's parser
+            parser=copy.deepcopy(xPDBParser)
+        structure_id = os.path.basename(self.struct_file_path)
+        structure = parser.get_structure(structure_id, self.struct_file_path)     
         # Get those cheeky charge clusters
         species_dict = {}
         pdb_atoms = []
@@ -202,7 +271,7 @@ class Crystal():
             if name not in species_dict.keys():
                 species_dict[name] = Atomic_Species(name,self) 
                 pdb_atoms.append(atom.element)
-            species_dict[name].add_atom(R)
+            species_dict[name].add_atom(atom.get_serial_number(),R)
         ac4dc_atoms_ignored = ""
         for string in allowed_atoms:
             if string not in species_dict.keys():
@@ -261,7 +330,7 @@ class Crystal():
         sym_trans = np.zeros((3))
         sym_labels = []
         sym_mtces_parsed = []        
-        with open(target.pdb_fpath) as pdb_file:
+        with open(target.struct_file_path) as pdb_file:
             for line in pdb_file:
                 line = line.strip()
                 # End data - Check if left section of data; flagged by the line containing solely "REMARK ###". 
@@ -325,8 +394,8 @@ class Crystal():
         '''
         #Load it
         # parser=PDBParser(PERMISSIVE=1)
-        # structure_id = os.path.basename(self.pdb_fpath)
-        # structure = parser.get_structure(structure_id, self.pdb_fpath)       
+        # structure_id = os.path.basename(self.struct_file_path)
+        # structure = parser.get_structure(structure_id, self.struct_file_path)       
 
         #Initialsie structure
         structure = xStructureBuilder()
@@ -359,7 +428,7 @@ class Crystal():
         # Save it
         io=xPDBIO()
         io.set_structure(structure.get_structure())  # StructureBuilder object is not Structure object
-        fname = path.basename(self.pdb_fpath)[:-4]+"_full_struct.pdb"
+        fname = path.basename(self.struct_file_path)[:-4]+"_full_struct.pdb"
         io.save(dir+"/"+fname)     
 
     def plot_me(self,max_points = 100000,water_index = None,**layout_kwargs):
@@ -645,13 +714,14 @@ class Atomic_Species():
         self.crystal = crystal 
         self.ff = 0 # form_factor
         self.coords = []  # coord of each atom in species in asymmetric unit
+        self.serial_numbers = [] # Corresponding serial number of each atom 
 
-    def add_atom(self,vector):
+    def add_atom(self,serial_number,vector):
         '''
         This function adds an atom to the asymmetric unit of the crystal. 
         We do not store additional coordinates, instead storing the symmetries, and an array of atomic states corresponding to each atom, for each symmetry. (so num symmetries * num atoms added)
         '''           
-
+        self.serial_numbers.append(serial_number)
         self.coords.append(vector.get_array()/ang_per_bohr)
         
     def set_stochastic_states(self):
@@ -826,7 +896,7 @@ class XFEL():
         """ 
         end_time: The end time of the photon capture in femtoseconds. Not a real thing experimentally, but useful for choosing 
         a level of damage. Explicitly, it is used to determine the upper time limit for the integration of the form factor.
-        pdb_fpath: The pdb file's path. Changes the variable self.atoms.
+        struct_file_path: The pdb/gromacs config file's path. Changes the variable self.atoms.
         y_orientations: 
             Number of unique y axis rotations to sample crystal. x_axis_rotations not implemented (yet?).
         random_orientation overrides the XFEL class's orientation_set, replacing each with a random orientation. (get same number of orientations though at present TODO.) 
