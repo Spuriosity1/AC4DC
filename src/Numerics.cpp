@@ -19,6 +19,7 @@ This file is part of AC4DC.
 #include <vector>
 #include "EigenSolver.h"
 #include <algorithm>
+#include <cassert>
 
 static const double adams_10[10] = { 2082753.0 / 7257600.0, 9449717.0 / 7257600.0, -11271304.0 / 7257600.0, 16002320.0 / 7257600.0, -17283646.0 / 7257600.0,
 13510082.0 / 7257600.0, -7394032.0 / 7257600.0, 2687864.0 / 7257600.0, -583435.0 / 7257600.0, 57281.0 / 7257600.0 };
@@ -325,7 +326,7 @@ double Adams::Integrate(std::vector<double>* Func, int start_pt, int end_pt)
 
 	assert(Result.size() <= RightVect.size());
 
-	for (int i = 0; i < Result.size(); i++)
+	for (int i = 0; i < static_cast<int>(Result.size()); i++)
 	{
 		if (std::isnan(Result[i])){throw std::runtime_error("Adams::Integrate returned nan!");}
 		Result[i] = RightVect[i];
@@ -656,7 +657,7 @@ vector<double> Interpolation::get_value(const vector<double> &f, const vector<do
 		{
 			while (X > x_ini[close_left + 1]) { close_left++; }
 
-			if (close_left < x_ini.size() - order - 1)//Interpolate forwards.
+			if (close_left < static_cast<int>(x_ini.size()) - order - 1)//Interpolate forwards.
 			{
 				for (int i = 0; i <= order; i++)
 				{
@@ -971,7 +972,7 @@ vector<double> GaussQuad::get_Gauss_X(double a, double b)
 	// Linear mapping: X[i] = 0.5(b-a)*GaussX[i] + 0.5*(a+b).
 	double l = 0.5*(a + b);
 	vector<double> Result(GaussX.size(), l);
-	for (int i = 0; i < GaussX.size(); i++) {
+	for (int i = 0; i < static_cast<int>(GaussX.size()); i++) {
 		Result[i] += 0.5*(b - a)*GaussX[i];
 	}
 
@@ -983,7 +984,7 @@ double GaussQuad::Integrate(vector<double> &F, vector<double> &x, double a, doub
 	// Gauss quadrature integration formula.
 	double Result = 0;
 	if (GaussX.size() != x.size()) return 0;
-	for (int i = 0; i < x.size(); i++) {
+	for (int i = 0; i < static_cast<int>(x.size()); i++) {
 		Result += F[i]*GaussW[i];
 	}
 	Result *= 0.5*(b - a);

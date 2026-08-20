@@ -80,7 +80,7 @@ std::vector<int> RadialWF::get_subshell_occupancies()
     for (int i = shell_orbital_occupancy.size() - 1; i >= 0; i--)
     {
         // If higher subshell has electrons, lower subshells are filled.
-        if(i != shell_orbital_occupancy.size() - 1 && shell_orbital_occupancy[i+1] > 0){
+        if(i != static_cast<int>(shell_orbital_occupancy.size()) - 1 && shell_orbital_occupancy[i+1] > 0){
             continue;
         }
         // Higher subshells empty

@@ -222,22 +222,12 @@ struct CmdParser{
             int i=1;
             while (argv[a][i]!='\0') {
                 switch (argv[a][i]) {
-                    case 's':
-                        // recalculate
-                        cout<<"\033[1;35mWarning:\033[0m Searching output folder for precalculated rates."<<endl;
-                        cout<<"If these were calculated for a different X-ray energy, the results will be wrong!"<<endl;
-                        recalc = false;
-                        break;
-                    case 'x':
-                        // X - sections only
-                        cout<<"\033[1;31mSolving for cross-sections only.\033[0m"<<endl;
-                        solve_rate_eq = false;
-                        break;
                     case 'h':
                         // Usage help.
                         cout<<"This is physics code, were you really expecting documentation?"<<endl;
-                        cout<<"  -s Look for stored precalculated rate coefficients"<<endl;
-                        cout<<"  -x Skip rate-equaton solving"<<endl;
+                        cout<<"  ac4dc reads precomputed atomic rates from output/atomic_rates/*.h5"<<endl;
+                        cout<<"  Generate those first with the 'atomic_rate_data' binary, e.g.:"<<endl;
+                        cout<<"      atomic_rate_data C 9000"<<endl;
                         break;
                     case 'w':
                         // Warranty.
@@ -259,10 +249,8 @@ struct CmdParser{
             }
         }
     }
-    bool recalc = true;
     bool valid_input = true;
     bool solve_rate_eq = true;
-    bool load_data = false;
 };
 
 int main(int argc, const char *argv[]) {

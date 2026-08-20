@@ -22,7 +22,7 @@ length       // Gauge type for matrix elements involving photon absorption/emiss
 -6            // Hartree-Fock tolerance.
 -10           // Radial Schroedinger equation solver, tolerance (Master).
 -3            // No-exchange step convergence tolerance.
-500           // Maximum number of hartree-Fock iterations.
+1500           // Maximum number of hartree-Fock iterations.
 70            // Maximum number of Virtual orbital iterations. Not used unless virtual orbitals are evaluated.
 
 #OUTPUT

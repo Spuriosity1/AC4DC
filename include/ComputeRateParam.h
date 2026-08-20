@@ -93,6 +93,9 @@ public:
 
   	Grid & Atom_Mesh() { return lattice; }
 
+	// Form factors accumulated during Solve*(). Consumed by atomic_rate_data for HDF5 storage.
+	const vector<CustomDataType::ffactor>& AllFormFactors() const { return FF; }
+
 protected:
 	Grid & lattice;
 	Input & input;

@@ -206,7 +206,7 @@ void Adams_BM<T>::step_nonstiff_part(int n) {
     this->sys_bound(tmp2, tmp, this->y_bg[n+1], this->t[n+1]);
     tmp *= b_AM[0];
     // Now tmp goes back to being an aggregator
-    for (int i = 1; i < order; i++) {
+    for (int i = 1; i < static_cast<int>(order); i++) {
         this->sys_bound(this->y[n-i+1], ydot, this->y_bg[n-i+1], this->t[n-i+1]);
         ydot *= b_AM[i];
         tmp += ydot;
@@ -257,13 +257,13 @@ void Adams_BM<T>::run_steps(){
     assert(this->t.size() >= order);
 
     // initialise enough points for multistepping to get going
-    for (int n = 0; n < order; n++) {
+    for (int n = 0; n < static_cast<int>(order); n++) {
         //this->step_rk4(n);
 	this->y[n+1] = this->y[0];  // Sets the distribution to be the initial one it seems -S.P.
     }
     // Run those steps
     std::cout << "[ sim ]                       ";
-    for (int n = this->order; n < this->t.size()-1; n++) {
+    for (int n = this->order; n < static_cast<int>(this->t.size())-1; n++) {
         std::cout << "\r[ sim ] t="
                   << std::left<<std::setfill(' ')<<std::setw(6)
                   << this->t[n] << "au" << std::flush;

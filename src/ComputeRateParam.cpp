@@ -95,7 +95,7 @@ int ComputeRateParam::SolveFrozen(vector<int> Max_occ, vector<int> Final_occ, of
 		shared(cout, runlog, have_Aug, have_Flr, have_Pht, saveFF) private(Tmp, Max_occ, LocalPhoto, LocalAuger, LocalFluor, LocalFF)
 		{
 			#pragma omp for schedule(dynamic) nowait
-			for (size_t i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
+			for (int i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
 			{
 				vector<RadialWF> Orbitals = orbitals;
 				cout << "[HF Frozen] configuration " << i << " thread " << omp_get_thread_num() << endl;
@@ -218,39 +218,11 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 
 	Store.num_conf = dimension;
 
-
-	string RateLocation = "./output/" + input.Name() + "/Xsections/";
-	if (!exists_test("./output/" + input.Name())) {
-		string dirstring = "output/" + input.Name();
-		mkdir(dirstring.c_str(), ACCESSPERMS);
-	}
-	if (!exists_test(RateLocation)) {
-		string dirstring = "output/" + input.Name() + "/Xsections";
-		mkdir(dirstring.c_str(), ACCESSPERMS);
-	}
-
-	bool have_Aug, have_EII, have_Pht, have_Flr;
-
-	bool saveFF = true; //exists_test(RateLocation + "Form_Factor.txt");
-
-	if (recalculate) {
-		have_Aug=false;
-		have_EII=false;
-		have_Pht=false;
-		have_Flr=false;
-	} else {
-		// Check if there are pre-calculated rates
-		have_Pht = RateData::ReadRates(RateLocation + "Photo.txt", Store.Photo);
-		have_Flr = RateData::ReadRates(RateLocation + "Fluor.txt", Store.Fluor);
-		have_Aug = RateData::ReadRates(RateLocation + "Auger.txt", Store.Auger);
-		have_EII = RateData::ReadEIIParams(RateLocation + "EII.json", Store.EIIparams);
-		cout <<"======================================================="<<endl;
-		cout <<"Seeking rates for atom "<< input.Name() <<endl;
-		if (have_Pht) cout<<"Photoionization rates found. Reading..." <<endl;
-		if (have_Flr) cout<<"Fluorescence rates found. Reading..."<<endl;
-		if (have_Aug) cout<<"Auger rates found. Reading..."<<endl;
-		if (have_EII) cout<<"EII Parameters found. Reading..."<<endl;
-	}
+	// Rates are always computed in-memory here; file IO is owned by atomic_rate_data
+	// (the Stage-1 binary), which serializes the returned Store to HDF5. The legacy
+	// have_* caching flags are retained as always-false so the compute block runs.
+	const bool have_Aug = false, have_EII = false, have_Pht = false, have_Flr = false;
+	const bool saveFF = true;
 
 	if (!have_Aug || !have_EII || !have_Pht || !have_Flr || saveFF)
 	{
@@ -268,7 +240,11 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 		RateData::EIIdata tmpEIIparams;
 		int MaxBindInd = 0;
 		// Slippery assumption - electron impact cannot ionize more than the XFEL photon.
-		while(Final_occ[MaxBindInd] == orbitals[MaxBindInd].occupancy()) MaxBindInd++;
+		// Guard the scan: if every orbital is frozen (nothing is photoionizable, e.g. the
+		// photon energy is below even the valence binding energy) this would otherwise run
+		// off the end of Final_occ/orbitals.
+		while (MaxBindInd < (int)orbitals.size()
+		       && Final_occ[MaxBindInd] == orbitals[MaxBindInd].occupancy()) MaxBindInd++;
 		tmpEIIparams.kin.clear();
 		tmpEIIparams.kin.resize(orbitals.size() - MaxBindInd, 0);
 		tmpEIIparams.ionB.clear();
@@ -287,7 +263,7 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 		firstprivate(Max_occ)  // I believe this should be shared, but it was in private() before (which I believe is a mistake, since this meant the value of max_occ was lost) so I'm putting it here to be safe. -S.P.
 		{
 			#pragma omp for schedule(dynamic) nowait
-			for (size_t i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
+			for (int i = 0;i < dimension - 1; i++)//last configuration is lowest electron count state//dimension-1
 			{
 				vector<RadialWF> Orbitals = orbitals;
 				cout << "[HF BEB] configuration " << i << " thread " << omp_get_thread_num() << endl;
@@ -306,14 +282,14 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 				// EII parameters to store for Later BEB model calculation.
 				tmpEIIparams.init = i;
 				int size = 0;
-				for (int n = MaxBindInd; n < Orbitals.size(); n++) if (Orbitals[n].occupancy() != 0) size++;
+				for (int n = MaxBindInd; n < static_cast<int>(Orbitals.size()); n++) if (Orbitals[n].occupancy() != 0) size++;
 				tmpEIIparams.kin = U.Get_Kinetic(Orbitals, MaxBindInd);
 				tmpEIIparams.ionB = vector<float>(size, 0);
 				tmpEIIparams.fin = vector<int>(size, 0);
 				tmpEIIparams.occ = vector<int>(size, 0);
 				size = 0;
 				//tmpEIIparams.inds.resize(tmpEIIparams.vec2.size(), 0);
-				for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+				for (int j = MaxBindInd; j < static_cast<int>(Orbitals.size()); j++) {
 					if (Orbitals[j].occupancy() == 0) continue;
 					int old_occ = Orbitals[j].occupancy();
 					Orbitals[j].set_occupancy(old_occ - 1);
@@ -331,7 +307,7 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 					assert(Max_occ.size() == Orbitals.size());
 					size = 0;
 					double valence_energy = 0;
-					for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+					for (int j = MaxBindInd; j < static_cast<int>(Orbitals.size()); j++) {
 						if (Orbitals[j].occupancy() == 0) continue;
 						valence_energy = -tmpEIIparams.ionB[size];
 						size++;
@@ -340,7 +316,7 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 					int donator_orbital = -1;
 					int receiver_occupancy= -1;
 					int donator_occupancy = -1;
-					for (int j = MaxBindInd; j < Orbitals.size(); j++) {
+					for (int j = MaxBindInd; j < static_cast<int>(Orbitals.size()); j++) {
 						if (Orbitals[j].occupancy() == 0) continue;
 						donator_orbital = j;
 						receiver_orbital = j;
@@ -350,7 +326,7 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 					int donator_idx;
 					int receiver_idx;
 					// Find index of config after electron is transported to this config
-					if (receiver_orbital >= Orbitals.size())
+					if (receiver_orbital >= static_cast<int>(Orbitals.size()))
 						// maximum orbital is filled - Transport is disallowed.
 						receiver_idx = -1;
 					else{
@@ -435,53 +411,13 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 		sort(FF.begin(), FF.end(), [](ffactor A, ffactor B) { return (A.index < B.index); });
 		sort(Store.EIIparams.begin(), Store.EIIparams.end(), [](RateData::EIIdata A, RateData::EIIdata B) {return (A.init < B.init);});
 		GenerateRateKeys(Store.Auger);
-
-		// Write rates to file
-		
-
-		if (!have_Pht) {
-			string dummy = RateLocation + "Photo.txt";
-			cout<<"Saving photoionisation rates to "<<dummy<<"..."<<endl;
-			RateData::WriteRates(dummy, Store.Photo);
-		}
-		if (!have_Flr) {
-			string dummy = RateLocation + "Fluor.txt";
-			cout<<"Saving fluorescence rates to "<<dummy<<"..."<<endl;
-			RateData::WriteRates(dummy, Store.Fluor);
-		}
-		if (!have_Aug) {
-			string dummy = RateLocation + "Auger.txt";
-			cout<<"Saving Auger rates to "<<dummy<<"..."<<endl;
-			RateData::WriteRates(dummy, Store.Auger);
-		}
-		if (!have_EII) {
-			string dummy = RateLocation + "EII.json";
-			cout<<"Saving EII data to "<<dummy<<"..."<<endl;
-			RateData::WriteEIIParams(dummy, Store.EIIparams);
-		}
-
-		if (saveFF) {
-			string dummy = RateLocation + "Form_Factor.txt";
-			cout<<"Saving form factor data to "<<dummy<<"..."<<endl;
-			FILE * fl = fopen(dummy.c_str(), "w");
-			for (auto& ff : FF) {
-				for (size_t i = 0;i < ff.val.size(); i++) fprintf(fl, "%3.5f ", ff.val[i]);
-				fprintf(fl, "\n");
-			}
-			fclose(fl);
-		}
 	}
 
-	string IndexTrslt = "./output/" + input.Name() + "/index.txt";
-
-	ofstream config_out(IndexTrslt);
-	config_out<<"# idx | configuration"<<endl;
+	// Populate human-readable configuration names (consumed downstream by ac4dc).
+	Store.index_names.clear();
 	for (size_t i = 0; i < Index.size(); i++) {
 		Store.index_names.push_back(InterpretIndex(i));
-		config_out << i << " | " << Store.index_names.back();
-		config_out<<endl;
 	}
-	config_out.close();
 
  	return Store;
 }
@@ -602,10 +538,10 @@ bool ComputeRateParam::SetupIndex(vector<int> Max_occ, vector<int> Final_occ, of
 		v.resize(orbitals.size());
 	}
 
-	for (size_t i = 0;i < dimension; i++)
+	for (int i = 0;i < dimension; i++)
 	{
 		int tmp = i;
-		for (size_t j = 0;j < orbitals_size; j++)
+		for (int j = 0;j < orbitals_size; j++)
 		{
 			Index[i][j] = tmp / hole_posit[j];
 			if (Index[i][j] > Max_occ[j]) { Index[i][j] = Max_occ[j]; }
@@ -623,7 +559,7 @@ vector<double> ComputeRateParam::generate_dT(int num_elem)//default time interva
 {
 	vector<double> Result(num_elem, 0);
 	double tmp = 1;
-	for (size_t i = 0;i < num_elem; i++) {
+	for (int i = 0;i < num_elem; i++) {
 	tmp = fabs(1.*i / (num_elem-1) - 0.5) + 0.01;
 		Result[i] = tmp;
 	}
@@ -634,11 +570,11 @@ vector<double> ComputeRateParam::generate_T(vector<double>& dT)//default time
 {
 	vector<double> Result(dT.size(), 0);
 	vector<double> Bashforth_4{ 55. / 24., -59. / 24., 37. / 24., -9. / 24. }; //Adams�Bashforth method
-	for (int i = 1; i < Bashforth_4.size(); i++)//initial few points
+	for (int i = 1; i < static_cast<int>(Bashforth_4.size()); i++)//initial few points
 	{
 		Result[i] = Result[i - 1] + dT[i - 1];
 	}
-	for (int i = Bashforth_4.size(); i < Result.size(); i++)//subsequent points
+	for (int i = Bashforth_4.size(); i < static_cast<int>(Result.size()); i++)//subsequent points
 	{
 		Result[i] = Result[i - 1];
 		for (size_t j = 0;j < Bashforth_4.size(); j++)
@@ -663,7 +599,7 @@ vector<double> ComputeRateParam::generate_I(vector<double>& Time, double Fluence
 
   int smooth = T.size()/10;
   double tmp = 0;
-	for (size_t i = 0;i < Time.size(); i++)
+	for (int i = 0;i < static_cast<int>(Time.size()); i++)
 	{
     Result[i] = Fluence * norm * exp(-(Time[i] - midpoint)*(Time[i] - midpoint) / denom);
     if (i < smooth) {
@@ -704,7 +640,7 @@ int ComputeRateParam::extend_I(vector<double>& Intensity, double new_max_T, doub
 void SmoothOrigin(vector<double> & T, vector<double> & F)
 {
 	int smooth = T.size() / 10;
-	for (size_t i = 0;i < smooth; i++)
+	for (int i = 0;i < smooth; i++)
 	{
 		F[i] *= (T[i] / T[smooth])*(T[i] / T[smooth])*(3 - 2 * (T[i] / T[smooth]));
 	}
@@ -728,7 +664,7 @@ void ComputeRateParam::GenerateRateKeys(vector<RateData::Rate> & ToSort)
 	int CurrentFrom = 0;
 	int start = 0;
 	RatesFromKeys.push_back(0);
-	for (int i = 1; i < ToSort.size(); i++) {
+	for (int i = 1; i < static_cast<int>(ToSort.size()); i++) {
 		if (ToSort[i].from != CurrentFrom) {
 			CurrentFrom = ToSort[i].from;
 			start = RatesFromKeys.back();
@@ -755,7 +691,7 @@ double ComputeRateParam::T_avg_RMS(vector<pair<double, int>> conf_RMS)
 
   vector<double> intensity = generate_G();
   if (P.size()-1 != density.size()) return -1;
-  for (int m = 0; m < T.size(); m++) {
+  for (int m = 0; m < static_cast<int>(T.size()); m++) {
     tmp = 0;
     for (size_t i = 0;i < conf_RMS.size(); i++) tmp += P[i][m]*conf_RMS[i].first;
     intensity[m] *= tmp;
@@ -774,7 +710,7 @@ double ComputeRateParam::T_avg_Charge()
   double tmp = 0;
 
   vector<double> intensity = generate_G();
-  for (int m = 0; m < T.size(); m++) {
+  for (int m = 0; m < static_cast<int>(T.size()); m++) {
     tmp = 0;
     for (size_t i = 0;i < charge.size(); i++) tmp += (input.Nuclear_Z() - i)*charge[i][m];
     intensity[m] *= tmp;

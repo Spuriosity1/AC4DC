@@ -69,10 +69,14 @@ public:
 
 	string name = "";
 
-	// Scans for atomic process rates in the folder output/[atom name]/Xsections and recalculates if absent.
-	// 'Recalculate' flag skips scanning and forces recomputation.
-	// The result is available as Store.
-    void calc_rates(ofstream &_log, bool recalc=true);
+	// Loads per-atom Hartree-Fock rate data from the HDF5 files produced by the
+	// atomic_rate_data binary (one file per (element, photon energy)). Hard-errors
+	// with the exact command to run if a required file is missing. The result is
+	// available as Store; the resolved file paths are exposed via Rate_Source_Paths().
+	void load_rates(ofstream &_log);
+
+	// Paths of the HDF5 rate files loaded by load_rates(), one per atom (in order).
+	const vector<string>& Rate_Source_Paths() const { return rate_source_paths; }
 
 	GridSpacing elec_grid_type;
 	DynamicGridPreset elec_grid_preset;
@@ -122,6 +126,9 @@ protected:
 
 	// Dynamic grid
 	double grid_update_period; // time period between dynamic grid updates, fs.
+
+	// Resolved HDF5 rate-file paths, populated by load_rates().
+	vector<string> rate_source_paths;
 };
 
 

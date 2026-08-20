@@ -198,7 +198,7 @@ void Distribution::transform_basis(std::vector<double> new_knots){
     std::vector<std::vector<double>> new_densities(num_new_splines, std::vector<double>(64, 0));
 
     // Cackle and iterate through each new spline.
-    for (size_t i=0; i<num_new_splines; i++){
+    for (int i=0; i<num_new_splines; i++){
         // Use current basis to generate the density terms for gaussian integration at for each basis point.   
         // Black magic. ଘ(੭ˊᵕˋ)੭.*･｡ﾟ
         double a = new_knots[i];                  // i.e. <new_basis>.supp_min(i);

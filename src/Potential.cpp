@@ -146,7 +146,7 @@ int Potential::HF_upd_dir(RadialWF* Current, std::vector<RadialWF> &Orbitals)
 		return 0;
 	}
 
-	for (int i = 0; i < Orbitals.size(); i++)
+	for (int i = 0; i < static_cast<int>(Orbitals.size()); i++)
 	{
 		if (Orbitals[i].occupancy() == 0) continue;
 		else Q = Orbitals[i].occupancy();
@@ -222,7 +222,7 @@ int Potential::LDA_upd_dir(std::vector<RadialWF> &Orbitals)
 	Asympt.clear();
 	Asympt.resize(lattice->size());
 
-	for (int i = 0; i < Orbitals.size(); i++)
+	for (int i = 0; i < static_cast<int>(Orbitals.size()); i++)
 	{
 		if (Orbitals[i].occupancy() == 0) continue;
 		else Q = Orbitals[i].occupancy();
@@ -290,7 +290,7 @@ int Potential::HF_upd_exc(RadialWF * Current, std::vector<RadialWF> &Orbitals)
 
 	if (N_elec < 2) return 0;
 
-	for (int i = 0; i < Orbitals.size(); i++)
+	for (int i = 0; i < static_cast<int>(Orbitals.size()); i++)
 	{
 		if (Orbitals[i].occupancy() == 0) { continue; }
 		if (Current->L() == Orbitals[i].L() && Current->N() == Orbitals[i].N())	continue;
@@ -395,7 +395,7 @@ std::vector<double> Potential::Y_k(int k, std::vector<double> density, int infin
 	Y_gtr[infinity] = density[infinity] * lattice->dR(infinity);
 
 	Adams W(*lattice, adams_order);
-	for (int i = 0; i < density.size(); i++) {
+	for (int i = 0; i < static_cast<int>(density.size()); i++) {
 		W.A[i] = - k / lattice->R(i);
 		W.X[i] = density[i];
 	}
@@ -420,7 +420,7 @@ std::vector<double> Potential::Y_k(int k, std::vector<double> density, int infin
 	W.Integrate_ODE(Y_gtr, infinity, 0);
 	Result.resize(lattice->size());
 
-	for (int i = 0; i < density.size(); i++)
+	for (int i = 0; i < static_cast<int>(density.size()); i++)
 	{
 		if (i < infinity) { Result[i] = Y_less[i] + Y_gtr[i]; }
 		else { Result[i] = Y_less[infinity]; }
@@ -437,11 +437,11 @@ vector<double> Potential::make_density(vector<RadialWF> & Orbitals)
 	vector<double> Result(lattice->size(), 0.);
 	int infty = 0;
 	double occ = 0;
-	for (int i = 0 ; i < Orbitals.size(); i++) {
+	for (int i = 0 ; i < static_cast<int>(Orbitals.size()); i++) {
 		infty = Orbitals[i].pract_infinity();
 		occ = Orbitals[i].occupancy();
 		double* f = Orbitals[i].F.data();
-		for (int j = 0; j < Result.size(); j++) {
+		for (int j = 0; j < static_cast<int>(Result.size()); j++) {
 			if (j > infty) break;
 			Result[j] += occ * *(f + j) * *(f + j);
 		}
@@ -463,7 +463,7 @@ double Potential::Overlap(std::vector<double> density, int infinity)
 vector<float> Potential::Get_Kinetic(vector<RadialWF> & Orbitals, int start_with)
 {
 	int size = 0;
-	for (int i = start_with; i < Orbitals.size(); i++) if (Orbitals[i].occupancy() != 0) size++;
+	for (int i = start_with; i < static_cast<int>(Orbitals.size()); i++) if (Orbitals[i].occupancy() != 0) size++;
 
 	if (size == 0) return vector<float>(0);
 
@@ -474,7 +474,7 @@ vector<float> Potential::Get_Kinetic(vector<RadialWF> & Orbitals, int start_with
 	Adams I(*lattice, 5);
 
 	size = 0;
-	for (int i = start_with; i < Orbitals.size(); i++) {
+	for (int i = start_with; i < static_cast<int>(Orbitals.size()); i++) {
 		if (Orbitals[i].occupancy() == 0) continue;
 		infinity = Orbitals[i].pract_infinity();
 		for (int j = 0; j <= infinity; j++) {
@@ -501,13 +501,13 @@ double MatrixElems::Dipole(RadialWF &A, RadialWF &B, string gauge)
     vector<double> density(infty+1, 0);
 
     if (gauge == "length") {
-		for (int i = 0; i < density.size(); i++) {
+		for (int i = 0; i < static_cast<int>(density.size()); i++) {
 			density[i] = lattice->R(i)*A.F[i]*B.F[i];
 		}
     }
     else {
 		double ang_coeff =  0.5*(A.L() - B.L())*(A.L() + B.L() + 1);
-			for (int i = 0; i < density.size(); i++)	{
+			for (int i = 0; i < static_cast<int>(density.size()); i++)	{
 			density[i] = B.F[i] *(A.G[i] + ang_coeff * A.F[i]/lattice->R(i)) ;
 		}
     }
@@ -563,7 +563,7 @@ double MatrixElems::R_pow_k(vector<RadialWF> & Orbitals, int k)
 
   vector<double> density(infty+1, 0);
 
-  for (int i = 0; i < density.size(); i++) {
+  for (int i = 0; i < static_cast<int>(density.size()); i++) {
     for (auto & orb : Orbitals) density[i] += orb.occupancy()*orb.F[i]*orb.F[i];
     density[i] *= pow(lattice->R(i), k);
   }

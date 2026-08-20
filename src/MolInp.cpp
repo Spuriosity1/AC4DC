@@ -23,8 +23,7 @@ This file is part of AC4DC.
 #include <stdexcept>
 #include <map>
 #include <cmath>
-#include "HartreeFock.h"
-#include "ComputeRateParam.h"
+#include "RateHDF5.h"
 
 
 MolInp::MolInp(const char* filename, ofstream & _log)
@@ -385,31 +384,35 @@ bool MolInp::validate_inputs() { // TODO need to add checks probably -S.P. TODO 
 	return is_valid;
 }
 
-void MolInp::calc_rates(ofstream &_log, bool recalc) {
-	// Loop through atomic species.
-	for (size_t a = 0; a < Atomic.size(); a++) {
-		HartreeFock HF(Latts[a], Orbits[a], Pots[a], Atomic[a], _log);
+void MolInp::load_rates(ofstream &_log) {
+	// omega is stored in atomic units at this point (converted during construction).
+	const double omega_eV = omega * Constant::eV_per_Ha;
+	rate_source_paths.clear();
 
-		// This Computes the parameters for the rate equations to use, loading them into Init.
-		ComputeRateParam Dynamics(Latts[a], Orbits[a], Pots[a], Atomic[a], recalc);
-		vector<int> final_occ(Orbits[a].size(), 0);
-		vector<int> max_occ(Orbits[a].size(), 0);
-		vector<bool> shell_check(Orbits[a].size(),0); // Store the indices of shell-approximated orbitals
-		for (size_t i = 0; i < Orbits[a].size(); i++) {
-			// locks in electrons that are in a potential deeper than the (mean) photon energy
-			if (fabs(Orbits[a][i].Energy) > Omega()) final_occ[i] = Orbits[a][i].occupancy();  // TODO what about continuum lowering/IPD or electrons with energies above the photon energy? -S.P.  
-			max_occ[i] = Orbits[a][i].occupancy();
-			shell_check[i] = Orbits[a][i].is_shell();
+	// Loop through atomic species, loading each from its (element, photon energy) HDF5 file.
+	for (size_t a = 0; a < Atomic.size(); a++) {
+		const string element = Store[a].name;
+		const string fname = RateHDF5::filename(element, omega_eV);
+
+		RateData::Atom loaded;
+		vector<CustomDataType::ffactor> ff; // form factors: read but unused by ac4dc
+		if (!RateHDF5::read(fname, loaded, ff, omega_eV)) {
+			cerr << "\033[1;31m[ Rates ] Missing atomic rate data for '" << element
+			     << "' at " << omega_eV << " eV.\033[0m" << endl;
+			cerr << "Expected file: " << fname << endl;
+			cerr << "Generate it first by running:" << endl;
+			cerr << "    atomic_rate_data " << element << " "
+			     << (long)llround(omega_eV) << endl;
+			exit(EXIT_FAILURE);
 		}
 
-		string name = Store[a].name;
-		double nAtoms = Store[a].nAtoms;
+		// Preserve molecule-specific fields set during .mol parsing.
+		loaded.name = element;
+		loaded.nAtoms = Store[a].nAtoms;
+		Store[a] = loaded;
 
-
-		Store[a] = Dynamics.SolvePlasmaBEB(max_occ, final_occ, shell_check,_log);
-		Store[a].name = name;
-		Store[a].nAtoms = nAtoms;
-		// Store[a].R = dropl_R();
-		Index[a] = Dynamics.Get_Indexes();
+		rate_source_paths.push_back(fname);
+		_log << "[ Rates ] Loaded " << element << " from " << fname << endl;
+		cout << "[ Rates ] Loaded " << element << " from " << fname << endl;
 	}
 }

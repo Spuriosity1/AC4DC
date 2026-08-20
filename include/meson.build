@@ -23,6 +23,7 @@ project_header_files += files(
 'Potential.h',
 'Pulse.h',
 'RadialWF.h',
+'RateHDF5.h',
 'RateSystem.h',
 'SplineBasis.h',
 'SplineIntegral.h',

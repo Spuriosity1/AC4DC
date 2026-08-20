@@ -14,7 +14,7 @@ if get_option('disable_ee')
   main_args += '-DNO_EE'
 endif
 if get_option('disable_eii')
-  main_args += 'NO_EII'
+  main_args += '-DNO_EII'
 endif
 if not get_option('disable_ministep_updating')
   main_args += '-DNO_MINISTEP_UPDATING'
@@ -49,23 +49,42 @@ pybind11 = declare_dependency(
 python3 = dependency('python3')
 py3_inst = import('python').find_installation('python3')
 
-ac4dc_bin_deps = [
+# HDF5 (C API) is the on-disk seam between the two binaries.
+# Use pkg-config explicitly; meson's config-tool (h5cc) path is buggy for language:'c'.
+hdf5_dep = dependency('hdf5', method: 'pkg-config', required: true)
+
+# Dependencies common to both binaries.
+common_deps = [
   dependency('openmp'),
-  dependency('eigen3')
+  dependency('eigen3'),
+  hdf5_dep,
   ]
 
+# ac4dc (Stage 2) may additionally use ncurses for the interactive display.
+ac4dc_bin_deps = common_deps
 if get_option('interactive')
   ac4dc_bin_deps += [dependency('ncurses')]
   main_args += '-DNCURSES'
 endif
 
-
+# wigner_lib is referenced from both the shared (Constant/Potential) and solver
+# (BoundTransport) code, so both binaries link it.
 ac4dc_bin_libdeps = [
   wigner_lib
 ]
 
-ac4dc_bin = executable('ac4dc', 
-  main_sources,
+# Stage 1: Hartree-Fock atomic rate generator.
+atomic_rate_data_bin = executable('atomic_rate_data',
+  common_sources + hf_sources + atomic_rate_data_main,
+  include_directories: inc,
+  dependencies: common_deps,
+  link_with: ac4dc_bin_libdeps,
+  cpp_args: main_args
+)
+
+# Stage 2: plasma-dynamics solver (reads rates from HDF5).
+ac4dc_bin = executable('ac4dc',
+  common_sources + solver_sources + ac4dc_main,
   include_directories: inc,
   dependencies: ac4dc_bin_deps,
   link_with: ac4dc_bin_libdeps,

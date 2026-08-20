@@ -328,7 +328,7 @@ void Hybrid<T>::step_stiff_part(unsigned n){
         T tmp;
         tmp = this->zero_y;
         // tmp acts as an aggregator
-        for (int i = 1; i < this->order; i++){  // work through last N=order-1 ministeps. i.e. Order = 3 corresponds to 2 step method.
+        for (int i = 1; i < static_cast<int>(this->order); i++){  // work through last N=order-1 ministeps. i.e. Order = 3 corresponds to 2 step method.
             T ydot; // ydot stores the change this loop.
             this->sys_ee(y_transient[(1-i+mini_n)%(this->order)], ydot); 
             ydot *= this->b_AM[i];
@@ -414,7 +414,7 @@ void Hybrid<T>::initialise_transient_y(int n) {
         ydot += this->y.at(n);
         ydot *= 1./(double)num_stiff_ministeps;    
         // Set transient_y  = [y[n]-3*ydot,y[n]-2*ydot,y[n]-ydot,y[n]] for order 3. Value at the first index will be given the value at the next ministep, and so on.
-        for(int i = 0; i < this->order; i++){  // Technically we don't need to fill the first idx, but we may as well.
+        for(int i = 0; i < static_cast<int>(this->order); i++){  // Technically we don't need to fill the first idx, but we may as well.
             // y[n-i] = y[n] - ydot*i   (here y and n refer to the intermediate steps)
             y_transient.at(mini_n-i) = this->y[n];
             T tmp;
@@ -428,7 +428,7 @@ void Hybrid<T>::initialise_transient_y(int n) {
     else{
         mini_dt = this->dt;
         // Not enough ministeps to remain within a single step.
-        for(int i = 0; i < this->order; i++){
+        for(int i = 0; i < static_cast<int>(this->order); i++){
             y_transient[mini_n-i] = this->y[n-i];
         }
     }

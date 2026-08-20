@@ -64,14 +64,14 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 	// Seems like this is old code that hasn't been removed, presumably this part was moved to MolInp.cpp. Though the #OUTPUT section is still present in the files. TODO try turning this off. - S.P.
 	// Update: 
 	/////////////////////////////////////////////////////
-	for (int n = 0; n < FileContent["#PULSE"].size(); n++) {
+	for (int n = 0; n < static_cast<int>(FileContent["#PULSE"].size()); n++) {
 		stringstream stream(FileContent["#PULSE"][n]);
 		if (n == 0) stream >> omega;
 		if (n == 1) stream >> width;
 		if (n == 2) stream >> fluence;
 	}
 
-	for (int n = 0; n < FileContent["#OUTPUT"].size(); n++) {
+	for (int n = 0; n < static_cast<int>(FileContent["#OUTPUT"].size()); n++) {
 		stringstream stream(FileContent["#OUTPUT"][n]);
 		if (n == 0) stream >> out_time_steps;
 		if (n == 1) {
@@ -93,7 +93,7 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 	double r_min, r_box;
 	map<char, int> subshell_to_angular = {{'s', 0}, {'p', 1}, {'d', 2}, {'f', 3},{'N',-10}};   // 'N' flags usage of the shell energy instead of the orbital.
 
-	for (int n = 0; n < FileContent["#NUMERICAL"].size(); n++) {
+	for (int n = 0; n < static_cast<int>(FileContent["#NUMERICAL"].size()); n++) {
 		stringstream stream(FileContent["#NUMERICAL"][n]);
 		if (n == 0) stream >> num_grid_pts;
 		if (n == 1) stream >> r_min;
@@ -121,7 +121,7 @@ Input::Input(char *filename, vector<RadialWF> &Orbitals, Grid &Lattice, ofstream
 
 	// Assign a default value to avoid undefiend comparisons
 	num_orbitals = -10;
-	for (int n = 0; n < FileContent["#ATOM"].size(); n++) {
+	for (int n = 0; n < static_cast<int>(FileContent["#ATOM"].size()); n++) {
 		stringstream stream(FileContent["#ATOM"][n]);
 		if (n == 0) stream >> Z;
 		if (n == 1) stream >> model;

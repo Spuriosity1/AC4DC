@@ -147,10 +147,9 @@ void ElectronRateSolver::set_up_grid_and_compute_cross_sections(std::ofstream& _
     // #ifdef RECALC_HARTREE
     // recalc = true;
     // #endif
-    bool recalc = true;
     if (init ){
-        std::cout << "[ HF ] Computing bound rates for species' allowed orbital configurations" << std::endl;
-        input_params.calc_rates(_log, recalc);
+        std::cout << "[ Rates ] Loading precomputed atomic rate data (from atomic_rate_data)" << std::endl;
+        input_params.load_rates(_log);
         hasRates = true;
     }
     
@@ -677,7 +676,7 @@ size_t ElectronRateSolver::load_checkpoint_and_decrease_dt(ofstream &_log, size_
 
     //TODO implement: size_t npoints = (t_final - t_initial)/this->dt + 1; input_params.num_time_steps is for the full number, not what we want.
     // Set up the t grid       
-    for (size_t i=n+1; i<input_params.num_time_steps; i++){   // TODO check potential inconsistency(?) with hybrid's iterate(): npoints = (t_final - t_initial)/this->dt + 1
+    for (int i=n+1; i<input_params.num_time_steps; i++){   // TODO check potential inconsistency(?) with hybrid's iterate(): npoints = (t_final - t_initial)/this->dt + 1
         this->t[i] = this->t[i-1] + this->dt;
     }
     steps_per_grid_transform = round(steps_per_grid_transform*fact);

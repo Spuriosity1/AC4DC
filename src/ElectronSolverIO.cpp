@@ -52,6 +52,15 @@ void ElectronRateSolver::save(const std::string& _dir) {
     saveBound(dir);
     std::cout <<"\033[0m"<<std::endl;
 
+    // Record which atomic-rate HDF5 files (element + photon energy) were used, so the
+    // downstream Python scattering/plotting scripts can locate the form factors.
+    {
+        ofstream manifest(dir + "atomic_rate_sources.txt");
+        manifest << "# Atomic rate HDF5 files used for this simulation (one per species)" << endl;
+        for (const string& path : input_params.Rate_Source_Paths())
+            manifest << path << endl;
+    }
+
     // Save intensity
     std::vector<double> times;
     double t_fineness = timespan_au  / num_steps_out;
@@ -59,7 +68,7 @@ void ElectronRateSolver::save(const std::string& _dir) {
     int i = -1;
     while (i < static_cast<int>(t.size())-1){  //TODO make this some constructed function or something
         i++;
-        if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+        if(t[i] < previous_t + t_fineness && i<= static_cast<int>(t.size())-extra_fine_steps_out){
             continue;
         }        
         times.push_back(t[i]);
@@ -120,7 +129,7 @@ void ElectronRateSolver::saveFree(const std::string& fname) {
             Distribution::load_knots_from_history(i+order);
             next_knot_update = Distribution::next_knot_change_idx(i+order);
         } 
-        if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+        if(t[i] < previous_t + t_fineness && i<= static_cast<int>(t.size())-extra_fine_steps_out){
             continue;
         }
         f<<round_time(t[i]*Constant::fs_per_au)<<" "<<y[i].F.output_densities(this->input_params.Out_F_size(),reference_knots)<<endl;
@@ -157,7 +166,7 @@ void ElectronRateSolver::saveFreeRaw(const std::string& fname) {
             Distribution::load_knots_from_history(i+order);
             next_knot_update = Distribution::next_knot_change_idx(i+order);
         } 
-        if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){
+        if(t[i] < previous_t + t_fineness && i<= static_cast<int>(t.size())-extra_fine_steps_out){
             continue;
         }
         f<<round_time(t[i]*Constant::fs_per_au)<<" "<<y[i].F<<endl;  // Note that the << operator divides the factors by Constant::eV_per_Ha.
@@ -193,7 +202,7 @@ void ElectronRateSolver::saveBound(const std::string& dir) {
         int i = -1;
         while (i <  static_cast<int>(t.size())-1){
             i++;
-            if(t[i] < previous_t + t_fineness && i<= t.size()-extra_fine_steps_out){ 
+            if(t[i] < previous_t + t_fineness && i<= static_cast<int>(t.size())-extra_fine_steps_out){ 
                 continue;
             }            
             // Make sure all "natom-dimensioned" objects are the size expected
@@ -398,7 +407,7 @@ void ElectronRateSolver::loadFreeRaw_and_times() {
         s >> str_time;
         saved_time[i] = convert_str_time(str_time);                
 
-        if(saved_time[i] > input_params.Load_Time_Max() || i >= y.size()){
+        if(saved_time[i] > input_params.Load_Time_Max() || i >= static_cast<int>(y.size())){
             // time is past the maximum
             y.resize(i); // (Resized later by integrator for full sim.)
             t.resize(i);
@@ -608,7 +617,7 @@ void ElectronRateSolver::loadBound() {
         }
         
         //  initialise - fill with initial state
-        for(size_t count = 1; count < num_steps; count++){
+        for(int count = 1; count < num_steps; count++){
             this->y[count].atomP[a] = this->y[0].atomP[a];
         }
         
@@ -626,7 +635,7 @@ void ElectronRateSolver::loadBound() {
                 break;
             }            
             matching_idx = find(t.begin(),t.end(),elem_time) - t.begin(); 
-            if (matching_idx >= t.size()){
+            if (matching_idx >= static_cast<int>(t.size())){
                 std::cerr << "Warning, mismatch in points between bound and free files!" << std::endl;
                 continue;  //Error! Couldn't find a corresponding point...
             }
@@ -645,7 +654,7 @@ void ElectronRateSolver::loadBound() {
         // // Shave time and state containers to last matching state. (Disabled, this shouldn't happen now.)
         //y.resize(matching_idx + 1);
         //t.resize(matching_idx + 1);
-        if(t.size() != matching_idx + 1){
+        if(static_cast<int>(t.size()) != matching_idx + 1){
             throw std::runtime_error("No bound state found for the final loaded step or times mismatched in files."); 
         }
     }
