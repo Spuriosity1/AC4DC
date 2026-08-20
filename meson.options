@@ -1,0 +1,29 @@
+option('disable_tbr',
+  type: 'boolean',
+  value: false,
+  description: 'Disables three-body recombination part of the kernel.'
+  )
+
+option('disable_ee',
+  type: 'boolean',
+  value: false,
+  description: 'Disables electron-electron interaction part of the kernel.'
+  )
+
+option('disable_eii',
+  type: 'boolean',
+  value: false,
+  description: 'Disables electron impact ionisation part of the kernel.'
+  )
+
+option('disable_ministep_updating',
+  type: 'boolean',
+  value: false,
+  description: 'Disables ministep updating.'
+  )
+
+option('interactive',
+  type: 'boolean',
+  value: false,
+  description: 'Build in interactive mode.'
+  )

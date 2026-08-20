@@ -1,7 +1,7 @@
 project('ac4dc','cpp',
   version:'0.2.0',
   license: ['GPLv3'],
-  meson_version: '>=0.63.0',
+  meson_version: '>=1.1.0',
   default_options: ['warning_level=3', 'cpp_std=c++17']
   )
 
@@ -16,7 +16,7 @@ endif
 if get_option('disable_eii')
   main_args += 'NO_EII'
 endif
-if not get_option('ministep_updating')
+if not get_option('disable_ministep_updating')
   main_args += '-DNO_MINISTEP_UPDATING'
 endif
 
