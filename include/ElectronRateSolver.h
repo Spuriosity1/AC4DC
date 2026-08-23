@@ -53,7 +53,8 @@ This file is part of AC4DC.
 class ElectronRateSolver : protected ode::Hybrid<state_type>
 {
 public:
-    ElectronRateSolver(const char* filename, ofstream& log);
+    ElectronRateSolver(const char* filename, ofstream& log,
+                       const std::string& rates_dir = RateHDF5::default_dir);
     /// Solve the rate equations
     void solve(ofstream & _log, const string& tmp_data_folder);
     void save(const std::string& folder);

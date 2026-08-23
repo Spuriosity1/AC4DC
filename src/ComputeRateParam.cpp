@@ -405,11 +405,25 @@ RateData::Atom ComputeRateParam::SolvePlasmaBEB(vector<int> Max_occ, vector<int>
 			}
 		}
 
-		sort(Store.Photo.begin(), Store.Photo.end(), [](RateData::Rate A, RateData::Rate B) { return (A.from < B.from); });
-		sort(Store.Auger.begin(), Store.Auger.end(), [](RateData::Rate A, RateData::Rate B) { return (A.from < B.from); });
-		sort(Store.Fluor.begin(), Store.Fluor.end(), [](RateData::Rate A, RateData::Rate B) { return (A.from < B.from); });
-		sort(FF.begin(), FF.end(), [](ffactor A, ffactor B) { return (A.index < B.index); });
-		sort(Store.EIIparams.begin(), Store.EIIparams.end(), [](RateData::EIIdata A, RateData::EIIdata B) {return (A.init < B.init);});
+		// Canonicalise the ordering of every config-indexed container before it is written
+		// out, so the HDF5 rate file is byte-reproducible across runs. The parallel loop above
+		// appends rows in (nondeterministic) thread-completion order; the configuration index
+		// *labels* are already run-consistent, so a stable total-order sort on those labels is
+		// all that is needed. The previous sorts keyed on `.from`/`.init` alone, which is not a
+		// total order (ties kept their arbitrary parallel-fill order), and EnergyConfig was not
+		// sorted at all.
+		auto rate_less = [](const RateData::Rate& A, const RateData::Rate& B) {
+			if (A.from != B.from) return A.from < B.from;
+			if (A.to   != B.to)   return A.to   < B.to;
+			if (A.energy != B.energy) return A.energy < B.energy;
+			return A.val < B.val;
+		};
+		sort(Store.Photo.begin(), Store.Photo.end(), rate_less);
+		sort(Store.Auger.begin(), Store.Auger.end(), rate_less);
+		sort(Store.Fluor.begin(), Store.Fluor.end(), rate_less);
+		sort(FF.begin(), FF.end(), [](const ffactor& A, const ffactor& B) { return (A.index < B.index); });
+		sort(Store.EIIparams.begin(), Store.EIIparams.end(), [](const RateData::EIIdata& A, const RateData::EIIdata& B) { return (A.init < B.init); });
+		sort(Store.EnergyConfig.begin(), Store.EnergyConfig.end(), [](const energy_config& A, const energy_config& B) { return (A.index < B.index); });
 		GenerateRateKeys(Store.Auger);
 	}
 
@@ -669,7 +683,9 @@ void ComputeRateParam::GenerateRateKeys(vector<RateData::Rate> & ToSort)
 			CurrentFrom = ToSort[i].from;
 			start = RatesFromKeys.back();
 			RatesFromKeys.push_back(i);
-			sort(ToSort.begin() + start, ToSort.begin() + RatesFromKeys.back(), sortRatesTo);
+			// stable_sort: preserve the (energy, val) secondary ordering established by the
+			// canonical sort above, so Auger's within-`from` order stays deterministic.
+			stable_sort(ToSort.begin() + start, ToSort.begin() + RatesFromKeys.back(), sortRatesTo);
 		}
 	}
 }

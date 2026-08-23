@@ -21,6 +21,7 @@ This file is part of AC4DC.
 #include "ElectronRateSolver.h"
 #include "Input.h"
 #include "Constant.h"
+#include "RateHDF5.h"
 #include "config.h"
 #include <iostream>
 #include <filesystem>
@@ -211,13 +212,21 @@ int get_file_names(string &infile_, string &tag, string &tmp_logfile, string &tm
 struct CmdParser{
     CmdParser(int argc, const char *argv[]) {
         if (argc < 2) {
-            std::cout << "Usage: solver path/to/molecular/in.mol [-rh]" << std::endl;
+            std::cout << "Usage: solver path/to/molecular/in.mol [-r rates_dir] [-hwc]" << std::endl;
             valid_input = false;
+            return;
         }
-        
+
         for (int a=2; a<argc; a++) {
             if (argv[a][0] != '-')
                 continue;
+
+            // Options that take a separate value argument.
+            if (string(argv[a]) == "-r") {
+                if (a+1 < argc) rates_dir = argv[++a];
+                else { cout<<"Flag '-r' requires a directory argument."<<endl; valid_input = false; }
+                continue;
+            }
 
             int i=1;
             while (argv[a][i]!='\0') {
@@ -225,9 +234,10 @@ struct CmdParser{
                     case 'h':
                         // Usage help.
                         cout<<"This is physics code, were you really expecting documentation?"<<endl;
-                        cout<<"  ac4dc reads precomputed atomic rates from output/atomic_rates/*.h5"<<endl;
+                        cout<<"  ac4dc reads precomputed atomic rates from <rates_dir>/*.h5"<<endl;
+                        cout<<"  (rates_dir defaults to "<<RateHDF5::default_dir<<"; override with -r <dir>)."<<endl;
                         cout<<"  Generate those first with the 'atomic_rate_data' binary, e.g.:"<<endl;
-                        cout<<"      atomic_rate_data C 9000"<<endl;
+                        cout<<"      atomic_rate_data input/atoms/C.inp 9000"<<endl;
                         break;
                     case 'w':
                         // Warranty.
@@ -251,6 +261,7 @@ struct CmdParser{
     }
     bool valid_input = true;
     bool solve_rate_eq = true;
+    string rates_dir = RateHDF5::default_dir;
 };
 
 int main(int argc, const char *argv[]) {
@@ -287,7 +298,7 @@ int main(int argc, const char *argv[]) {
     #ifdef PYBIND
     pybind11::initialize_interpreter();  
     #endif //PYBIND
-    ElectronRateSolver S(const_path, log); // Contains all of the collision parameters.                                       
+    ElectronRateSolver S(const_path, log, runsettings.rates_dir); // Contains all of the collision parameters.
     cout << "\033[1;32mComputing cross sections... \033[0m" <<endl;
     S.set_up_grid_and_compute_cross_sections(log, true);
     if (runsettings.solve_rate_eq) {

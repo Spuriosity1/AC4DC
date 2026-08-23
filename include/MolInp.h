@@ -28,13 +28,19 @@ This file is part of AC4DC.
 #include "GridSpacing.hpp"
 #include "LossGeometry.hpp"
 #include "Pulse.h"
+#include "RateHDF5.h"
 
 class MolInp
 {
 	// Molecular input for coupled atom/electron plasma calculations.
 public:
-	MolInp(const char* filename, ofstream & _log);
+	MolInp(const char* filename, ofstream & _log,
+	       const string& rates_dir_ = RateHDF5::default_dir);
 	~MolInp() {}
+
+	/// Directory searched by load_rates() for the atomic-rate HDF5 files
+	/// produced by atomic_rate_data. Defaults to RateHDF5::default_dir.
+	string rates_dir;
 
 	/// Vector of atomic input objects
 	vector<Input> Atomic; 

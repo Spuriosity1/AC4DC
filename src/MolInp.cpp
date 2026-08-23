@@ -26,7 +26,8 @@ This file is part of AC4DC.
 #include "RateHDF5.h"
 
 
-MolInp::MolInp(const char* filename, ofstream & _log)
+MolInp::MolInp(const char* filename, ofstream & _log, const string& rates_dir_)
+	: rates_dir(rates_dir_)
 {
 	// Input file for molecular ionization calculation.
 	map<string, vector<string>> FileContent;
@@ -392,7 +393,7 @@ void MolInp::load_rates(ofstream &_log) {
 	// Loop through atomic species, loading each from its (element, photon energy) HDF5 file.
 	for (size_t a = 0; a < Atomic.size(); a++) {
 		const string element = Store[a].name;
-		const string fname = RateHDF5::filename(element, omega_eV);
+		const string fname = RateHDF5::filename(element, omega_eV, rates_dir);
 
 		RateData::Atom loaded;
 		vector<CustomDataType::ffactor> ff; // form factors: read but unused by ac4dc
@@ -401,8 +402,8 @@ void MolInp::load_rates(ofstream &_log) {
 			     << "' at " << omega_eV << " eV.\033[0m" << endl;
 			cerr << "Expected file: " << fname << endl;
 			cerr << "Generate it first by running:" << endl;
-			cerr << "    atomic_rate_data " << element << " "
-			     << (long)llround(omega_eV) << endl;
+			cerr << "    atomic_rate_data input/atoms/" << element << ".inp "
+			     << (long)llround(omega_eV) << " -o " << rates_dir << endl;
 			exit(EXIT_FAILURE);
 		}
 

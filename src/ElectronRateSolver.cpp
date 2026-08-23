@@ -44,8 +44,8 @@ This file is part of AC4DC.
 // The Constructor
 
 
-ElectronRateSolver::ElectronRateSolver(const char* filename, ofstream& log) :
-    Hybrid(3), input_params(filename, log), pf() // (order Adams method), argument of Hybrid = order. num steps used for implicit adams-moulton = order - 1.
+ElectronRateSolver::ElectronRateSolver(const char* filename, ofstream& log, const std::string& rates_dir) :
+    Hybrid(3), input_params(filename, log, rates_dir), pf() // (order Adams method), argument of Hybrid = order. num steps used for implicit adams-moulton = order - 1.
     {
         log_config_settings(log);
 

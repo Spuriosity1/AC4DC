@@ -298,7 +298,6 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 			double correction_scaling = 1, change_cs = 1;
 			E_max_error = 1;
 			m = 0;
-			double max_norm_dev = 1;
 
 			// Hartree-Fock loop with exchange
 			while (E_max_error > HF_tolerance || m < 1)
@@ -396,6 +395,7 @@ HartreeFock::HartreeFock(Grid &Lattice, vector<RadialWF> &Orbitals, Potential &P
 	if (m >= max_HF_iterations && log.is_open()) {
 		log << "====================================================================" << endl;
 		log << "Too many iterations in Hartree-Fock" << endl;
+        log << "E_max_error = "<<E_max_error<<" (tolerance "<<HF_tolerance<<")"<<endl;
 		for (int i = 0; i < static_cast<int>(Orbitals.size()); i++) {
 			log << i + 1 << ") n = " << Orbitals[i].N() << " l = " << Orbitals[i].L()
 				<< " Energy = " << Orbitals[i].Energy << " Occup = " << Orbitals[i].occupancy() << endl;
